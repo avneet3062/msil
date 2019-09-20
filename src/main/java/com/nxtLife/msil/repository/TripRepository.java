@@ -4,5 +4,13 @@ import java.sql.SQLException;
 
 public interface TripRepository {
 
-    public Long getOpenTrips() throws SQLException;
+    Long getOpenTrips() throws SQLException;
+
+    Long getClosedTrips() throws SQLException;
+
+    Long getDelayedTrips() throws SQLException;
+
+    Long getTotalTrips() throws SQLException;
+
+
 }
