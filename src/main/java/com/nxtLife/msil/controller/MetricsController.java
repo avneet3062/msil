@@ -22,14 +22,14 @@ public class MetricsController {
     private DataService dataService;
 
     @GetMapping("trips")
-    public ResponseEntity<List<TripMetrics>> getAllTripsMetric(@RequestParam(value = "year",required = false) int year,
+    public ResponseEntity<TripMetrics> getAllTripsMetric(@RequestParam(value = "year",required = false) int year,
                                                         @RequestParam(value = "month",required = false) int month){
 
-        List<TripMetrics> tripMetricsList= dataService.getTripsMetrics(year,month);
+        TripMetrics tripMetricsList= dataService.getTripsMetrics(year,month);
 
-        if(tripMetricsList == null || tripMetricsList.isEmpty())
+        if(tripMetricsList == null )
             throw new NotFoundException("Data not found!");
         else
-            return new ResponseEntity<List<TripMetrics>>(tripMetricsList, HttpStatus.OK);
+            return new ResponseEntity<TripMetrics>(tripMetricsList, HttpStatus.OK);
     }
 }
