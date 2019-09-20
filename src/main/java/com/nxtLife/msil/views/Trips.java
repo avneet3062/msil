@@ -10,9 +10,9 @@ import lombok.Setter;
 public class Trips {
 
     private String tripType;
-    private String count;
+    private Long count;
 
-    public Trips(String tripType, String count) {
+    public Trips(String tripType, Long count) {
         this.tripType = tripType;
         this.count = count;
     }
