@@ -6,7 +6,10 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
+import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 @Repository
@@ -16,9 +19,10 @@ public class TripRepositoryImpl implements TripRepository {
     private EntityManager em;
 
     @Override
-    public int getOpenTrips() {
-        Integer countOfOpenTrips= (Integer) em.unwrap(Session.class).createSQLQuery("{call MSIL_OPENTRIPS(?,?)}")
-                .setParameter(1, OracleTypes.CURSOR).setParameter(2, LocalDate.now()).uniqueResult();
+    public Long getOpenTrips() throws SQLException {
+        Long countOfOpenTrips=0l;
+//                (Long) em.unwrap(Session.class).createSQLQuery("{call MSIL_OPENTRIPS(?,?)}")
+//                .setParameter(1, ParameterMode.REF_CURSOR).setParameter(2,java.sql.Date.valueOf(LocalDate.now())).uniqueResult();
         return countOfOpenTrips;
     }
 }
