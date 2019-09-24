@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
@@ -25,7 +26,7 @@ public class DatabaseConfig {
     @Value("${spring.datasource.hikari-maximum-pool-size}")
     private int maximumPoolSize;
 
-    @Bean(name = "dataSource")
+    @Bean
     public DataSource dataSource(){
         final HikariDataSource ds = new HikariDataSource();
         ds.setMaximumPoolSize(maximumPoolSize);

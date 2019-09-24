@@ -4,6 +4,7 @@ import com.nxtLife.msil.repository.TripRepository;
 import com.nxtLife.msil.views.TripMetrics;
 import com.nxtLife.msil.views.TripTypes;
 import com.nxtLife.msil.views.Trips;
+import com.nxtLife.msil.views.VehicleAvaliabiltyMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +44,10 @@ public class DataService {
         }
 
         return metrics;
+    }
+
+    public List<VehicleAvaliabiltyMetrics> getAllVehicleAvalable(){
+        List<VehicleAvaliabiltyMetrics> vehicleAvaliabiltyMetrics = tripRepository.getVehiclesAvailable();
+        return vehicleAvaliabiltyMetrics;
     }
 }
