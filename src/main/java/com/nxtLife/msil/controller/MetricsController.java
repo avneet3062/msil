@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/metrics")
+@RequestMapping("/api/metrics")
 public class MetricsController {
 
     @Autowired

@@ -1,3 +1,4 @@
+
 package com.nxtLife.msil.config;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -38,3 +39,4 @@ public class DatabaseConfig {
         return ds;
     }
 }
+

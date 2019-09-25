@@ -47,6 +47,7 @@ public class DataService {
     }
 
     public List<VehicleAvaliabiltyMetrics> getAllVehicleAvalable(){
+
         List<VehicleAvaliabiltyMetrics> vehicleAvaliabiltyMetrics = tripRepository.getVehiclesAvailable();
         return vehicleAvaliabiltyMetrics;
     }

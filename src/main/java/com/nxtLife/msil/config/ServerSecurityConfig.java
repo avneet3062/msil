@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 @EnableWebSecurity
 @Configuration
-@Order(SecurityProperties.BASIC_AUTH_ORDER)
+@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @Import(Encoders.class)
 public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -32,14 +32,12 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
-//        auth.inMemoryAuthentication()
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
-        http.csrf().disable().anonymous().disable().authorizeRequests()
-         .antMatchers("/login").permitAll()
-                .antMatchers("/oauth/token").permitAll().and().formLogin();
+        http.csrf().disable().anonymous().disable().authorizeRequests().antMatchers("/oauth/token").permitAll();
+
     }
 
 
