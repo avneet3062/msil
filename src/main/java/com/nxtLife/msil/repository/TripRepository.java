@@ -1,5 +1,7 @@
 package com.nxtLife.msil.repository;
 
+import com.nxtLife.msil.views.Locations;
+import com.nxtLife.msil.views.TripMetrics;
 import com.nxtLife.msil.views.Trips;
 import com.nxtLife.msil.views.VehicleAvaliabiltyMetrics;
 
@@ -16,7 +18,17 @@ public interface TripRepository {
 
     List<Trips> getTotalTrips() throws SQLException;
 
-    List<VehicleAvaliabiltyMetrics> getVehiclesAvailable();
+    List<VehicleAvaliabiltyMetrics> getVehiclesAvailable(String code);
+
+    List<Locations> getLocations();
+
+    List<Trips> getOpenTripsYearly() throws SQLException;
+
+    List<Trips> getClosedTripsYearly() throws SQLException;
+
+    List<Trips> getDelayedTripsYearly() throws SQLException;
+
+    List<Trips> getTotaltripsYearly() throws SQLException;
 
 
 }

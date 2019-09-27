@@ -8,6 +8,9 @@ public class TripMonthly {
     int month;
     List<Trips> trips = new ArrayList<>();
 
+    public TripMonthly() {
+    }
+
     public TripMonthly(int month, List<Trips> trips) {
         this.month = month;
         this.trips = trips;

@@ -20,53 +20,129 @@ public class DataService {
     public TripMetrics getTripsMetrics(int year, int month){
         //TODO- check for year and month
 
-        TripMetrics metrics=new TripMetrics();
-        try {
-            List<Trips> openTrips = tripRepository.getOpenTrips();
-            List<Trips> closedTrips= tripRepository.getClosedTrips();
-            List<Trips> delayedTrips= tripRepository.getDelayedTrips();
-            List<Trips> totalTrips= tripRepository.getTotalTrips();
-
-            List<Trips> tripsList = new ArrayList<>();
-            tripsList.addAll(openTrips);
-            tripsList.addAll(closedTrips);
-            tripsList.addAll(delayedTrips);
-            tripsList.addAll(totalTrips);
-
-            Collections.sort(tripsList, new Comparator<Trips>() {
-                @Override
-                public int compare(Trips o1, Trips o2) {
-                    return o1.getMonth()-o2.getMonth();
-                }
-            });
+        TripMetrics metrics= null;
+        List<Trips> tripsList = new ArrayList<>();
+        try{
+            tripsList.addAll(tripRepository.getOpenTrips());
+            tripsList.addAll(tripRepository.getClosedTrips());
+            tripsList.addAll(tripRepository.getDelayedTrips());
+            tripsList.addAll(tripRepository.getTotalTrips());
 
             tripsList.sort(Comparator.comparing(Trips::getMonth).thenComparing(Trips::getTripType));
 
+            metrics=makeViewForTripsMetrics(tripsList,2019);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return metrics;
+    }
 
-           List<Trips> tripsList1 = tripsList.stream().filter(t-> t.getMonth()==6).collect(Collectors.toList());
-            List<Trips> tripsList2 = tripsList.stream().filter(t-> t.getMonth()==7).collect(Collectors.toList());
-            List<Trips> tripsList3 = tripsList.stream().filter(t-> t.getMonth()==8).collect(Collectors.toList());
-            List<Trips> tripsList4 = tripsList.stream().filter(t-> t.getMonth()==9).collect(Collectors.toList());
+    public TripMetrics makeViewForTripsMetrics(List<Trips> trips, int year){
+        TripMetrics metrics = null;
+        int prevMonth=0;
+        Trips tripData= null;
+        TripMonthly tripsMonthly = null;
+        List<Trips> tripInMonth = null;
+        List<TripMonthly> finalList= new ArrayList<>();
 
-            List<TripMonthly> monthlyList= new ArrayList<>();
-            monthlyList.add(new TripMonthly(6,tripsList1));
-            monthlyList.add(new TripMonthly(7,tripsList2));
-            monthlyList.add(new TripMonthly(8,tripsList3));
-            monthlyList.add(new TripMonthly(9,tripsList4));
+        metrics = new TripMetrics(2019);
+        for(Trips t : trips){
+            if(t.getMonth() == prevMonth){
+                tripInMonth.add(new Trips(t.getTripType(),t.getCount()));
+                tripsMonthly.setTrips(tripInMonth);
 
-            metrics = new TripMetrics(year,monthlyList);
+            }else{
+                if( tripsMonthly!= null && tripsMonthly.getTrips().size() < 4 ){
+                    tripsMonthly.setTrips(getAllTrips(tripsMonthly.getTrips()));
+                }
+                tripsMonthly= new TripMonthly();
+                tripInMonth= new ArrayList<>();
+
+                tripsMonthly.setMonth(t.getMonth());
+                tripInMonth.add(new Trips(t.getTripType(),t.getCount()));
+                tripsMonthly.setTrips(tripInMonth);
+
+                finalList.add(tripsMonthly);
+                metrics.setTripMonthlyList(finalList);
+
+                prevMonth= t.getMonth();
+            }
+        }
+
+        if( tripsMonthly!= null && tripsMonthly.getTrips().size() < 4 ){
+            tripsMonthly.setTrips(getAllTrips(tripsMonthly.getTrips()));
+        }
+        return metrics;
+    }
+
+    public List<Trips> getAllTrips(List<Trips> trips){
+        boolean notExits= false;
+        for(TripTypes t :TripTypes.values()){
+            notExits = trips.stream().noneMatch(trip-> trip.getTripType().equals(t.name()) )  ;
+
+            if(notExits)
+             trips.add(new Trips(t.name(),0l));
+        }
+        return trips;
+    }
+
+
+    public List<VehicleAvaliabiltyMetrics> getAllVehicleAvalable(String code){
+
+        List<VehicleAvaliabiltyMetrics> vehicleAvaliabiltyMetrics = tripRepository.getVehiclesAvailable(code);
+        return vehicleAvaliabiltyMetrics;
+    }
+
+    public List<Locations> getLocations(){
+        return tripRepository.getLocations();
+    }
+
+    public List<TripMetrics> getAlltripsYearly(){
+        List<Trips> tripsList = new ArrayList<>();
+        List<TripMetrics> tripMetrics= null;
+        try{
+            tripsList.addAll(tripRepository.getOpenTripsYearly());
+            tripsList.addAll(tripRepository.getClosedTripsYearly());
+            tripsList.addAll(tripRepository.getDelayedTripsYearly());
+            tripsList.addAll(tripRepository.getTotaltripsYearly());
+
+            tripsList.sort(Comparator.comparing(Trips::getYear).thenComparing(Trips::getTripType));
+
+            tripMetrics = makeViewForTripsMetrics(tripsList);
+
 
         }catch (SQLException e){
             e.printStackTrace();
         }
 
 
-        return metrics;
+        return tripMetrics;
     }
 
-    public List<VehicleAvaliabiltyMetrics> getAllVehicleAvalable(){
+    public List<TripMetrics> makeViewForTripsMetrics(List<Trips> trips){
+        int prevYear=0;
+        TripMetrics metrics = new TripMetrics();
+        List<Trips> tripsList = null;
+        List<TripMetrics> finalTripList= new ArrayList<>();
 
-        List<VehicleAvaliabiltyMetrics> vehicleAvaliabiltyMetrics = tripRepository.getVehiclesAvailable();
-        return vehicleAvaliabiltyMetrics;
+        for(Trips t:trips){
+            if(t.getYear() == prevYear){
+                    tripsList.add(new Trips(t.getTripType(),t.getCount()));
+            }else {
+                    if(tripsList!= null && tripsList.size()< 4 )
+                        getAllTrips(tripsList);
+
+                    metrics = new TripMetrics();
+                    tripsList = new ArrayList<>();
+
+                    metrics.setYear(t.getYear());
+                    tripsList.add(new Trips(t.getTripType(),t.getCount()));
+                    metrics.setTripsList(tripsList);
+                    finalTripList.add(metrics);
+
+                    prevYear= t.getYear();
+            }
+        }
+        return finalTripList;
     }
 }
