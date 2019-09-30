@@ -35,6 +35,7 @@ public class DatabaseConfig {
         ds.setDriverClassName(databseDriverClassName);
         ds.setUsername(databaseUsername);
         ds.setPassword(databasePassword);
+        ds.setConnectionTimeout(999999999);
 
         return ds;
     }

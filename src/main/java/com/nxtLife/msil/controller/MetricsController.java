@@ -37,6 +37,8 @@ public class MetricsController {
     @GetMapping("vehicleAvailability/{code}")
     public ResponseEntity<List<VehicleAvaliabiltyMetrics>> getAllVehicleAvalable(@PathVariable("code") String code){
       List<VehicleAvaliabiltyMetrics> vehicleAvailable=dataService.getAllVehicleAvalable(code);
+      if(vehicleAvailable.isEmpty())
+          throw new NotFoundException("Data not found!!");
       return new ResponseEntity<List<VehicleAvaliabiltyMetrics>>(vehicleAvailable,HttpStatus.OK);
     }
 
