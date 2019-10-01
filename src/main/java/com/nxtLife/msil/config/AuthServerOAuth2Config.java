@@ -54,8 +54,8 @@ public class AuthServerOAuth2Config extends AuthorizationServerConfigurerAdapter
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory().withClient("efkon-msil").secret("nxtlife").authorizedGrantTypes("password").scopes("read");
-//        .accessTokenValiditySeconds(10000000);
+        clients.inMemory().withClient("efkon-msil").secret("nxtlife").authorizedGrantTypes("password").scopes("read")
+        .accessTokenValiditySeconds(1000000000);
 //        System.out.println(clients+"\n");
 
     }
