@@ -1,0 +1,77 @@
+@import 'src/assets/sass/paper/variables.scss';
+
+  .navbar-default {
+      background-image:linear-gradient(to right,#008385 0,#27c6d9 100%);
+      background-image:-webkit-gradient(linear,left top,right top,from(#008385),to(#27c6d9));
+      background-image: -webkit-linear-gradient(left,#008385 0,#27c6d9 100%);
+      background-image: -moz-linear-gradient(to right,#008385 0,#27c6d9 100%);
+      background-image: -moz-gradient(linear,left top,right top,from(#008385),to(#27c6d9));
+      background-image: -o-linear-gradient(to right,#008385 0,#27c6d9 100%);
+      background-repeat: repeat-x;
+
+
+      
+      .navbar-right{
+        li{
+          a{
+            color: white;
+            cursor: pointer;
+            &:hover{
+              color: white;
+              .caret{
+                border-bottom-color: #ffffff;
+                border-top-color: #ffffff;
+              }
+            }
+            i{
+              margin-right: 5px;
+            }
+            
+          }
+      
+        }
+        .year-drop{
+          .dropdown-menu {
+              background: #ffffff;
+              margin-top: 0;
+              min-width: inherit;
+              width: 130px;
+              border-radius: 0;
+            
+            li{
+              
+              a{
+                color: #333;
+
+                &:hover{
+                  color: white;
+                  background-image: linear-gradient(to right,#008385 0,#27c6d9 100%);
+                  background-image:-webkit-gradient(linear,left top,right top,from(#008385),to(#27c6d9));
+                  background-image: -webkit-linear-gradient(left,#008385 0,#27c6d9 100%);
+                  background-image: -moz-linear-gradient(to right,#008385 0,#27c6d9 100%);
+                  background-image: -moz-gradient(linear,left top,right top,from(#008385),to(#27c6d9));
+                  background-image: -o-linear-gradient(to right,#008385 0,#27c6d9 100%);
+                  background-repeat: repeat-x;
+                  border-radius: 0;
+                }
+              }
+              
+            }
+          }
+      }
+      }
+  }
+.navbar-brand{
+  color: white;
+
+  &:hover{
+    color: white;
+  }
+}
+
+.logout {
+  img {
+    max-width: 25px;
+    margin-right: 5px;
+  }
+}
