@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+
+body {
+    background-color: #eef5f9;
+}
+
+
+// responsive-css-start
+
+@media screen and (max-width:1199px){
+    .chart-contant-main{
+        margin: 7px 0px;
+    }
+}

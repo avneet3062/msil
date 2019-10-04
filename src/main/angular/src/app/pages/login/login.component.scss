@@ -1,0 +1,69 @@
+
+.login-main {
+    background-image: linear-gradient(to right,#008385 0,#27c6d9 100%);
+    background-image:-webkit-gradient(linear,left top,right top,from(#008385),to(#27c6d9));
+    background-image: -webkit-linear-gradient(left,#008385 0,#27c6d9 100%);
+    background-image: -moz-linear-gradient(to right,#008385 0,#27c6d9 100%);
+    background-image: -moz-gradient(linear,left top,right top,from(#008385),to(#27c6d9));
+    background-image: -o-linear-gradient(to right,#008385 0,#27c6d9 100%);
+    background-repeat: repeat-x;
+    height: 100vh;
+    position: relative;
+
+.card-login {
+    max-width: 400px;
+    margin: auto;
+    box-shadow: 0 2px 25px #999;
+    padding: 30px;
+    background: white;
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    .card-header h4 {
+        margin: 0;
+        font-size: 30px;
+        color: #666;
+    }
+    .card-body {
+        margin-top: 30px;
+
+         .login-filed {
+            display: inline-block;
+            width: 100%;
+            margin: 10px 0;
+
+            label {
+                display: inline-block;
+                width: 100%;
+                color: #666;
+            }
+            input {
+                border: solid 1px #ddd;
+            }
+        }
+    }
+    .footer {
+        margin-top: 20px;
+
+        button{
+            transition: 0.5s;
+            &:hover{
+                text-decoration: none;
+                background-image: linear-gradient(to right,#008385 0,#27c6d9 100%);
+                background-image:-webkit-gradient(linear,left top,right top,from(#008385),to(#27c6d9));
+                background-image: -webkit-linear-gradient(left,#008385 0,#27c6d9 100%);
+                background-image: -moz-linear-gradient(to right,#008385 0,#27c6d9 100%);
+                background-image: -moz-gradient(linear,left top,right top,from(#008385),to(#27c6d9));
+                background-image: -o-linear-gradient(to right,#008385 0,#27c6d9 100%);
+                background-repeat: repeat-x;
+                transition: 0.5s;
+            }
+        }
+    }
+
+}
+
+}
