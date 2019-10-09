@@ -8,10 +8,7 @@ import com.nxtLife.msil.views.VehicleAvaliabiltyMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,8 +19,8 @@ public class MetricsController {
     private DataService dataService;
 
     @GetMapping("tripsMonthly")
-    public ResponseEntity<TripMetrics> getAllTripsMetricMonthly(@RequestParam(value = "year") int year,
-                                                        @RequestParam(value = "month",required = false) int month){
+    public ResponseEntity<TripMetrics> getAllTripsMetricMonthly(@RequestParam(value = "year") Integer year,
+                                                        @RequestParam(value = "month",required = false) Integer month){
 
         TripMetrics tripMetricsList= dataService.getTripsMetrics(year,month);
 
