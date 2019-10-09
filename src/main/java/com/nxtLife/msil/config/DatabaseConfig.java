@@ -26,6 +26,7 @@ public class DatabaseConfig {
 
     @Value("${spring.datasource.hikari-maximum-pool-size}")
     private int maximumPoolSize;
+    
 
     @Bean
     public DataSource dataSource(){
@@ -36,8 +37,8 @@ public class DatabaseConfig {
         ds.setUsername(databaseUsername);
         ds.setPassword(databasePassword);
         ds.setConnectionTimeout(999999999);
-
         return ds;
+        
     }
 }
 

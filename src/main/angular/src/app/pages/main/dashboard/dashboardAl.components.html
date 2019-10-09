@@ -1,0 +1,287 @@
+<div class="container-fluid">
+
+    <section>
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box taggs_issue">
+                    <div class="icon-big text-center chart-icon">
+                        <!-- <i class="ti-pulse text-warning"></i> -->
+                        <i>
+                            <img src="../assets/img/tags.png"> </i>
+                    </div>
+                    <div class="numbers">
+                        <h6 (click)="dashTagsIssued()">Tags Issued </h6>
+                        <!-- <img *ngIf="!totalIssueValue" src="assets/img/loading.gif"> -->
+                        <div class="">
+                            <p *ngIf="(totalIssueValue && totalIssue)"> {{totalIssue }}</p>
+
+                        </div>
+
+                    </div>
+                    <!-- <img src="../assets/img/box-bg.png"> -->
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box new-tags">
+                    <div class="icon-big icon-warning text-center  chart-icon">
+                        <!-- <i class="ti-pulse"></i> -->
+                        <i class="ti-stats-up"></i>
+                    </div>
+                    <div class="numbers">
+                        <h6 (click)="dashNewTagsActivated()">Tags Activated</h6>
+                        <!-- <img *ngIf="!newActivetedTagsValue" src="assets/img/loading.gif"> -->
+                        <div class="">
+                            <p *ngIf="(newActivetedTagsValue && newActivetedTags)">
+                                {{newActivetedTags}}
+
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box total-recharge">
+                    <div class="icon-big icon-info text-center chart-icon">
+                        <!-- <i class="ti-money text-lightt"></i> -->
+                        <i>
+                            <img src="../assets/img/indian-rupee.png"> </i>
+                    </div>
+                    <div class="numbers">
+                        <h6 (click)="totalRechargecount()"> Total Recharge </h6>
+                        <!-- <img *ngIf="!totalRechargeValue" src="assets/img/loading.gif"> -->
+
+                        <div class="">
+
+
+                            <p *ngIf="(totalRechargeValue && totalRecharge)"> ₹ {{totalRecharge}} </p>
+
+                        </div>
+                    </div>
+                    <!-- <img src="../assets/img/box-bg.png"> -->
+
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box total-revenue">
+                    <div class="icon-big icon-success text-center chart-icon">
+                        <!-- <i class="ti-money text-sky"></i> -->
+                        <i>
+                            <img src="../assets/img/revanue.png"> </i>
+                    </div>
+                    <div class="numbers">
+                        <h6 (click)="dashTotalRevenue()">Total Revenue</h6>
+                        <!-- <img *ngIf="!totalRevanueValue" src="assets/img/loading.gif"> -->
+
+                        <div class="">
+
+                            <p *ngIf="(totalRevanueValue && totalRevanue)"> ₹ {{totalRevanue}}</p>
+
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section>
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="card padding">
+                    <div class="header tittle">
+                        <h4 class="" (click)="monthlyTagIssueTrend()">Tags Issued Monthly Trend</h4>
+                        <!-- <p class="category">24 Hours performance</p> -->
+                    </div>
+                    <div class="content">
+                        <div id="monthlyTagIssue" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card ">
+                    <div class="header tittle">
+                        <h4 class="" (click)=totalMonthlyRevenue()>Monthly Revenue for Corporate</h4>
+                    </div>
+                    <div class="content">
+                        <div id="CorMonthlyRevenue" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card ">
+                    <div class="header tittle">
+                        <h4 class="" (click)=totalMonthlyRevenue()>Monthly Revenue for Retail</h4>
+                    </div>
+                    <div class="content">
+                        <div id="RetailMonthlyRevenue" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card ">
+                    <div class="header tittle">
+                        <h4 class="" (click)=getMonthlySettlingAmountCorporateandRetail()>Monthly Settling Amount Corporate </h4>
+                    </div>
+                    <div class="content">
+                        <div id="MonthlySettlingAmountCorporat" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="card ">
+                    <div class="header tittle">
+                        <h4 class="" (click)=getMonthlySettlingAmountCorporateandRetail()>Monthly Settling Amount Retail</h4>
+                    </div>
+                    <div class="content">
+                        <div id="MonthlySettlingAmountRetail" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6" (window:resize)="onScreenSizeChange()">
+                <div class="card">
+                    <div class="header tittle">
+                        <h4 class="" (click)=inactiveMonthlyTags()>Inactive Tags Monthly</h4>
+                    </div>
+                    <div class="content">
+                        <div id="inactiveTagsMonthly" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card ">
+                    <div class="header tittle">
+                        <h4 class="" (click)=newMonthlyTagsActivationRate()>Active 90</h4>
+                    </div>
+                    <div class="content">
+                        <div id="newTagsActivationRateMonthly" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card ">
+                    <div class="header tittle">
+                        <h4 class="" (click)=monthlyTagsActivationRate()>Active 30</h4>
+                    </div>
+                    <div class="content">
+                        <div id="tagsActivationRateMonthly" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Monthly transactions -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="header tittle">
+                        <h4 class="" (click)="getMonthlyTransactions()">Monthly Transactions Trends</h4>
+                    </div>
+                    <div class="content">
+                        <div id="monthlyTranscations" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Monthly RechargeTrendRetail -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="header tittle">
+                        <h4 class="" (click)="getMonthlyRechargeTrendRetail()">Monthly Recharge Trend Retail</h4>
+                    </div>
+                    <div class="content">
+                        <div id="monthlyRechargeTrendRetail" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Monthly RechargeTrendCorporate -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="header tittle">
+                        <h4 class="" (click)="getMonthlyRechargeTrendCorporate()">Monthly Recharge Trend Corporate</h4>
+                    </div>
+                    <div class="content">
+                        <div id="monthlyRechargeTrendCorporate" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Monthly RechargeTrendCorporate -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="header tittle">
+                        <h4 class="" (click)="getMonthlyRechargeTrendRetail()">Monthly Recharge Trend Retail Count</h4>
+                    </div>
+                    <div class="content">
+                        <div id="monthlyRechargeTrendRetailCount" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Monthly RechargeTrendCorporate -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="header tittle">
+                        <h4 class="" (click)="getMonthlyRechargeTrendCorporate()">Monthly Recharge Trend Corporate Count</h4>
+                    </div>
+                    <div class="content">
+                        <div id="monthlyRechargeTrendCorporateCount" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

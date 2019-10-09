@@ -1,0 +1,246 @@
+    // Capacity : #F3BB45
+// Revenue  : #7AC29A
+// error    : #DD0330
+// twetter  : #68B3C8
+
+img {
+padding-left: 50%;
+    padding-top: 11%;
+
+}
+.card{
+    border-radius: 0;
+}
+.notfound {
+   text-align: center;
+   color: red !important;
+   vertical-align: middle; 
+   font-size: 24px;
+   height: 245px;
+}
+.section {
+    margin: 10px 0px 20px 0;
+    background: white;
+    padding: 20px 0px;
+    border-radius: 6px;
+}
+.tittle {
+    padding: 10px;
+    color: #333;
+    border-bottom: solid 1px #ddd;
+    background: #fafafa;
+
+    h4{
+        font-size: 20px;
+        margin: 0;
+        font-weight: 400;
+        text-transform: uppercase;
+    }
+}
+
+.chart-contant-main{
+    height: 100px;
+
+    .chart-contant-left {
+        text-align: right;
+        padding: 15px;
+        background: #28b6f6;
+        height: 100px;
+        position: relative;
+    
+        .numbers{
+            font-size: 2em;
+            text-align: right;
+            position: absolute;
+            top: 33%;
+            right: 12px;
+        h6{
+            font-weight: normal;
+        text-transform: uppercase;
+        color: white;
+        font-size: 15px;
+
+        }
+    }
+        p {
+            color: white;
+            font-weight: 900;
+            padding-top: 2px;
+            
+        }
+    }
+    
+
+
+    .chart-icon {
+        background: #6362bb;
+        height: 100px;
+        line-height: 100px;
+}
+
+}
+
+.card-box{
+    border-radius: 0;
+    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+    background-color: #FFFFFF;
+    color: #252422;
+    margin-bottom: 20px;
+    position: relative;
+    padding: 15px;
+    min-height: 100px;
+    display: inline-block;
+    width: 100%;
+
+    .numbers {
+        display: inline-block;
+        width: auto;
+        float: right;
+        color: white;
+
+        h6 {
+            font-size: 16px;
+        }
+    }
+    .chart-icon {
+        display: inline-block;
+        width: auto;
+        color: white;
+        i {
+            
+            color: white;
+
+            &::before{
+                font-size: 50px;
+            }
+        }
+        img {
+            max-width: 60px;
+            padding: 0;
+            margin-top: 5px;
+        }
+
+    }
+    // img {
+    //     width: 100%;
+    //     height: auto;
+    //     padding: 0;
+    //     opacity: 0.3;
+    //     position: absolute;
+    //     left: 0;
+    //     bottom: 0;
+    //     display: none;
+    // }
+}
+
+
+/*-----if-only-one-box----*/
+
+.card-box{
+    &.taggs_issue{
+        background-image: linear-gradient(to right,#008385 0,#27c6d9 100%);
+        background-image:-webkit-gradient(linear,left top,right top,from(#008385),to(#27c6d9));
+        background-image: -webkit-linear-gradient(left,#008385 0,#27c6d9 100%);
+        background-image: -moz-linear-gradient(to right,#008385 0,#27c6d9 100%);
+        background-image: -moz-gradient(linear,left top,right top,from(#008385),to(#27c6d9));
+        background-image: -o-linear-gradient(to right,#008385 0,#27c6d9 100%);
+        background-repeat: repeat-x;
+  
+        .chart-icon{
+            i{
+                color: white;
+            }
+        }
+        .numbers {
+            color: white;
+        }
+    }
+}
+
+.card-box{
+    &.new-tags{
+        background-image: linear-gradient(to right,#ff425c 0,#eb7c8b 100%);
+        background-image:-webkit-gradient(linear,left top,right top,from(#ff425c),to(#eb7c8b));
+        background-image: -webkit-linear-gradient(left,#ff425c 0,#eb7c8b 100%);
+        background-image: -moz-linear-gradient(to right,#ff425c 0,#eb7c8b 100%);
+        background-image: -moz-gradient(linear,left top,right top,from(#ff425c),to(#eb7c8b));
+        background-image: -o-linear-gradient(to right,#ff425c 0,#eb7c8b 100%);
+        background-repeat: repeat-x;
+        
+    }
+    &.total-recharge{
+        background: linear-gradient(to right,#ff864a 0,#db8d67 100%);
+        background-image:-webkit-gradient(linear,left top,right top,from(#ff864a),to(#db8d67));
+        background-image: -webkit-linear-gradient(left,#ff864a 0,#db8d67 100%);
+        background-image: -moz-linear-gradient(to right,#ff864a 0,#db8d67 100%);
+        background-image: -moz-gradient(linear,left top,right top,from(#ff864a),to(#db8d67));
+        background-image: -o-linear-gradient(to right,#ff864a 0,#db8d67 100%);
+        background-repeat: repeat-x;
+    }
+    &.total-revenue{
+        background: linear-gradient(to right,#13a579 0,#29cd9b 100%);
+        background-image:-webkit-gradient(linear,left top,right top,from(#13a579),to(#29cd9b));
+        background-image: -webkit-linear-gradient(left,#13a579 0,#29cd9b 100%);
+        background-image: -moz-linear-gradient(to right,#13a579 0,#29cd9b 100%);
+        background-image: -moz-gradient(linear,left top,right top,from(#13a579),to(#29cd9b));
+        background-image: -o-linear-gradient(to right,#13a579 0,#29cd9b 100%);
+        background-repeat: repeat-x;
+    }
+    
+}
+
+
+.ct-chart{
+    margin: 30px 0 30px;
+    height: 315px;
+
+    .text {
+        position: absolute;
+        top: 10px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .c2{
+        background: green;
+        color: white;
+        height: 330px;
+        width: 330px;
+        border-radius: 50%;
+        text-align: center;
+        margin: auto;
+        position: relative;
+        vertical-align: middle;
+
+        .c1{
+            background: yellow;
+            color: black;
+            height: 210px;
+            width: 210px;
+            border-radius: 50%;
+            margin: auto;
+            vertical-align: middle;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            .c0{
+                background: red;
+                color: white;
+                height: 100px;
+                width: 100px;
+                border-radius: 50%;
+                margin: auto;
+                vertical-align: middle;
+                position: relative;
+                top: 50%;
+                transform: translateY(-50%);
+
+                .text {
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+
+            }
+        }
+    }
+}
