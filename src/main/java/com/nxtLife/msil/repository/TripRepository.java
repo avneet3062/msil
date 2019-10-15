@@ -1,11 +1,10 @@
 package com.nxtLife.msil.repository;
 
-import com.nxtLife.msil.views.Locations;
-import com.nxtLife.msil.views.TripMetrics;
-import com.nxtLife.msil.views.Trips;
-import com.nxtLife.msil.views.VehicleAvaliabiltyMetrics;
+import com.nxtLife.msil.enums.Violations;
+import com.nxtLife.msil.views.*;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 public interface TripRepository {
@@ -29,6 +28,22 @@ public interface TripRepository {
     List<Trips> getDelayedTripsYearly() throws SQLException;
 
     List<Trips> getTotaltripsYearly() throws SQLException;
+
+    List<Transporters> getTransporters();
+
+    List<ViolationsCount> getContinousDrivingViolations();
+
+    List<ViolationsCount> getFreeWheelingViolations();
+
+    List<ViolationsCount> getHarshBreakViolations();
+
+    List<ViolationsCount> getRapidAccelerationViolations();
+
+    List<ViolationsCount> getStoppageViolations();
+
+    List<ViolationsCount> getNightDrivingViolations();
+
+    List<ViolationsCount> getOverspeedViolations();
 
 
 }

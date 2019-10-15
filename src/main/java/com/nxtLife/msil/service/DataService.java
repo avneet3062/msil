@@ -1,15 +1,14 @@
 package com.nxtLife.msil.service;
 
+import com.nxtLife.msil.enums.TripTypes;
+import com.nxtLife.msil.enums.Violations;
 import com.nxtLife.msil.repository.TripRepository;
 import com.nxtLife.msil.views.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class DataService {
@@ -86,7 +85,6 @@ public class DataService {
         return trips;            
     }
 
-
     public List<VehicleAvaliabiltyMetrics> getAllVehicleAvalable(String code){
 
         List<VehicleAvaliabiltyMetrics> vehicleAvaliabiltyMetrics = tripRepository.getVehiclesAvailable(code);
@@ -144,5 +142,46 @@ public class DataService {
             }
         }
         return finalTripList;
+    }
+
+    public List<Transporters> getTransporters(){
+        return tripRepository.getTransporters();
+    }
+
+    public List<ViolationsMetrics> getViolationsOfCust(){
+
+
+        List<ViolationsCount> violationsCounts = new ArrayList<>();
+        violationsCounts.addAll(tripRepository.getContinousDrivingViolations());
+        violationsCounts.addAll(tripRepository.getFreeWheelingViolations());
+        violationsCounts.addAll(tripRepository.getHarshBreakViolations());
+        violationsCounts.addAll(tripRepository.getNightDrivingViolations());
+        violationsCounts.addAll(tripRepository.getRapidAccelerationViolations());
+        violationsCounts.addAll(tripRepository.getStoppageViolations());
+        violationsCounts.addAll(tripRepository.getOverspeedViolations());
+
+        violationsCounts.sort(Comparator.comparing(ViolationsCount::getCustId).thenComparing(ViolationsCount::getViolations));
+
+        String prevCust= "abc";
+        ViolationsMetrics metrics=null;
+        List<ViolationsMetrics> finalList= new ArrayList<>();
+        ViolationsCount count=null;
+        List<ViolationsCount> countList= new ArrayList<>();
+        for(ViolationsCount v : violationsCounts){
+            if(prevCust.equals(v.getCustId())){
+                count = new ViolationsCount(v.getViolations(),v.getCount());
+                countList.add(count);
+
+            }else{
+                metrics= new ViolationsMetrics();
+                metrics.setCustId(v.getCustId());
+                count = new ViolationsCount(v.getViolations(),v.getCount());
+                countList.add(count);
+                metrics.setViolationsCounts(countList);
+                finalList.add(metrics);
+            }
+            prevCust = v.getCustId();
+        }
+        return finalList;
     }
 }

@@ -2,9 +2,7 @@ package com.nxtLife.msil.controller;
 
 import com.nxtLife.msil.ex.NotFoundException;
 import com.nxtLife.msil.service.DataService;
-import com.nxtLife.msil.views.Locations;
-import com.nxtLife.msil.views.TripMetrics;
-import com.nxtLife.msil.views.VehicleAvaliabiltyMetrics;
+import com.nxtLife.msil.views.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +52,21 @@ public class MetricsController {
         if(metricsList == null || metricsList.isEmpty())
             throw new NotFoundException("Couldn't find your data");
         return metricsList;
+    }
+
+    @GetMapping("transporters")
+    public ResponseEntity<List<Transporters>> getTrannsporters(){
+        List<Transporters> transporters = dataService.getTransporters();
+        if(transporters.isEmpty() || transporters == null)
+            throw new NotFoundException("Can't find your transporters");
+        return new ResponseEntity<List<Transporters>>(transporters,HttpStatus.OK);
+    }
+
+    @GetMapping("violations")
+    public ResponseEntity<List<ViolationsMetrics>> getViolationsByCust(){
+        List<ViolationsMetrics> violationsMetrics = dataService.getViolationsOfCust();
+        if(violationsMetrics.isEmpty() || violationsMetrics == null)
+            throw new NotFoundException("Couldn't find data");
+        return new ResponseEntity<List<ViolationsMetrics>>(violationsMetrics,HttpStatus.OK);
     }
 }

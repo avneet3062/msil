@@ -1,4 +1,4 @@
-package com.nxtLife.msil.views;
+package com.nxtLife.msil.enums;
 
 public enum TripTypes {
 
