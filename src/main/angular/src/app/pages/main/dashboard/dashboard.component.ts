@@ -12,6 +12,8 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept'
 })
 
 export class DashboardComponent implements OnInit {
+  violations: any[];
+  transporters: any[];
   vehicleAvailablity: any[] = [];
   locations: any[];
   viewPanel = true;
@@ -66,6 +68,8 @@ export class DashboardComponent implements OnInit {
   getAllChart() {
     this.getTrips();
     this.getVehicleAvailability('001');
+    this.getViolations();
+    this.getTransporters();
   }
 
   getTrips() {
@@ -210,6 +214,39 @@ export class DashboardComponent implements OnInit {
       }
     }
     return newStr + (fraction ? `.${fraction}` : '');
+  }
+
+  getTransporters() {
+    this.dashboardservice.getTransporters().subscribe((response: any[]) => {
+      this.transporters = response;
+    })
+  }
+
+  getViolations() {
+    this.dashboardservice.getViolations().subscribe((response: any[]) => {
+      this.violations = response;
+      this.drawViolationChart(this.violations[0].custId);
+    })
+  }
+
+  drawViolationChart(customerId): any {
+
+    const customer = this.violations.find(v => v.custId === customerId);
+    const violations = customer.violations;
+    const violationChartData = [[]];
+    violationChartData[0] = ['Violation', 'Count'];
+    violations.forEach(v => {
+      violationChartData.push([v.name, v.count]);
+    });
+    const data = google.visualization.arrayToDataTable(violationChartData);
+    const options = {
+      hAxis: { title: 'Violations' },
+      vAxis: { title: 'Count' }
+      // title: 'Tags Issued Monthly Trend',
+      // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+    };
+    const chart = new google.visualization.ColumnChart(document.getElementById('violationChart'));
+    chart.draw(data, options);
   }
 
 }

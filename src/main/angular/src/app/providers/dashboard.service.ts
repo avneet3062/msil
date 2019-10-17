@@ -76,5 +76,13 @@ export class DashboardService {
     return this.api.get('api/metrics/vehicleAvailability/' + locCode);
   }
 
+  getTransporters() {
+    return this.api.get('api/metrics/transporters');
+  }
+
+  getViolations() {
+    return this.api.get('api/metrics/violations');
+  }
+
 
 }

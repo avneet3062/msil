@@ -60,7 +60,23 @@
                             </div>
                             <!-- <img src="assets/img/loading.gif"> -->
                         </div>
-
+                    </div>
+                </div>
+            </div>
+            <!-- Violations Chart -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="header tittle">
+                        <h4 class="">Transporters
+                            <select name="year" id="" [(ngModel)]="selectedYear" (ngModelChange)="getTripsByYear($event)">
+                                <option [value]="2017" *ngFor="let transporter of transporters">{{transporter.custName}}</option>
+                            </select>
+                        </h4>
+                    </div>
+                    <div class="content">
+                        <div id="violationChart" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+                        </div>
                     </div>
                 </div>
             </div>
