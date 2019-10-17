@@ -438,3 +438,150 @@ BEGIN
  Select location,code from msil_oem_loc_code_mst_l2_gj;
 END MSIL_LOCATIONS;
 
+^;
+create or replace
+PROCEDURE MSIL_CONTIDRIVE_VIOLATIONS
+(c OUT SYS_REFCURSOR, today IN DATE)
+AS
+from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+
+BEGIN
+OPEN c For
+select count(*) count,cust_id
+from msil_continious_driving_data
+where cont_drive_msg BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY
+HH24:MI:SS')
+group by cust_id
+order by cust_id;
+
+
+END MSIL_CONTIDRIVE_VIOLATIONS;
+
+^;
+
+create or replace
+PROCEDURE MSIL_FREEWHEELING_VIOLATIONS
+(c OUT SYS_REFCURSOR, today IN DATE)
+AS
+from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+BEGIN
+OPEN c FOR
+with
+T1 AS(
+select a.*,b.cust_id,b.cust_name from msil_free_wheeling_log a
+inner join msil_tavlalloem_rst_l2_gj b on a.regn_no=b.veh_no
+)
+select count(*) count,a.CUST_ID
+from T1 a
+where ert BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY
+HH24:MI:SS')
+group by a.cust_id
+order by a.cust_id;
+
+
+END MSIL_FREEWHEELING_VIOLATIONS;
+
+^;
+
+
+create or replace
+PROCEDURE MSIL_HARSHBRAKING_VIOLATIONS
+(c OUT SYS_REFCURSOR, today IN DATE)
+AS
+from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+
+BEGIN
+OPEN c FOR
+select count(*) count,mam_customer_id
+from msil_alert_messages
+where mam_message_created_time BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY
+HH24:MI:SS')
+and mam_alert_type=2
+group by mam_customer_id
+order by mam_customer_id;
+END MSIL_HARSHBRAKING_VIOLATIONS;
+
+^;
+
+create or replace
+PROCEDURE MSIL_NIGHTDRIVE_VIOLATIONS
+(c OUT SYS_REFCURSOR, today IN DATE)
+AS
+from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '03:59:59';
+
+BEGIN
+OPEN c FOR
+select count(*) count,CUST_ID
+from day_night_quick_rpt
+where start_time BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY HH24:MI:SS')
+group by cust_id
+order by cust_id;
+
+
+END MSIL_NIGHTDRIVE_VIOLATIONS;
+^;
+create or replace
+PROCEDURE MSIL_OVERSPEED_VIOLATIONS
+(c OUT SYS_REFCURSOR, today IN DATE)
+AS
+from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+BEGIN
+OPEN c FOR
+select count(*) count,cust_id
+from temp_msil_overspeed_data
+where overspeed_start_time BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY
+HH24:MI:SS')
+group by cust_id
+order by cust_id;
+END MSIL_OVERSPEED_VIOLATIONS;
+
+^;
+create or replace
+PROCEDURE MSIL_RAPIDACC_VIOLATIONS
+(c OUT SYS_REFCURSOR, today IN DATE)
+AS
+from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+BEGIN
+OPEN c FOR
+select count(*) count,mam_customer_id
+from msil_alert_messages
+where mam_message_created_time BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY
+HH24:MI:SS')
+and mam_alert_type=8
+group by mam_customer_id
+order by mam_customer_id;
+
+
+END MSIL_RAPIDACC_VIOLATIONS;
+
+^;
+
+create or replace
+PROCEDURE MSIL_STOPPAGE_VIOLATIONS
+(c OUT SYS_REFCURSOR, today IN DATE)
+AS
+from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+
+BEGIN
+OPEN c FOR
+select count(*) count,tmp_customer_id
+from MSIL_STOPPAGE_RPT
+where tmp_ert BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY
+HH24:MI:SS')
+and tmp_idle_time_hrs>=6 and tmp_idle_time_mins>=0 and tmp_idle_time_secs>0
+group by tmp_customer_id
+order by tmp_customer_id ;
+END MSIL_STOPPAGE_VIOLATIONS;
+
+^;
+
+
+
+

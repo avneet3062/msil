@@ -8,15 +8,15 @@ import java.util.List;
 public class ViolationsMetrics {
     private  String custId;
     private String custName;
-    private List<ViolationsCount> violationsCounts;
+    private List<ViolationsCount> violations;
 
     public ViolationsMetrics() {
     }
 
-    public ViolationsMetrics(String custId, String custName, List<ViolationsCount> violationsCounts) {
+    public ViolationsMetrics(String custId, String custName, List<ViolationsCount> violations) {
         this.custId = custId;
         this.custName = custName;
-        this.violationsCounts = violationsCounts;
+        this.violations = violations;
     }
 
     public String getCustId() {
@@ -35,11 +35,11 @@ public class ViolationsMetrics {
         this.custName = custName;
     }
 
-    public List<ViolationsCount> getViolationsCounts() {
-        return violationsCounts;
+    public List<ViolationsCount> getViolations() {
+        return violations;
     }
 
-    public void setViolationsCounts(List<ViolationsCount> violationsCounts) {
-        this.violationsCounts = violationsCounts;
+    public void setViolations(List<ViolationsCount> violations) {
+        this.violations = violations;
     }
 }

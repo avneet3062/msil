@@ -160,24 +160,24 @@ public class DataService {
         violationsCounts.addAll(tripRepository.getStoppageViolations());
         violationsCounts.addAll(tripRepository.getOverspeedViolations());
 
-        violationsCounts.sort(Comparator.comparing(ViolationsCount::getCustId).thenComparing(ViolationsCount::getViolations));
+        violationsCounts.sort(Comparator.comparing(ViolationsCount::getCustId).thenComparing(ViolationsCount::getName));
 
-        String prevCust= "abc";
+        String prevCust= "";
         ViolationsMetrics metrics=null;
         List<ViolationsMetrics> finalList= new ArrayList<>();
         ViolationsCount count=null;
         List<ViolationsCount> countList= new ArrayList<>();
         for(ViolationsCount v : violationsCounts){
             if(prevCust.equals(v.getCustId())){
-                count = new ViolationsCount(v.getViolations(),v.getCount());
+                count = new ViolationsCount(v.getName(),v.getCount());
                 countList.add(count);
 
             }else{
                 metrics= new ViolationsMetrics();
                 metrics.setCustId(v.getCustId());
-                count = new ViolationsCount(v.getViolations(),v.getCount());
+                count = new ViolationsCount(v.getName(),v.getCount());
                 countList.add(count);
-                metrics.setViolationsCounts(countList);
+                metrics.setViolations(countList);
                 finalList.add(metrics);
             }
             prevCust = v.getCustId();

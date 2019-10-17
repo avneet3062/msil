@@ -7,36 +7,36 @@ import com.nxtLife.msil.enums.Violations;
 public class ViolationsCount {
     String custId;
     String custName;
-    private Violations violations;
+    private Violations name;
     private int count;
 
     public ViolationsCount() {
     }
 
-    public ViolationsCount(Violations violations, int count) {
-        this.violations = violations;
+    public ViolationsCount(Violations name, int count) {
+        this.name = name;
         this.count = count;
     }
 
-    public ViolationsCount(String custId, Violations violations, int count) {
+    public ViolationsCount(String custId, Violations name, int count) {
         this.custId = custId;
-        this.violations = violations;
+        this.name = name;
         this.count = count;
     }
 
-    public ViolationsCount(String custId, String custName, Violations violations, int count) {
+    public ViolationsCount(String custId, String custName, Violations name, int count) {
         this.custId = custId;
         this.custName = custName;
-        this.violations = violations;
+        this.name = name;
         this.count = count;
     }
 
-    public Violations getViolations() {
-        return violations;
+    public Violations getName() {
+        return name;
     }
 
-    public void setViolations(Violations violations) {
-        this.violations = violations;
+    public void setName(Violations violations) {
+        this.name = name;
     }
 
     public int getCount() {
