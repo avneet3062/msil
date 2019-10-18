@@ -425,4 +425,145 @@ public class TripRepositoryImpl implements TripRepository {
 //         = new FleetUtilized((BigDecimal)r[0]).longValue(),((BigDecimal)r[1]).longValue(),(BigDecimal) r[2]);
         return fleetUtilizedList.get(0);
     }
+
+    @Override
+    public ViolationsCount getContinousDrivingViolations2(String custId) {
+        List<ViolationsCount> violationsCounts = new ArrayList<>();
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_CONTIDRIVE2_VIOLATIONS");
+        procedureQuery.registerStoredProcedureParameter(1,Class.class,ParameterMode.REF_CURSOR);
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2,Timestamp.valueOf(LocalDateTime.of(2019,9,1,0,0,0)));
+//                .setParameter(2,Timestamp.valueOf(LocalDateTime.now().minusDays(1l)));
+        procedureQuery.registerStoredProcedureParameter(3,String.class,ParameterMode.IN).setParameter(3,custId);
+        procedureQuery.execute();
+
+        BigDecimal res =(BigDecimal) procedureQuery.getSingleResult();
+//        List<Object[]> result= procedureQuery.getResultList();
+//        result.stream().forEach(r->{
+//            ViolationsCount violation = new ViolationsCount( Violations.ContinuousDriving,((BigDecimal)r[0]).intValue() );
+//            violationsCounts.add(violation);
+//        });
+        ViolationsCount violationsCount = new ViolationsCount(Violations.ContinuousDriving , res.intValue());
+        return violationsCount;
+    }
+
+    @Override
+    public ViolationsCount getFreeWheelingViolations2(String custId) {
+        List<ViolationsCount> violationsCounts = new ArrayList<>();
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_FREERUN2_VIOLATIONS");
+        procedureQuery.registerStoredProcedureParameter(1,Class.class,ParameterMode.REF_CURSOR);
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN)
+                .setParameter(2,Timestamp.valueOf(LocalDateTime.of(2019,9,1,0,0,0)));
+//                .setParameter(2,Timestamp.valueOf(LocalDateTime.now().minusDays(1l)));;
+        procedureQuery.registerStoredProcedureParameter(3,String.class,ParameterMode.IN).setParameter(3,custId);
+        procedureQuery.execute();
+        BigDecimal res =(BigDecimal) procedureQuery.getSingleResult();
+//        List<Object[]> result= procedureQuery.getResultList();
+//        result.stream().forEach(r->{
+//            ViolationsCount violation = new ViolationsCount( Violations.Freewheeling,((BigDecimal)r[0]).intValue());
+//            violationsCounts.add(violation);
+//        });
+        ViolationsCount violationsCount = new ViolationsCount(Violations.Freewheeling , res.intValue());
+        return violationsCount;
+    }
+
+    @Override
+    public ViolationsCount getHarshBreakViolations2(String custId) {
+        List<ViolationsCount> violationsCounts = new ArrayList<>();
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_HARSHBRAKING2_VIOLATIONS");
+        procedureQuery.registerStoredProcedureParameter(1,Class.class,ParameterMode.REF_CURSOR);
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2,Timestamp.valueOf(LocalDateTime.of(2019,9,1,0,0,0)));
+//                .setParameter(2,Timestamp.valueOf(LocalDateTime.now().minusDays(1l)));;
+        procedureQuery.registerStoredProcedureParameter(3,String.class,ParameterMode.IN).setParameter(3,custId);
+        procedureQuery.execute();
+        BigDecimal res =(BigDecimal) procedureQuery.getSingleResult();
+//        List<Object[]> result= procedureQuery.getResultList();
+//        result.stream().forEach(r->{
+//            ViolationsCount violation = new ViolationsCount( Violations.HarshBreaking,((BigDecimal)r[0]).intValue());
+//            violationsCounts.add(violation);
+//        });
+        ViolationsCount violationsCount = new ViolationsCount(Violations.HarshBreaking , res.intValue());
+        return violationsCount;
+    }
+
+    @Override
+    public ViolationsCount getRapidAccelerationViolations2(String custId) {
+        List<ViolationsCount> violationsCounts = new ArrayList<>();
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_RAPIDACC2_VIOLATIONS");
+        procedureQuery.registerStoredProcedureParameter(1,Class.class,ParameterMode.REF_CURSOR);
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN)
+                .setParameter(2,Timestamp.valueOf(LocalDateTime.of(2019,9,1,0,0,0)));
+//                .setParameter(2,Timestamp.valueOf(LocalDateTime.now().minusDays(1l)));;
+        procedureQuery.registerStoredProcedureParameter(3,String.class,ParameterMode.IN).setParameter(3,custId);
+        procedureQuery.execute();
+        BigDecimal res =(BigDecimal) procedureQuery.getSingleResult();
+//        List<Object[]> result= procedureQuery.getResultList();
+//        result.stream().forEach(r->{
+//            ViolationsCount violation = new ViolationsCount( Violations.RapidAcceleration,((BigDecimal)r[0]).intValue());
+//            violationsCounts.add(violation);
+//        });
+        ViolationsCount violationsCount = new ViolationsCount(Violations.RapidAcceleration , res.intValue());
+        return violationsCount;
+    }
+
+    @Override
+    public ViolationsCount getStoppageViolations2(String custId) {
+        List<ViolationsCount> violationsCounts = new ArrayList<>();
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_STOPPAGE2_VIOLATIONS");
+        procedureQuery.registerStoredProcedureParameter(1,Class.class,ParameterMode.REF_CURSOR);
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN)
+                .setParameter(2,Timestamp.valueOf(LocalDateTime.of(2019,9,1,0,0,0)));
+//                .setParameter(2,Timestamp.valueOf(LocalDateTime.now().minusDays(1l)));;
+        procedureQuery.registerStoredProcedureParameter(3,String.class,ParameterMode.IN).setParameter(3,custId);
+        procedureQuery.execute();
+        BigDecimal res =(BigDecimal) procedureQuery.getSingleResult();
+//        List<Object[]> result= procedureQuery.getResultList();
+//        result.stream().forEach(r->{
+//            ViolationsCount violation = new ViolationsCount( Violations.Stoppage,((BigDecimal)r[0]).intValue());
+//            violationsCounts.add(violation);
+//        });
+        ViolationsCount violationsCount = new ViolationsCount(Violations.Stoppage , res.intValue());
+        return violationsCount;
+    }
+
+    @Override
+    public ViolationsCount getNightDrivingViolations2(String custId) {
+        List<ViolationsCount> violationsCounts = new ArrayList<>();
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_NIGHTDRIVE2_VIOLATIONS");
+        procedureQuery.registerStoredProcedureParameter(1,Class.class,ParameterMode.REF_CURSOR);
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN)
+                .setParameter(2,Timestamp.valueOf(LocalDateTime.of(2019,9,1,0,0,0)));
+//                .setParameter(2,Timestamp.valueOf(LocalDateTime.now().minusDays(1l)));;
+        procedureQuery.registerStoredProcedureParameter(3,String.class,ParameterMode.IN).setParameter(3,custId);
+        procedureQuery.execute();
+        BigDecimal res =(BigDecimal) procedureQuery.getSingleResult();
+//        List<Object[]> result= procedureQuery.getResultList();
+//        result.stream().forEach(r->{
+//            ViolationsCount violation = new ViolationsCount( Violations.NightDriving,((BigDecimal)r[0]).intValue());
+//            violationsCounts.add(violation);
+//        });
+        ViolationsCount violationsCount = new ViolationsCount(Violations.NightDriving , res.intValue());
+        return violationsCount;
+    }
+
+    @Override
+    public ViolationsCount getOverspeedViolations2(String custId) {
+        List<ViolationsCount> violationsCounts = new ArrayList<>();
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_OVERSPEED2_VIOLATIONS");
+        procedureQuery.registerStoredProcedureParameter(1,Class.class,ParameterMode.REF_CURSOR);
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN)
+                .setParameter(2,Timestamp.valueOf(LocalDateTime.of(2019,9,1,0,0,0)));
+        procedureQuery.registerStoredProcedureParameter(3,String.class,ParameterMode.IN).setParameter(3,custId);
+//                .setParameter(2,Timestamp.valueOf(LocalDateTime.now().minusDays(1l)));;
+        procedureQuery.execute();
+        BigDecimal res =(BigDecimal) procedureQuery.getSingleResult();
+//        List<Object[]> result= procedureQuery.getResultList();
+//        result.stream().forEach(r->{
+//            ViolationsCount violation = new ViolationsCount( Violations.Overspeed,((BigDecimal)r[0]).intValue());
+//            violationsCounts.add(violation);
+//        });
+        ViolationsCount violationsCount = new ViolationsCount(Violations.Overspeed , res.intValue());
+        return violationsCount;
+    }
+
+
 }

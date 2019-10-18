@@ -46,4 +46,18 @@ public interface TripRepository {
     List<ViolationsCount> getOverspeedViolations();
 
     FleetUtilized getFleetUtilization(Date date, String custId);
+
+    ViolationsCount getContinousDrivingViolations2(String custId);
+
+    ViolationsCount getFreeWheelingViolations2(String custId);
+
+    ViolationsCount getHarshBreakViolations2(String custId);
+
+    ViolationsCount getRapidAccelerationViolations2(String custId);
+
+    ViolationsCount getStoppageViolations2(String custId);
+
+    ViolationsCount getNightDrivingViolations2(String custId);
+
+    ViolationsCount getOverspeedViolations2(String custId);
 }

@@ -13,6 +13,10 @@ public class ViolationsMetrics {
     public ViolationsMetrics() {
     }
 
+    public ViolationsMetrics(String custId) {
+        this.custId = custId;
+    }
+
     public ViolationsMetrics(String custId, String custName, List<ViolationsCount> violations) {
         this.custId = custId;
         this.custName = custName;

@@ -520,7 +520,7 @@ var SidebarModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <section>\r\n        <div class=\"row\">\r\n            <!-- Trips -->\r\n            <div class=\"col-md-6\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Trips\r\n                            <select name=\"year\" id=\"\" [(ngModel)]=\"selectedYear\" (ngModelChange)=\"getTripsByYear($event)\">\r\n                                <option value=\"2017\">2017</option>\r\n                                <option value=\"2018\">2018</option>\r\n                                <option value=\"2019\">2019</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div id=\"tripChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Monthly transactions -->\r\n            <div class=\"col-md-6\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Vehicle Availablity\r\n                            <select name=\"location\" id=\"\" [(ngModel)]=\"locationCode\" (ngModelChange)=\"getVehicleAvailability($event)\">\r\n                                <option [value]=\"loc.code\" *ngFor=\"let loc of locations;\">\r\n                                    {{loc.locName}}\r\n                                </option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div class=\"ct-chart\">\r\n                            <div class=\"c2\" *ngIf=\"vehicleAvailablity.length\">\r\n                                <div class=\"text\">\r\n                                    <div>{{vehicleAvailablity[2].range}} </div>\r\n                                    <div>{{vehicleAvailablity[2].count}}</div>\r\n                                </div>\r\n                                <div class=\"c1\">\r\n                                    <div class=\"text\">\r\n                                        <div>{{vehicleAvailablity[1].range}} </div>\r\n                                        <div>{{vehicleAvailablity[1].count}}</div>\r\n                                    </div>\r\n                                    <div class=\"c0\">\r\n                                        <div class=\"text\">\r\n                                            <div>{{vehicleAvailablity[0].range}} </div>\r\n                                            <div>{{vehicleAvailablity[0].count}}</div>\r\n                                        </div>\r\n                                    </div>\r\n                                </div>\r\n                            </div>\r\n                             <img src=\"assets/img/loading.gif\" *ngIf=\"!vehicleAvailablity.length\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- Violations Chart -->\r\n            <div class=\"col-md-6\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Transporters\r\n                            <select name=\"year\" id=\"\" [(ngModel)]=\"selectedYear\" (ngModelChange)=\"getTripsByYear($event)\">\r\n                                <option [value]=\"2017\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div id=\"violationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </section>\r\n</div>\r\n"
+module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <section>\r\n        <div class=\"row\">\r\n            <!-- Trips -->\r\n            <div class=\"col-md-6\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Trips\r\n                            <select class=\"pull-right\" name=\"year\" id=\"\" [(ngModel)]=\"selectedYear\" (ngModelChange)=\"getTripsByYear($event)\">\r\n                                <option value=\"2017\">2017</option>\r\n                                <option value=\"2018\">2018</option>\r\n                                <option value=\"2019\">2019</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div id=\"tripChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Monthly transactions -->\r\n            <div class=\"col-md-6\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Vehicle Availablity\r\n                            <select name=\"location\" id=\"\" [(ngModel)]=\"locationCode\" (ngModelChange)=\"getVehicleAvailability($event)\">\r\n                                <option [value]=\"loc.code\" *ngFor=\"let loc of locations;\">\r\n                                    {{loc.locName}}\r\n                                </option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\" *ngIf=\"vehicleAvailablity.length\">\r\n                        <div class=\"ct-chart\">\r\n                            <div class=\"c2\" *ngIf=\"vehicleAvailablity.length\">\r\n                                <div class=\"text\">\r\n                                    <div>{{vehicleAvailablity[2].range}} </div>\r\n                                    <div>{{vehicleAvailablity[2].count}}</div>\r\n                                </div>\r\n                                <div class=\"c1\">\r\n                                    <div class=\"text\">\r\n                                        <div>{{vehicleAvailablity[1].range}} </div>\r\n                                        <div>{{vehicleAvailablity[1].count}}</div>\r\n                                    </div>\r\n                                    <div class=\"c0\">\r\n                                        <div class=\"text\">\r\n                                            <div>{{vehicleAvailablity[0].range}} </div>\r\n                                            <div>{{vehicleAvailablity[0].count}}</div>\r\n                                        </div>\r\n                                    </div>\r\n                                </div>\r\n                            </div>\r\n                            <img src=\"assets/img/loading.gif\" *ngIf=\"!vehicleAvailablity.length\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- Violations Chart -->\r\n            <div class=\"col-md-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Violations Chart\r\n                            <select class=\"pull-right\" name=\"customer\" id=\"\" [(ngModel)]=\"selectedCustomer\" (ngModelChange)=\"drawViolationChart($event)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div id=\"violationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"col-md-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Fleet Utilization Chart\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div class=\"form-group\">\r\n                            <label for=\"transporters\">Transporters: </label>\r\n                            <select name=\"customer\" id=\"\" [(ngModel)]=\"Transporter\" (ngModelChange)=\"getFleetUtilization(Month, Year, Transporter)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </div>\r\n                        <div class=\"form-group\">\r\n                            <label for=\"year\">Year</label>\r\n                            <select name=\"year\" id=\"\" [(ngModel)]=\"Year\" (ngModelChange)=\"getFleetUtilization(Month, Year, Transporter)\">\r\n                                <option value=\"2017\">2017</option>\r\n                                <option value=\"2018\">2018</option>\r\n                                <option value=\"2019\">2019</option>\r\n                            </select>\r\n                        </div>\r\n                        <div class=\"form-group\">\r\n                            <label for=\"month\">Month</label>\r\n                            <select name=\"month\" id=\"\" [(ngModel)]=\"Month\" (ngModelChange)=\"getFleetUtilization(Month, Year, Transporter)\">\r\n                                <option value=\"{{i + 1}}\" *ngFor=\"let m of months;let i = index\">{{m}}</option>\r\n                            </select>\r\n                        </div>\r\n                        <div id=\"fleetUtilizationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </section>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -571,6 +571,10 @@ var DashboardComponent = /** @class */ (function () {
         this.newActivetedTagsValue = false;
         this.totalRecharge = 0;
         this.totalRechargeValue = false;
+        this.months = months;
+        this.Year = "2019";
+        this.Month = 1;
+        this.Transporter = "";
     }
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -728,13 +732,15 @@ var DashboardComponent = /** @class */ (function () {
         var _this = this;
         this.dashboardservice.getTransporters().subscribe(function (response) {
             _this.transporters = response;
+            _this.Transporter = response[0].custId;
+            _this.getFleetUtilization(_this.Month, _this.Year, _this.Transporter);
         });
     };
     DashboardComponent.prototype.getViolations = function () {
         var _this = this;
         this.dashboardservice.getViolations().subscribe(function (response) {
             _this.violations = response;
-            _this.drawViolationChart(_this.violations[0].custId);
+            _this.drawViolationChart('ECUS519');
         });
     };
     DashboardComponent.prototype.drawViolationChart = function (customerId) {
@@ -753,6 +759,37 @@ var DashboardComponent = /** @class */ (function () {
             // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('violationChart'));
+        chart.draw(data, options);
+    };
+    DashboardComponent.prototype.getFleetUtilization = function (month, year, custId) {
+        var _this = this;
+        console.log(month, year, custId);
+        this.dashboardservice.getFleetUtilization(month, year, custId).subscribe(function (response) {
+            _this.fleetUtilizationData = response;
+            _this.drawFleetUtilization();
+        }, function (error) {
+        });
+    };
+    DashboardComponent.prototype.drawFleetUtilization = function () {
+        var fleetUtilizations = this.fleetUtilizationData.list;
+        var fleetUtilizationChartData = [[]];
+        fleetUtilizationChartData[0] = ['Date', 'Percent', { type: 'string', role: 'tooltip' }];
+        fleetUtilizations.forEach(function (v) {
+            fleetUtilizationChartData.push([v.date, v.percent, "Total: " + v.total + ",\nCount: " + v.count + ",\nPercent: " + v.percent]);
+        });
+        var data = google.visualization.arrayToDataTable(fleetUtilizationChartData);
+        var options = {
+            hAxis: {
+                title: 'Dates',
+                direction: -1,
+                slantedText: true,
+                slantedTextAngle: 30
+            },
+            vAxis: { title: 'Percent' }
+            // title: 'Tags Issued Monthly Trend',
+            // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('fleetUtilizationChart'));
         chart.draw(data, options);
     };
     DashboardComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -1040,6 +1077,10 @@ var DashboardService = /** @class */ (function () {
     };
     DashboardService.prototype.getViolations = function () {
         return this.api.get('api/metrics/violations');
+    };
+    DashboardService.prototype.getFleetUtilization = function (month, year, custId) {
+        return this.api.get("api/metrics/fleetUtilization?month=" + month + "&year=" + year + "&custId=" + custId);
+        // return of({ "custId": "ECUS519", "list": [{ "date": "01-Sep", "total": 321, "count": 84, "percent": 26.17 }, { "date": "02-Sep", "total": 321, "count": 74, "percent": 23.05 }, { "date": "03-Sep", "total": 321, "count": 68, "percent": 21.18 }, { "date": "04-Sep", "total": 321, "count": 69, "percent": 21.5 }, { "date": "05-Sep", "total": 321, "count": 78, "percent": 24.3 }, { "date": "06-Sep", "total": 321, "count": 77, "percent": 23.99 }, { "date": "07-Sep", "total": 321, "count": 70, "percent": 21.81 }, { "date": "08-Sep", "total": 321, "count": 65, "percent": 20.25 }, { "date": "09-Sep", "total": 321, "count": 51, "percent": 15.89 }, { "date": "10-Sep", "total": 321, "count": 49, "percent": 15.26 }, { "date": "11-Sep", "total": 321, "count": 42, "percent": 13.08 }, { "date": "12-Sep", "total": 321, "count": 31, "percent": 9.66 }, { "date": "13-Sep", "total": 321, "count": 30, "percent": 9.35 }, { "date": "14-Sep", "total": 321, "count": 23, "percent": 7.17 }, { "date": "15-Sep", "total": 321, "count": 16, "percent": 4.98 }, { "date": "16-Sep", "total": 321, "count": 7, "percent": 2.18 }, { "date": "17-Sep", "total": 321, "count": 4, "percent": 1.25 }, { "date": "18-Sep", "total": 321, "count": 2, "percent": 0.62 }, { "date": "19-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "20-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "21-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "22-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "23-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "24-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "25-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "26-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "27-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "28-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "29-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "30-Sep", "total": 321, "count": 0, "percent": 0 }] });
     };
     DashboardService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({

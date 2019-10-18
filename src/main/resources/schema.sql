@@ -546,6 +546,227 @@ order by tmp_customer_id ;
 END MSIL_STOPPAGE_VIOLATIONS;
 
 ^;
+create or replace PROCEDURE msil_transporter (
+    c OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN c FOR
+    SELECT
+        ecm_customer_id,
+                   ecm_customer_name
+               FROM
+                   etrk_customer_mst
+                   where ecm_customer_type='Transporter';
+
+END msil_transporter;
+
+^;
+create or replace PROCEDURE MSIL_FLEET_UTILIZATION2
+(
+    c   OUT SYS_REFCURSOR,
+    p_to_date     IN DATE,
+    CUSTOMER_ID IN VARCHAR2
+)
+AS
+
+   end_date    VARCHAR2(20) := TO_CHAR(p_to_date,'dd-MM-YY');
+
+BEGIN
+OPEN c FOR
+With T1 AS(
+select  count(evm_regn_no) as Total_Vehicles
+from etrk_vehicle_mst
+where evm_device_installed_on<=TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') and evm_customer_id=CUSTOMER_ID
+
+),
+T2 AS(
+SELECT(X.trip_regn_no) FROM (
+Select distinct trip_regn_no from etrk_mul_newtrip
+    where TO_DATE(end_date,'DD-MM-YY HH24:MI:SS')
+    between TRIP_INV_DATE AND TRIP_STD_TT_DATE AND TRIP_AUTO_CLOSURE_DATE IS NULL
+
+    UNION
+    Select distinct trip_regn_no from etrk_mul_newtrip_hist
+    where TO_DATE(end_date,'DD-MM-YY HH24:MI:SS')
+    between TRIP_INV_DATE AND TRIP_STD_TT_DATE AND TRIP_AUTO_CLOSURE_DATE IS NULL)X
+
+) ,
+T3 as(
+Select count(t.trip_regn_no) as Utilized_Vehicles  from T2 t
+inner join etrk_vehicle_mst v on t.trip_regn_no= v.evm_regn_no
+where v.evm_customer_id=customer_id
+)
+select a.*,b.*,round((b.utilized_vehicles/a.total_vehicles)*100,2) "Percentage" from T1 a cross join T3 b ;
+
+END MSIL_FLEET_UTILIZATION2;
+
+
+
+^;
+CREATE OR REPLACE
+PROCEDURE msil_transporter
+  (
+    c OUT SYS_REFCURSOR )
+AS
+BEGIN
+  OPEN c FOR SELECT ecm_customer_id, ecm_customer_name FROM etrk_customer_mst WHERE ecm_customer_type='Transporter' order by ecm_customer_name;
+END msil_transporter;
+^;
+CREATE OR REPLACE
+PROCEDURE MSIL_CONTIDRIVE2_VIOLATIONS
+  (
+    c OUT SYS_REFCURSOR,
+    today       IN DATE,
+    CUSTOMER_ID IN VARCHAR2)
+AS
+  from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+BEGIN
+  OPEN c FOR SELECT COUNT(*) COUNT FROM msil_continious_driving_data WHERE cont_drive_msg BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY HH24:MI:SS') AND cust_id=CUSTOMER_ID;
+END MSIL_CONTIDRIVE2_VIOLATIONS;
+^;
+CREATE OR REPLACE
+PROCEDURE msil_freerun2_violations
+  (
+    c OUT SYS_REFCURSOR,
+    today IN DATE,
+    customer_id VARCHAR2 )
+AS
+  from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+BEGIN
+  OPEN c FOR
+WITH t1 AS
+  (SELECT a.*,
+    b.evm_customer_id
+  FROM msil_free_wheeling_log a
+  INNER JOIN etrk_vehicle_mst b
+  ON a.regn_no=b.evm_regn_no
+  )
+SELECT COUNT(*) COUNT
+FROM t1 a
+WHERE ert BETWEEN TO_DATE(from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE(end_date,'DD-MM-YY HH24:MI:SS')
+AND a.evm_customer_id = customer_id;
+END msil_freerun2_violations;
+^;
+CREATE OR REPLACE
+PROCEDURE MSIL_HARSHBRAKING2_VIOLATIONS
+  (
+    c OUT SYS_REFCURSOR,
+    today IN DATE,
+    CUSTOMER_ID VARCHAR2)
+AS
+  from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+BEGIN
+  OPEN c FOR SELECT COUNT(*) COUNT FROM msil_alert_messages WHERE mam_message_created_time BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY
+
+HH24:MI:SS') AND mam_alert_type=2 AND mam_customer_id=CUSTOMER_ID;
+END MSIL_HARSHBRAKING2_VIOLATIONS;
+^;
+CREATE OR REPLACE
+PROCEDURE MSIL_NIGHTDRIVE2_VIOLATIONS
+  (
+    c OUT SYS_REFCURSOR,
+    today IN DATE,
+    CUSTOMER_ID VARCHAR2)
+AS
+  from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '03:59:59';
+BEGIN
+  OPEN c FOR SELECT COUNT(*) COUNT FROM day_night_quick_rpt WHERE start_time BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY HH24:MI:SS') AND cust_id=CUSTOMER_ID;
+END MSIL_NIGHTDRIVE2_VIOLATIONS;
+^;
+CREATE OR REPLACE
+PROCEDURE MSIL_OVERSPEED2_VIOLATIONS
+  (
+    c OUT SYS_REFCURSOR,
+    today IN DATE,
+    CUSTOMER_ID VARCHAR2)
+AS
+  from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+BEGIN
+  OPEN c FOR SELECT COUNT(*) COUNT FROM temp_msil_overspeed_data WHERE overspeed_start_time BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY HH24:MI:SS') AND cust_id=CUSTOMER_ID;
+END MSIL_OVERSPEED2_VIOLATIONS;
+^;
+CREATE OR REPLACE
+PROCEDURE MSIL_RAPIDACC2_VIOLATIONS
+  (
+    c OUT SYS_REFCURSOR,
+    today IN DATE,
+    CUSTOMER_ID VARCHAR2)
+AS
+  from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+BEGIN
+  OPEN c FOR SELECT COUNT(*) COUNT FROM msil_alert_messages
+  WHERE mam_message_created_time BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY
+
+HH24:MI:SS') AND mam_alert_type=8 AND mam_customer_id=CUSTOMER_ID;
+END MSIL_RAPIDACC2_VIOLATIONS;
+^;
+CREATE OR REPLACE
+PROCEDURE MSIL_STOPPAGE2_VIOLATIONS
+  (
+    c OUT SYS_REFCURSOR,
+    today IN DATE,
+    CUSTOMER_ID VARCHAR2)
+AS
+  from_date VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '00:00:00';
+  end_date  VARCHAR2(20) := TO_CHAR(today,'dd-MM-YY') || '23:59:59';
+BEGIN
+  OPEN c FOR SELECT COUNT(*) COUNT FROM MSIL_STOPPAGE_RPT WHERE tmp_ert BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY
+
+HH24:MI:SS') AND tmp_idle_time_hrs>=6 AND tmp_idle_time_mins>=0 AND tmp_idle_time_secs>0 AND tmp_customer_id=CUSTOMER_ID;
+END MSIL_STOPPAGE2_VIOLATIONS;
+^;
+CREATE OR REPLACE
+PROCEDURE MSIL_FLEET_UTILIZATION2
+  (
+    c OUT SYS_REFCURSOR,
+    p_to_date   IN DATE,
+    CUSTOMER_ID IN VARCHAR2 )
+AS
+  end_date VARCHAR2(20) := TO_CHAR(p_to_date,'dd-MM-YY');
+BEGIN
+  OPEN c FOR
+WITH T1 AS
+  (SELECT COUNT(evm_regn_no) AS Total_Vehicles
+  FROM etrk_vehicle_mst
+  WHERE evm_device_installed_on<=TO_DATE(end_date,'DD-MM-YY HH24:MI:SS')
+  AND evm_customer_id           =CUSTOMER_ID
+  ),
+  T2 AS
+  (SELECT(X.trip_regn_no)
+  FROM
+    ( SELECT DISTINCT trip_regn_no
+    FROM etrk_mul_newtrip
+    WHERE TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') BETWEEN TRIP_INV_DATE AND TRIP_STD_TT_DATE
+    AND TRIP_AUTO_CLOSURE_DATE IS NULL
+
+    UNION
+
+    SELECT DISTINCT trip_regn_no
+    FROM etrk_mul_newtrip_hist
+    WHERE TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') BETWEEN TRIP_INV_DATE AND TRIP_STD_TT_DATE
+    AND TRIP_AUTO_CLOSURE_DATE IS NULL
+    )X
+  ) ,
+  T3 AS
+  (SELECT COUNT(t.trip_regn_no) AS Utilized_Vehicles
+  FROM T2 t
+  INNER JOIN etrk_vehicle_mst v
+  ON t.trip_regn_no      = v.evm_regn_no
+  WHERE v.evm_customer_id=customer_id
+  )
+SELECT a.*,
+  b.*,
+  ROUND((b.utilized_vehicles/a.total_vehicles)*100,2) "Percentage"
+FROM T1 a
+CROSS JOIN T3 b ;
+END MSIL_FLEET_UTILIZATION2;
+
 
 
 

@@ -415,8 +415,8 @@ var AlertService = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BASEURL", function() { return BASEURL; });
-// export const BASEURL = window.location.origin;
-var BASEURL = 'http://192.168.1.2:8080';
+var BASEURL = window.location.origin;
+//export const BASEURL = 'http://192.168.1.2:8080';
 // 'http://192.168.1.12:8080/efkon-cch-0.0.4-SNAPSHOT';
 
 

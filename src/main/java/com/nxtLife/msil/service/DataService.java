@@ -155,7 +155,7 @@ public class DataService {
 
         List<ViolationsCount> violationsCounts = new ArrayList<>();
 
-//        violationsCounts.addAll(tripRepository.getContinousDrivingViolations());
+        violationsCounts.addAll(tripRepository.getContinousDrivingViolations());
         violationsCounts.addAll(tripRepository.getFreeWheelingViolations());
         violationsCounts.addAll(tripRepository.getHarshBreakViolations());
         violationsCounts.addAll(tripRepository.getNightDrivingViolations());
@@ -209,6 +209,25 @@ public class DataService {
        return metrics;
     }
 
+    public ViolationsMetrics getViolationsOfCust(String custId){
+
+        List<ViolationsCount> violationsCounts = new ArrayList<>();
+
+        violationsCounts.add(tripRepository.getContinousDrivingViolations2(custId));
+        violationsCounts.add(tripRepository.getFreeWheelingViolations2(custId));
+        violationsCounts.add(tripRepository.getHarshBreakViolations2(custId));
+        violationsCounts.add(tripRepository.getNightDrivingViolations2(custId));
+        violationsCounts.add(tripRepository.getRapidAccelerationViolations2(custId));
+        violationsCounts.add(tripRepository.getStoppageViolations2(custId));
+        violationsCounts.add(tripRepository.getOverspeedViolations2(custId));
+
+        violationsCounts.sort(Comparator.comparing(ViolationsCount::getName));
+
+        ViolationsMetrics metrics = new ViolationsMetrics(custId);
+        metrics.setViolations(violationsCounts);
+
+        return metrics;
+    }
 
 
 }
