@@ -38,7 +38,7 @@
                             </select>
                         </h4>
                     </div>
-                    <div class="content">
+                    <div class="content" *ngIf="vehicleAvailablity.length">
                         <div class="ct-chart">
                             <div class="c2">
                                 <div class="text">
@@ -58,7 +58,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- <img src="assets/img/loading.gif"> -->
+                             <img src="assets/img/loading.gif" *ngIf="!vehicleAvailablity.length">
                         </div>
                     </div>
                 </div>
