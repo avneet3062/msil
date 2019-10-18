@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -152,7 +154,8 @@ public class DataService {
 
 
         List<ViolationsCount> violationsCounts = new ArrayList<>();
-        violationsCounts.addAll(tripRepository.getContinousDrivingViolations());
+
+//        violationsCounts.addAll(tripRepository.getContinousDrivingViolations());
         violationsCounts.addAll(tripRepository.getFreeWheelingViolations());
         violationsCounts.addAll(tripRepository.getHarshBreakViolations());
         violationsCounts.addAll(tripRepository.getNightDrivingViolations());
@@ -160,28 +163,52 @@ public class DataService {
         violationsCounts.addAll(tripRepository.getStoppageViolations());
         violationsCounts.addAll(tripRepository.getOverspeedViolations());
 
-        violationsCounts.sort(Comparator.comparing(ViolationsCount::getCustId).thenComparing(ViolationsCount::getViolations));
+        violationsCounts.sort(Comparator.comparing(ViolationsCount::getCustId).thenComparing(ViolationsCount::getName));
 
-        String prevCust= "abc";
+        String prevCust= "";
         ViolationsMetrics metrics=null;
         List<ViolationsMetrics> finalList= new ArrayList<>();
         ViolationsCount count=null;
         List<ViolationsCount> countList= new ArrayList<>();
         for(ViolationsCount v : violationsCounts){
             if(prevCust.equals(v.getCustId())){
-                count = new ViolationsCount(v.getViolations(),v.getCount());
+                count = new ViolationsCount(v.getName(),v.getCount());
                 countList.add(count);
 
             }else{
                 metrics= new ViolationsMetrics();
                 metrics.setCustId(v.getCustId());
-                count = new ViolationsCount(v.getViolations(),v.getCount());
+                count = new ViolationsCount(v.getName(),v.getCount());
                 countList.add(count);
-                metrics.setViolationsCounts(countList);
+                metrics.setViolations(countList);
                 finalList.add(metrics);
             }
             prevCust = v.getCustId();
         }
         return finalList;
     }
+
+    public FleetUtilizedMetrics getFleetUtilization(Integer month, Integer year,String custId){
+        List<FleetUtilized> list = new ArrayList<>();
+       Calendar firstDay = Calendar.getInstance();
+       Calendar lastDay = Calendar.getInstance();
+
+       firstDay.set(year,month-1,1);
+       lastDay.set(year,month-1,firstDay.getActualMaximum(Calendar.DATE));
+       lastDay.add(Calendar.DATE,1);
+        Date d;
+       while (firstDay.before(lastDay)){
+            d = firstDay.getTime();
+//            System.out.println(d);
+            list.add(tripRepository.getFleetUtilization(d,custId));
+            firstDay.add(Calendar.DATE,1);
+        }
+       list.sort(Comparator.comparing(FleetUtilized::getDate));
+       FleetUtilizedMetrics metrics = new FleetUtilizedMetrics(custId);
+       metrics.setList(list);
+       return metrics;
+    }
+
+
+
 }

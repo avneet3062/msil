@@ -45,5 +45,5 @@ public interface TripRepository {
 
     List<ViolationsCount> getOverspeedViolations();
 
-
+    FleetUtilized getFleetUtilization(Date date, String custId);
 }
