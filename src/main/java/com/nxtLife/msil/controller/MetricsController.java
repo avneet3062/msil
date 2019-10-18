@@ -69,4 +69,14 @@ public class MetricsController {
             throw new NotFoundException("Couldn't find data");
         return new ResponseEntity<List<ViolationsMetrics>>(violationsMetrics,HttpStatus.OK);
     }
+
+
+    @GetMapping("fleetUtilization")
+    public ResponseEntity<FleetUtilizedMetrics> getFleetUtilization(@RequestParam("month") Integer month,
+                                                                    @RequestParam("year") Integer year , @RequestParam("custId") String custId ){
+
+        FleetUtilizedMetrics metrics = dataService.getFleetUtilization(month,year,custId);
+        return new ResponseEntity<FleetUtilizedMetrics>(metrics,HttpStatus.OK);
+
+    }
 }

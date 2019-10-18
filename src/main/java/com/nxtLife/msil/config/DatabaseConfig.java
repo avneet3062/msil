@@ -1,3 +1,4 @@
+/*
 
 package com.nxtLife.msil.config;
 
@@ -31,14 +32,15 @@ public class DatabaseConfig {
     @Bean
     public DataSource dataSource(){
         final HikariDataSource ds = new HikariDataSource();
-        ds.setMaximumPoolSize(maximumPoolSize);
+       // ds.setMaximumPoolSize(maximumPoolSize);
         ds.setJdbcUrl(datasourceUrl);
         ds.setDriverClassName(databseDriverClassName);
         ds.setUsername(databaseUsername);
         ds.setPassword(databasePassword);
-        ds.setConnectionTimeout(999999999);
+//        ds.setConnectionTimeout(-1);
         return ds;
         
     }
 }
 
+*/

@@ -1,5 +1,5 @@
 
-^; 
+^;
 create or replace PROCEDURE MSIL_VEH_AVAILABILITY(
     C OUT SYS_REFCURSOR,
     lcode IN VARCHAR2)

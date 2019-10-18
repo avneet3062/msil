@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -152,7 +154,8 @@ public class DataService {
 
 
         List<ViolationsCount> violationsCounts = new ArrayList<>();
-        violationsCounts.addAll(tripRepository.getContinousDrivingViolations());
+
+//        violationsCounts.addAll(tripRepository.getContinousDrivingViolations());
         violationsCounts.addAll(tripRepository.getFreeWheelingViolations());
         violationsCounts.addAll(tripRepository.getHarshBreakViolations());
         violationsCounts.addAll(tripRepository.getNightDrivingViolations());
@@ -184,4 +187,28 @@ public class DataService {
         }
         return finalList;
     }
+
+    public FleetUtilizedMetrics getFleetUtilization(Integer month, Integer year,String custId){
+        List<FleetUtilized> list = new ArrayList<>();
+       Calendar firstDay = Calendar.getInstance();
+       Calendar lastDay = Calendar.getInstance();
+
+       firstDay.set(year,month-1,1);
+       lastDay.set(year,month-1,firstDay.getActualMaximum(Calendar.DATE));
+       lastDay.add(Calendar.DATE,1);
+        Date d;
+       while (firstDay.before(lastDay)){
+            d = firstDay.getTime();
+//            System.out.println(d);
+            list.add(tripRepository.getFleetUtilization(d,custId));
+            firstDay.add(Calendar.DATE,1);
+        }
+       list.sort(Comparator.comparing(FleetUtilized::getDate));
+       FleetUtilizedMetrics metrics = new FleetUtilizedMetrics(custId);
+       metrics.setList(list);
+       return metrics;
+    }
+
+
+
 }
