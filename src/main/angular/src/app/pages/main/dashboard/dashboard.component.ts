@@ -12,6 +12,7 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept'
 })
 
 export class DashboardComponent implements OnInit {
+  fleetUtilizationData: { "custId": string; "list": { "date": string; "total": number; "count": number; "percent": number; }[]; };
   violations: any[];
   transporters: any[];
   vehicleAvailablity: any[] = [];
@@ -30,7 +31,7 @@ export class DashboardComponent implements OnInit {
   newActivetedTagsValue = false;
   totalRecharge = 0;
   totalRechargeValue = false;
-
+  months = months;
   constructor(private dashboardservice: DashboardService, private activateRoute: ActivatedRoute) {
 
   }
@@ -219,6 +220,8 @@ export class DashboardComponent implements OnInit {
   getTransporters() {
     this.dashboardservice.getTransporters().subscribe((response: any[]) => {
       this.transporters = response;
+      this.Transporter = response[0].custId
+      this.getFleetUtilization(this.Month, this.Year, this.Transporter);
     })
   }
 
@@ -226,6 +229,7 @@ export class DashboardComponent implements OnInit {
     this.dashboardservice.getViolations().subscribe((response: any[]) => {
       this.violations = response;
       this.drawViolationChart(this.violations[0].custId);
+
     })
   }
 
@@ -246,6 +250,43 @@ export class DashboardComponent implements OnInit {
       // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
     };
     const chart = new google.visualization.ColumnChart(document.getElementById('violationChart'));
+    chart.draw(data, options);
+  }
+
+  Year = "2019";
+  Month = 1;
+  Transporter = "";
+  getFleetUtilization(month, year, custId) {
+    console.log(month, year, custId);
+
+    this.dashboardservice.getFleetUtilization(month, year, custId).subscribe((response) => {
+      this.fleetUtilizationData = response;
+      this.drawFleetUtilization();
+    }, (error) => {
+
+    })
+  }
+
+  drawFleetUtilization() {
+    const fleetUtilizations = this.fleetUtilizationData.list;
+    const fleetUtilizationChartData = [[]];
+    fleetUtilizationChartData[0] = ['Date', 'Percent', { type: 'string', role: 'tooltip' }];
+    fleetUtilizations.forEach(v => {
+      fleetUtilizationChartData.push([v.date, v.percent, `Total: ${v.total},\nCount: ${v.count},\nPercent: ${v.percent}`]);
+    });
+    const data = google.visualization.arrayToDataTable(fleetUtilizationChartData);
+    const options = {
+      hAxis: {
+        title: 'Dates',
+        direction: -1,
+        slantedText: true,
+        slantedTextAngle: 30
+      },
+      vAxis: { title: 'Percent' }
+      // title: 'Tags Issued Monthly Trend',
+      // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+    };
+    const chart = new google.visualization.LineChart(document.getElementById('fleetUtilizationChart'));
     chart.draw(data, options);
   }
 

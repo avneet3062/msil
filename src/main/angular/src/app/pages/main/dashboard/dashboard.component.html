@@ -10,7 +10,7 @@
                 <div class="card">
                     <div class="header tittle">
                         <h4 class="">Trips
-                            <select name="year" id="" [(ngModel)]="selectedYear" (ngModelChange)="getTripsByYear($event)">
+                            <select class="pull-right" name="year" id="" [(ngModel)]="selectedYear" (ngModelChange)="getTripsByYear($event)">
                                 <option value="2017">2017</option>
                                 <option value="2018">2018</option>
                                 <option value="2019">2019</option>
@@ -40,7 +40,7 @@
                     </div>
                     <div class="content">
                         <div class="ct-chart">
-                            <div class="c2">
+                            <div class="c2" *ngIf="vehicleAvailablity.length">
                                 <div class="text">
                                     <div>{{vehicleAvailablity[2].range}} </div>
                                     <div>{{vehicleAvailablity[2].count}}</div>
@@ -58,23 +58,56 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- <img src="assets/img/loading.gif"> -->
+                            <img src="assets/img/loading.gif" *ngIf="!vehicleAvailablity.length">
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Violations Chart -->
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="header tittle">
-                        <h4 class="">Transporters
-                            <select name="year" id="" [(ngModel)]="selectedYear" (ngModelChange)="getTripsByYear($event)">
-                                <option [value]="2017" *ngFor="let transporter of transporters">{{transporter.custName}}</option>
+                        <h4 class="">Violations Chart
+                            <select class="pull-right" name="customer" id="" [(ngModel)]="selectedCustomer" (ngModelChange)="getTripsByYear($event)">
+                                <option [value]="transporter.custId" *ngFor="let transporter of transporters">{{transporter.custName}}</option>
                             </select>
                         </h4>
                     </div>
                     <div class="content">
                         <div id="violationChart" class="ct-chart">
+                            <img src="assets/img/loading.gif">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header tittle">
+                        <h4 class="">Fleet Utilization Chart
+                        </h4>
+                    </div>
+                    <div class="content">
+                        <div class="form-group">
+                            <label for="transporters">Transporters: </label>
+                            <select name="customer" id="" [(ngModel)]="Transporter" (ngModelChange)="getFleetUtilization(Month, Year, Transporter)">
+                                <option [value]="transporter.custId" *ngFor="let transporter of transporters">{{transporter.custName}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="year">Year</label>
+                            <select name="year" id="" [(ngModel)]="Year" (ngModelChange)="getFleetUtilization(Month, Year, Transporter)">
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="month">Month</label>
+                            <select name="month" id="" [(ngModel)]="Month" (ngModelChange)="getFleetUtilization(Month, Year, Transporter)">
+                                <option value="{{i + 1}}" *ngFor="let m of months;let i = index">{{m}}</option>
+                            </select>
+                        </div>
+                        <div id="fleetUtilizationChart" class="ct-chart">
                             <img src="assets/img/loading.gif">
                         </div>
                     </div>
