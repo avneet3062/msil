@@ -732,7 +732,7 @@ var DashboardComponent = /** @class */ (function () {
         var _this = this;
         this.dashboardservice.getTransporters().subscribe(function (response) {
             _this.transporters = response;
-            _this.Transporter = response[0].custId;
+            _this.Transporter = 'ECUS519';
             _this.getFleetUtilization(_this.Month, _this.Year, _this.Transporter);
         });
     };
