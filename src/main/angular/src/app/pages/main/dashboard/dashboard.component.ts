@@ -220,7 +220,7 @@ export class DashboardComponent implements OnInit {
   getTransporters() {
     this.dashboardservice.getTransporters().subscribe((response: any[]) => {
       this.transporters = response;
-      this.Transporter = response[0].custId
+      this.Transporter = 'ECUS519'
       this.getFleetUtilization(this.Month, this.Year, this.Transporter);
     })
   }
@@ -228,15 +228,22 @@ export class DashboardComponent implements OnInit {
   getViolations() {
     this.dashboardservice.getViolations().subscribe((response: any[]) => {
       this.violations = response;
-      this.drawViolationChart(this.violations[0].custId);
+      this.getViolationsByCustomer('ECUS875');
 
     })
   }
 
-  drawViolationChart(customerId): any {
+  getViolationsByCustomer(custId) {
+    this.dashboardservice.getViolationsByCustomerId(custId).subscribe(response => {
+      this.drawViolationChart(response.violations);
+    })
+  }
 
-    const customer = this.violations.find(v => v.custId === customerId);
-    const violations = customer.violations;
+  drawViolationChart(violations): any {
+
+    // const customer = this.violations.find(v => v.custId === customerId);
+    // debugger
+    // const violations = customer.violations;
     const violationChartData = [[]];
     violationChartData[0] = ['Violation', 'Count'];
     violations.forEach(v => {

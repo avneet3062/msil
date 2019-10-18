@@ -68,7 +68,7 @@
                 <div class="card">
                     <div class="header tittle">
                         <h4 class="">Violations Chart
-                            <select class="pull-right" name="customer" id="" [(ngModel)]="selectedCustomer" (ngModelChange)="drawViolationChart($event)">
+                            <select class="pull-right" name="customer" id="" [(ngModel)]="selectedCustomer" (ngModelChange)="getViolationsByCustomer($event)">
                                 <option [value]="transporter.custId" *ngFor="let transporter of transporters">{{transporter.custName}}</option>
                             </select>
                         </h4>
