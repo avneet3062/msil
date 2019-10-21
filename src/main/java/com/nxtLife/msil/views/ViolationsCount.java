@@ -3,7 +3,7 @@ package com.nxtLife.msil.views;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nxtLife.msil.enums.Violations;
 
-@JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class ViolationsCount {
     String custId;
     String custName;

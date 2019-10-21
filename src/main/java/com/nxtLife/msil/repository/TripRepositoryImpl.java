@@ -406,24 +406,38 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public FleetUtilized getFleetUtilization(Date date, String custId) {
+    public FleetUtilized getFleetUtilization (Date date, String custId)  {
         List<FleetUtilized> fleetUtilizedList = new ArrayList<>();
-        FleetUtilized utilized;
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_FLEET_UTILIZATION2");
-        procedureQuery.registerStoredProcedureParameter(1, Class.class,ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2,Timestamp.class,ParameterMode.IN).setParameter(2,new java.sql.Timestamp(date.getTime()));
-        procedureQuery.registerStoredProcedureParameter(3,String.class,ParameterMode.IN).setParameter(3,custId);
+        FleetUtilized fleetUtilized = null;
+        try {
+            StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_FLEET_UTILIZATION2");
+            procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
+            procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, new java.sql.Timestamp(date.getTime()));
+            procedureQuery.registerStoredProcedureParameter(3, String.class, ParameterMode.IN).setParameter(3, custId);
 
-        procedureQuery.execute();
+            procedureQuery.execute();
 //        Object result = procedureQuery.get();
-        List<Object[]> result= procedureQuery.getResultList();
-        result.stream().forEach(r->{
-            FleetUtilized fleetUtilized = new FleetUtilized(date,
-                    ((BigDecimal)r[0]).longValue(),((BigDecimal)r[1]).longValue(),(BigDecimal) r[2] );
-            fleetUtilizedList.add(fleetUtilized);
-        });
+            Object r1 = procedureQuery.getSingleResult();
+            int i = procedureQuery.getFirstResult();
+            List<Object[]> result = procedureQuery.getResultList();
+            Object[] ar = null;
+            if (!result.isEmpty())
+                ar = result.get(0);
+             fleetUtilized = new FleetUtilized(date,
+                    ((BigDecimal) ar[0]).longValue(), ((BigDecimal) ar[1]).longValue(), (BigDecimal) ar[2]);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+//        fleetUtilizedList.add(fleetUtilized);
+//        result.stream().forEach(r->{
+//            FleetUtilized fleetUtilized = new FleetUtilized(date,
+//                    ((BigDecimal)r[0]).longValue(),((BigDecimal)r[1]).longValue(),(BigDecimal) r[2] );
+//            fleetUtilizedList.add(fleetUtilized);
+//        });
+
+//        em.close();
 //         = new FleetUtilized((BigDecimal)r[0]).longValue(),((BigDecimal)r[1]).longValue(),(BigDecimal) r[2]);
-        return fleetUtilizedList.get(0);
+        return fleetUtilized;
     }
 
     @Override

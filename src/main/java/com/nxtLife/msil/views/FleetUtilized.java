@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class FleetUtilized {
 
-    @JsonFormat(pattern = "dd-MMM", timezone = "IST")
+    @JsonFormat(pattern = "dd", timezone = "IST")
     Date date;
     Long total;
     Long count;
