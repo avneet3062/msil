@@ -596,7 +596,7 @@ Select count(t.trip_regn_no) as Utilized_Vehicles  from T2 t
 inner join etrk_vehicle_mst v on t.trip_regn_no= v.evm_regn_no
 where v.evm_customer_id=customer_id
 )
-select a.*,b.*,round((b.utilized_vehicles/a.total_vehicles)*100,2) "Percentage" from T1 a cross join T3 b ;
+select a.*,b.*,DECODE(A.total_vehicles,0,0,,round((b.utilized_vehicles/a.total_vehicles)*100,2)) "Percentage" from T1 a cross join T3 b ;
 
 END MSIL_FLEET_UTILIZATION2;
 

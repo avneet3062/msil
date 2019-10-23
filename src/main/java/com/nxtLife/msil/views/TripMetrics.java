@@ -6,8 +6,8 @@ import java.util.List;
 
 @JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
 public class TripMetrics {
-    private int year;
-    private int month;
+    private Integer year;
+    private Integer month;
     private Date date;
     private List<Trips> tripsList ;
     private List<TripMonthly> tripMonthlyList ;
@@ -18,33 +18,33 @@ public class TripMetrics {
 
     }
 
-    public TripMetrics(int year, int month, List<Trips> tripsList,Date date) {
+    public TripMetrics(Integer year, Integer month, List<Trips> tripsList,Date date) {
         this.year = year;
         this.month = month;
         this.tripsList = tripsList;
         this.date = date;
     }
 
-    public TripMetrics(int year) {
+    public TripMetrics(Integer year) {
         this.year = year;
     }
 
-    public TripMetrics(int year, List<TripMonthly> tripMonthlyList) {
+    public TripMetrics(Integer year, List<TripMonthly> tripMonthlyList) {
         this.year = year;
         this.tripMonthlyList = tripMonthlyList;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) { this.year = year; }
+    public void setYear(Integer year) { this.year = year; }
 
-    public int getMonth() {
+    public Integer getMonth() {
         return month;
     }
 
-    public void setMonth(int month) { this.month = month; }
+    public void setMonth(Integer month) { this.month = month; }
 
     public Date getDate() {
         return date;
