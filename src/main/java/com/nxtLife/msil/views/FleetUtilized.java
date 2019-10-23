@@ -6,10 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@JsonInclude
 public class FleetUtilized {
 
-    @JsonFormat(pattern = "dd-MMM" )
+    @JsonFormat(pattern = "dd-MMM", timezone = "IST")
     Date date;
     Long total;
     Long count;

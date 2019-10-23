@@ -721,52 +721,61 @@ BEGIN
 HH24:MI:SS') AND tmp_idle_time_hrs>=6 AND tmp_idle_time_mins>=0 AND tmp_idle_time_secs>0 AND tmp_customer_id=CUSTOMER_ID;
 END MSIL_STOPPAGE2_VIOLATIONS;
 ^;
---CREATE OR REPLACE
---PROCEDURE MSIL_FLEET_UTILIZATION2
---  (
---    c OUT SYS_REFCURSOR,
---    p_to_date   IN DATE,
---    CUSTOMER_ID IN VARCHAR2 )
---AS
---  end_date VARCHAR2(20) := TO_CHAR(p_to_date,'dd-MM-YY');
---BEGIN
---  OPEN c FOR
---WITH T1 AS
---  (SELECT COUNT(evm_regn_no) AS Total_Vehicles
---  FROM etrk_vehicle_mst
---  WHERE evm_device_installed_on<=TO_DATE(end_date,'DD-MM-YY HH24:MI:SS')
---  AND evm_customer_id           =CUSTOMER_ID
---  ),
---  T2 AS
---  (SELECT(X.trip_regn_no)
---  FROM
---    ( SELECT DISTINCT trip_regn_no
---    FROM etrk_mul_newtrip
---    WHERE TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') BETWEEN TRIP_INV_DATE AND TRIP_STD_TT_DATE
---    AND TRIP_AUTO_CLOSURE_DATE IS NULL
---
---    UNION
---
---    SELECT DISTINCT trip_regn_no
---    FROM etrk_mul_newtrip_hist
---    WHERE TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') BETWEEN TRIP_INV_DATE AND TRIP_STD_TT_DATE
---    AND TRIP_AUTO_CLOSURE_DATE IS NULL
---    )X
---  ) ,
---  T3 AS
---  (SELECT COUNT(t.trip_regn_no) AS Utilized_Vehicles
---  FROM T2 t
---  INNER JOIN etrk_vehicle_mst v
---  ON t.trip_regn_no      = v.evm_regn_no
---  WHERE v.evm_customer_id=customer_id
---  )
---SELECT a.*,
---  b.*,
---  ROUND((b.utilized_vehicles/a.total_vehicles)*100,2) "Percentage"
---FROM T1 a
---CROSS JOIN T3 b ;
---END MSIL_FLEET_UTILIZATION2;
 
+create or replace PROCEDURE msil_fleet_utilization2 (
+    c             OUT SYS_REFCURSOR,
+    p_to_date     IN DATE,
+    customer_id   IN VARCHAR2
+) AS
+    end_date   VARCHAR2(20) := TO_CHAR(p_to_date,'dd-MM-YY');
+BEGIN
+    OPEN c FOR WITH t1 AS (
+                   SELECT
+                       COUNT(evm_regn_no) AS total_vehicles
+                   FROM
+                       etrk_vehicle_mst
+                   WHERE
+                       evm_device_installed_on <= TO_DATE(end_date,'DD-MM-YY HH24:MI:SS')
+                       AND evm_customer_id = customer_id
+               ),t2 AS (
+                   SELECT
+                       ( x.trip_regn_no )
+                   FROM
+                       (
+                           SELECT DISTINCT
+                               trip_regn_no
+                           FROM
+                               etrk_mul_newtrip
+                           WHERE
+                               TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') BETWEEN trip_inv_date AND trip_std_tt_date
+                               AND trip_auto_closure_date IS NULL
+                           UNION
+                           SELECT DISTINCT
+                               trip_regn_no
+                           FROM
+                               etrk_mul_newtrip_hist
+                           WHERE
+                               TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') BETWEEN trip_inv_date AND trip_std_tt_date
+                               AND trip_auto_closure_date IS NULL
+                       ) x
+               ),t3 AS (
+                   SELECT
+                       COUNT(t.trip_regn_no) AS utilized_vehicles
+                   FROM
+                       t2 t
+                       INNER JOIN etrk_vehicle_mst v ON t.trip_regn_no = v.evm_regn_no
+                   WHERE
+                       v.evm_customer_id = customer_id
+               )
+               SELECT
+                   a.*,
+                   b.*,
+                   DECODE(a.total_vehicles, 0, 0, round( (b.utilized_vehicles / a.total_vehicles) * 100,2)) "Percentage"
+               FROM
+                   t1 a
+                   CROSS JOIN t3 b;
+
+END msil_fleet_utilization2;
 
 
 
