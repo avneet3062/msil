@@ -6,13 +6,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
 public class FleetUtilized {
 
     @JsonFormat(pattern = "dd-MMM", timezone = "IST")
     Date date;
+    private Integer month;
     Long total;
     Long count;
     BigDecimal percent;
+
 
     public FleetUtilized() {
     }
@@ -23,6 +26,13 @@ public class FleetUtilized {
         this.count = count;
         this.percent = percent;
     }
+    public FleetUtilized(Integer month, Long total, Long count, BigDecimal percent) {
+        this.month = month;
+        this.total = total;
+        this.count = count;
+        this.percent = percent;
+    }
+
 
     public Date getDate() {
         return date;
@@ -35,6 +45,10 @@ public class FleetUtilized {
     public Long getTotal() {
         return total;
     }
+
+    public Integer getMonth() { return month; }
+
+    public void setMonth(Integer month) { this.month = month; }
 
     public void setTotal(Long total) {
         this.total = total;

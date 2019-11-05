@@ -722,7 +722,7 @@ HH24:MI:SS') AND tmp_idle_time_hrs>=6 AND tmp_idle_time_mins>=0 AND tmp_idle_tim
 END MSIL_STOPPAGE2_VIOLATIONS;
 ^;
 
-create or replace PROCEDURE msil_fleet_utilization2 (
+CREATE OR REPLACE PROCEDURE msil_fleet_utilization2 (
     c             OUT SYS_REFCURSOR,
     p_to_date     IN DATE,
     customer_id   IN VARCHAR2
@@ -747,16 +747,16 @@ BEGIN
                            FROM
                                etrk_mul_newtrip
                            WHERE
-                               TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') BETWEEN trip_inv_date AND trip_std_tt_date
-                               AND trip_auto_closure_date IS NULL
+                               TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') >= trip_inv_date AND TO_DATE(end_date,'DD-MM-YY HH24:MI:SS')<=trip_std_tt_date
+
                            UNION
                            SELECT DISTINCT
                                trip_regn_no
                            FROM
                                etrk_mul_newtrip_hist
                            WHERE
-                               TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') BETWEEN trip_inv_date AND trip_std_tt_date
-                               AND trip_auto_closure_date IS NULL
+                               TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') >= trip_inv_date AND TO_DATE(end_date,'DD-MM-YY HH24:MI:SS')<=trip_std_tt_date
+
                        ) x
                ),t3 AS (
                    SELECT
@@ -770,13 +770,12 @@ BEGIN
                SELECT
                    a.*,
                    b.*,
-                   DECODE(a.total_vehicles, 0, 0, round( (b.utilized_vehicles / a.total_vehicles) * 100,2)) "Percentage"
+                   DECODE(a.total_vehicles,0,0,round( (b.utilized_vehicles / a.total_vehicles) * 100,2) ) "Percentage"
                FROM
                    t1 a
                    CROSS JOIN t3 b;
 
 END msil_fleet_utilization2;
-
 
 
 

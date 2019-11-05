@@ -9,8 +9,22 @@ public class ViolationsCount {
     String custName;
     private Violations name;
     private int count;
+    int month;
+    int day;
 
     public ViolationsCount() {
+    }
+
+    public ViolationsCount(Violations name, int count, int month) {
+        this.name = name;
+        this.count = count;
+        this.month = month;
+    }
+
+    public ViolationsCount(  int count,Violations name,int day) {
+        this.name = name;
+        this.count = count;
+        this.day = day;
     }
 
     public ViolationsCount(Violations name, int count) {
@@ -24,13 +38,31 @@ public class ViolationsCount {
         this.count = count;
     }
 
+    public ViolationsCount(int month) {
+        this.month = month;
+    }
+
     public ViolationsCount(String custId, String custName, Violations name, int count) {
         this.custId = custId;
         this.custName = custName;
         this.name = name;
         this.count = count;
     }
+    public int getMonth() {
+        return month;
+    }
 
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
     public Violations getName() {
         return name;
     }
@@ -54,6 +86,10 @@ public class ViolationsCount {
     public void setCustId(String custId) {
         this.custId = custId;
     }
+
+
+
+
 
     public String getCustName() {
         return custName;
