@@ -8,31 +8,35 @@ public class ViolationsCount {
     String custId;
     String custName;
     private Violations name;
-    private int count;
+    private Integer count;
     int month;
     int day;
 
     public ViolationsCount() {
     }
 
-    public ViolationsCount(Violations name, int count, int month) {
+    public ViolationsCount(Violations name, Integer count, int month) {
         this.name = name;
         this.count = count;
         this.month = month;
     }
 
-    public ViolationsCount(  int count,Violations name,int day) {
+    public ViolationsCount(  Integer count,Violations name,int day) {
         this.name = name;
         this.count = count;
         this.day = day;
     }
 
-    public ViolationsCount(Violations name, int count) {
+    public ViolationsCount(Violations name, Integer count) {
+        this.name = name;
+        this.count = count;
+    }
+    public ViolationsCount(Violations name) {
         this.name = name;
         this.count = count;
     }
 
-    public ViolationsCount(String custId, Violations name, int count) {
+    public ViolationsCount(String custId, Violations name, Integer count) {
         this.custId = custId;
         this.name = name;
         this.count = count;
@@ -42,7 +46,7 @@ public class ViolationsCount {
         this.month = month;
     }
 
-    public ViolationsCount(String custId, String custName, Violations name, int count) {
+    public ViolationsCount(String custId, String custName, Violations name, Integer count) {
         this.custId = custId;
         this.custName = custName;
         this.name = name;
@@ -71,11 +75,11 @@ public class ViolationsCount {
         this.name = name;
     }
 
-    public int getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
 

@@ -188,6 +188,7 @@ public class DataService {
         return finalList;
     }
 
+
     public FleetUtilizedMetrics getFleetUtilization(Integer month, Integer year, String custId) {
         List<FleetUtilized> list = new ArrayList<>();
         Calendar firstDay = Calendar.getInstance();
@@ -213,16 +214,21 @@ public class DataService {
 
     public ViolationsMetrics getViolationsOfCust(String custId, Integer year, Integer month) {
         ViolationsMetrics metrics = new ViolationsMetrics(custId);
+        Set<Integer> exist=new HashSet<>();
+
         String order = null;
         Calendar firstDay = Calendar.getInstance();
         Calendar lastDay = Calendar.getInstance();
         Date today = Calendar.getInstance().getTime();
+        int lastMonth=12;
 
         if (month == null) {
             order = "month";
             firstDay.set(year, 0, 1);
             lastDay.set(year, 11, 31);
             metrics.setYear(year);
+
+
         } else {
             order = "day";
             firstDay.set(year, month - 1, 1);
@@ -230,36 +236,73 @@ public class DataService {
             metrics.setYear(year);
             metrics.setMonth(month);
         }
-        if (lastDay.getTime().after(today))
+        if (lastDay.getTime().after(today)) {
             lastDay.setTime(today);
+            lastMonth = lastDay.get(Calendar.DATE);
+        }
         List<ViolationsCount> violationsCounts = new ArrayList<>();
         Date fromDate, toDate;
         fromDate = firstDay.getTime();
         toDate = lastDay.getTime();
+        List<ViolationsCount> allViolations=new ArrayList<>();
 
-        violationsCounts.addAll(tripRepository.getContinousDrivingViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getFreeWheelingViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getHarshBreakViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getNightDrivingViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getRapidAccelerationViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getStoppageViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getOverspeedViolations2(custId, fromDate, toDate, order));
+        violationsCounts=tripRepository.getContinousDrivingViolations2(custId, fromDate, toDate, order);
+        if(month==null)
+        allViolations.addAll(this.getAllViolationsMonthwise(violationsCounts,lastMonth,Violations.ContinuousDriving));
+        else {
+            allViolations.addAll(this.getAllViolationsDaywise(violationsCounts, lastDay.get(Calendar.DATE), Violations.ContinuousDriving));
+        }
+        violationsCounts=tripRepository.getFreeWheelingViolations2(custId, fromDate, toDate, order);
+        if(month==null)
+            allViolations.addAll(this.getAllViolationsMonthwise(violationsCounts,lastMonth,Violations.Freewheeling));
+        else {
+            allViolations.addAll(this.getAllViolationsDaywise(violationsCounts, lastDay.get(Calendar.DATE), Violations.Freewheeling));
+        }
+        violationsCounts=tripRepository.getHarshBreakViolations2(custId, fromDate, toDate, order);
+        if(month==null)
+            allViolations.addAll(this.getAllViolationsMonthwise(violationsCounts,lastMonth,Violations.HarshBreaking));
+        else {
+            allViolations.addAll(this.getAllViolationsDaywise(violationsCounts, lastDay.get(Calendar.DATE), Violations.HarshBreaking));
+        }
+        violationsCounts=tripRepository.getNightDrivingViolations2(custId, fromDate, toDate, order);
+        if(month==null)
+            allViolations.addAll(this.getAllViolationsMonthwise(violationsCounts,lastMonth,Violations.NightDriving));
+        else {
+            allViolations.addAll(this.getAllViolationsDaywise(violationsCounts, lastDay.get(Calendar.DATE), Violations.NightDriving));
+        }
+        violationsCounts=tripRepository.getRapidAccelerationViolations2(custId, fromDate, toDate, order);
+        if(month==null)
+            allViolations.addAll(this.getAllViolationsMonthwise(violationsCounts,lastMonth,Violations.RapidAcceleration));
+        else {
+            allViolations.addAll(this.getAllViolationsDaywise(violationsCounts, lastDay.get(Calendar.DATE), Violations.RapidAcceleration));
+        }
+        violationsCounts=tripRepository.getStoppageViolations2(custId, fromDate, toDate, order);
+        if(month==null)
+            allViolations.addAll(this.getAllViolationsMonthwise(violationsCounts,lastMonth,Violations.Stoppage));
+        else {
+            allViolations.addAll(this.getAllViolationsDaywise(violationsCounts, lastDay.get(Calendar.DATE), Violations.Stoppage));
+        }
+        violationsCounts=tripRepository.getOverspeedViolations2(custId, fromDate, toDate, order);
+        if(month==null)
+            allViolations.addAll(this.getAllViolationsMonthwise(violationsCounts,lastMonth,Violations.Overspeed));
+        else {
+            allViolations.addAll(this.getAllViolationsDaywise(violationsCounts, lastDay.get(Calendar.DATE), Violations.Overspeed));
+        }
 
-
-        //metrics.setViolations(violationsCounts);
         List<ViolationsMetrics> violationsMetricsList = null;
         List<ViolationsMetrics> finalList = new ArrayList<>();
         ViolationsCount violationsCount = null;
         List<ViolationsCount> violationsCountList = null;
-        if (month == null) {
-            violationsCounts.sort(Comparator.comparing(ViolationsCount::getMonth));
+        if(month==null){
+        allViolations.sort(Comparator.comparing(ViolationsCount::getMonth));
             int prevMonth = 0;
             ViolationsMetrics monthwise = null;
-            for (ViolationsCount violations : violationsCounts) {
+            for (ViolationsCount violations : allViolations) {
                 if (prevMonth == violations.getMonth()) {
                     violationsCount = new ViolationsCount(violations.getName(), violations.getCount());
                     violationsCountList.add(violationsCount);
                 } else {
+
                     monthwise = new ViolationsMetrics(violations.getMonth());
                     violationsCount = new ViolationsCount(violations.getName(), violations.getCount());
                     violationsCountList = new ArrayList<>();
@@ -270,11 +313,13 @@ public class DataService {
                 }
                 prevMonth = violations.getMonth();
             }
-        } else {
-            violationsCounts.sort(Comparator.comparing(ViolationsCount::getDay));
+        }
+        else {
+
+            allViolations.sort(Comparator.comparing(ViolationsCount::getDay));
             int prevDay = 0;
             ViolationsMetrics daywise = null;
-            for (ViolationsCount violations : violationsCounts) {
+            for (ViolationsCount violations : allViolations) {
                 if (prevDay == violations.getDay()) {
                     violationsCount = new ViolationsCount(violations.getName(), violations.getCount());
                     violationsCountList.add(violationsCount);
@@ -291,8 +336,6 @@ public class DataService {
                 prevDay = violations.getDay();
             }
         }
-
-
         return metrics;
     }
 
@@ -330,4 +373,56 @@ public class DataService {
 
 
     }
+    public List<ViolationsCount> getAllViolationsDaywise(List<ViolationsCount> violations,int lastDay,Violations name)
+    {
+        ViolationsCount violationsCount = null;
+        for(int i= 1,j= 0; i<=lastDay;  ){
+            if(!violations.isEmpty() && j< violations.size()) {
+                violationsCount = violations.get(j);
+                if (violationsCount.getDay() == i) {
+                    i++;
+                    j++;
+                } else {
+                    violations.add(new ViolationsCount( 0,name, i));
+                    i++;
+                }
+            }else{
+                violations.add(new ViolationsCount(0,name,i));
+                i++;
+            }
+
+        }
+        return violations;
+
+
+    }
+
+    public List<ViolationsCount> getAllViolationsMonthwise(List<ViolationsCount> violations,int lastMonth,Violations name)
+                {
+                    ViolationsCount violationsCount = null;
+                    for(int i= 1,j= 0; i<=lastMonth;  ){
+                        if(!violations.isEmpty() && j< violations.size()) {
+                            violationsCount = violations.get(j);
+                            if (violationsCount.getMonth() == i) {
+                                i++;
+                                j++;
+                            } else {
+                                violations.add(new ViolationsCount(name, 0, i));
+                                i++;
+                            }
+                        }else{
+                            violations.add(new ViolationsCount(name,0,i));
+                            i++;
+                        }
+
+                    }
+
+
+                        return violations;
+                    }
+
+
+
+
+
 }
