@@ -74,13 +74,15 @@ public class MetricsController {
 
 
     @GetMapping("violations/{custId}")
-  public ResponseEntity<ViolationsMetrics> getViolationsByCust(@PathVariable("custId") String custId,@RequestParam(value = "year") Integer year,
+  public ResponseEntity<ViolationsMetrics> getViolationsByCust(@PathVariable("custId") String custId,@RequestParam(value = "year",required=false) Integer year,
                                                                 @RequestParam(value = "month",required = false) Integer month){
         ViolationsMetrics violationsMetrics = dataService.getViolationsOfCust(custId,year,month);
         if(violationsMetrics == null)
             throw new NotFoundException("Couldn't find data");
         return new ResponseEntity<ViolationsMetrics>(violationsMetrics,HttpStatus.OK);
     }
+
+
 
     @GetMapping("fleetUtilization")
     public ResponseEntity<FleetUtilizedMetrics> getFleetUtilization(@RequestParam("month") Integer month,

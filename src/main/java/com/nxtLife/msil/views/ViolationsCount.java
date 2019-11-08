@@ -9,22 +9,17 @@ public class ViolationsCount {
     String custName;
     private Violations name;
     private Integer count;
-    int month;
-    int day;
+    int type;
+
+
 
     public ViolationsCount() {
     }
 
-    public ViolationsCount(Violations name, Integer count, int month) {
+    public ViolationsCount(Violations name, Integer count, int type) {
         this.name = name;
         this.count = count;
-        this.month = month;
-    }
-
-    public ViolationsCount(  Integer count,Violations name,int day) {
-        this.name = name;
-        this.count = count;
-        this.day = day;
+        this.type = type;
     }
 
     public ViolationsCount(Violations name, Integer count) {
@@ -42,8 +37,8 @@ public class ViolationsCount {
         this.count = count;
     }
 
-    public ViolationsCount(int month) {
-        this.month = month;
+    public ViolationsCount(int type) {
+        this.type = type;
     }
 
     public ViolationsCount(String custId, String custName, Violations name, Integer count) {
@@ -52,21 +47,7 @@ public class ViolationsCount {
         this.name = name;
         this.count = count;
     }
-    public int getMonth() {
-        return month;
-    }
 
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getDay() {
-        return day;
-    }
-
-    public void setDay(int day) {
-        this.day = day;
-    }
     public Violations getName() {
         return name;
     }
@@ -91,7 +72,11 @@ public class ViolationsCount {
         this.custId = custId;
     }
 
+    public int getType() {
+        return type;}
 
+    public void setType(int type) {
+        this.type = type; }
 
 
 

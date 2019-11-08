@@ -64,4 +64,6 @@ public interface TripRepository {
 
 
     FleetUtilized getFleetUtilization(Integer month,Date firstDate, Date lastDay, String custId);
+
+    int getMinimumYear();
 }

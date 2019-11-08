@@ -441,18 +441,11 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, custId);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-
-        if (order.equalsIgnoreCase("month")) {
-            result.stream().forEach(r -> {
+        result.stream().forEach(r -> {
                 ViolationsCount violation = new ViolationsCount(Violations.ContinuousDriving, ((BigDecimal) r[1]).intValue(), Integer.valueOf(r[0].toString()));
                 violationsCounts.add(violation);
             });
-        } else {
-            result.stream().forEach(r -> {
-                ViolationsCount violation = new ViolationsCount(((BigDecimal) r[1]).intValue(), Violations.ContinuousDriving, Integer.valueOf(r[0].toString()));
-                violationsCounts.add(violation);
-            });
-        }
+
         return violationsCounts;
     }
 
@@ -469,17 +462,11 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, custId);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-        if (order.equalsIgnoreCase("month")) {
             result.stream().forEach(r -> {
                 ViolationsCount violation = new ViolationsCount(Violations.Freewheeling, ((BigDecimal) r[1]).intValue(), Integer.valueOf(r[0].toString()));
                 violationsCounts.add(violation);
             });
-        } else {
-            result.stream().forEach(r -> {
-                ViolationsCount violation = new ViolationsCount(((BigDecimal) r[1]).intValue(), Violations.Freewheeling, Integer.valueOf(r[0].toString()));
-                violationsCounts.add(violation);
-            });
-        }
+
         return violationsCounts;
     }
 
@@ -496,17 +483,11 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, custId);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-        if (order.equalsIgnoreCase("month")) {
             result.stream().forEach(r -> {
                 ViolationsCount violation = new ViolationsCount(Violations.HarshBreaking, ((BigDecimal) r[1]).intValue(), Integer.valueOf(r[0].toString()));
                 violationsCounts.add(violation);
             });
-        } else {
-            result.stream().forEach(r -> {
-                ViolationsCount violation = new ViolationsCount(((BigDecimal) r[1]).intValue(), Violations.HarshBreaking, Integer.valueOf(r[0].toString()));
-                violationsCounts.add(violation);
-            });
-        }
+
         return violationsCounts;
     }
 
@@ -523,17 +504,10 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, custId);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-        if (order.equalsIgnoreCase("month")) {
             result.stream().forEach(r -> {
                 ViolationsCount violation = new ViolationsCount(Violations.RapidAcceleration, ((BigDecimal) r[1]).intValue(), Integer.valueOf(r[0].toString()));
                 violationsCounts.add(violation);
             });
-        } else {
-            result.stream().forEach(r -> {
-                ViolationsCount violation = new ViolationsCount(((BigDecimal) r[1]).intValue(), Violations.RapidAcceleration, Integer.valueOf(r[0].toString()));
-                violationsCounts.add(violation);
-            });
-        }
         return violationsCounts;
     }
 
@@ -550,17 +524,11 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, custId);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-        if (order.equalsIgnoreCase("month")) {
             result.stream().forEach(r -> {
                 ViolationsCount violation = new ViolationsCount(Violations.Stoppage, ((BigDecimal) r[1]).intValue(), Integer.valueOf(r[0].toString()));
                 violationsCounts.add(violation);
             });
-        } else {
-            result.stream().forEach(r -> {
-                ViolationsCount violation = new ViolationsCount(((BigDecimal) r[1]).intValue(), Violations.Stoppage, Integer.valueOf(r[0].toString()));
-                violationsCounts.add(violation);
-            });
-        }
+
         return violationsCounts;
     }
 
@@ -577,17 +545,11 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, custId);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-        if (order.equalsIgnoreCase("month")) {
             result.stream().forEach(r -> {
                 ViolationsCount violation = new ViolationsCount(Violations.NightDriving, ((BigDecimal) r[1]).intValue(), Integer.valueOf(r[0].toString()));
                 violationsCounts.add(violation);
             });
-        } else {
-            result.stream().forEach(r -> {
-                ViolationsCount violation = new ViolationsCount(((BigDecimal) r[1]).intValue(), Violations.NightDriving, Integer.valueOf(r[0].toString()));
-                violationsCounts.add(violation);
-            });
-        }
+
         return violationsCounts;
     }
 
@@ -604,22 +566,17 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, custId);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-        if (order.equalsIgnoreCase("month")) {
             result.stream().forEach(r -> {
                 ViolationsCount violation = new ViolationsCount(Violations.Overspeed, ((BigDecimal) r[1]).intValue(), Integer.valueOf(r[0].toString()));
                 violationsCounts.add(violation);
             });
-        } else {
-            result.stream().forEach(r -> {
-                ViolationsCount violation = new ViolationsCount(((BigDecimal) r[1]).intValue(), Violations.Overspeed, Integer.valueOf(r[0].toString()));
-                violationsCounts.add(violation);
-            });
-        }
+
         return violationsCounts;
 
 
     }
-    public FleetUtilized getFleetUtilization(Integer month,Date firstDate, Date lastDay, String custId) {
+
+    public FleetUtilized getFleetUtilization(Integer month, Date firstDate, Date lastDay, String custId) {
         List<FleetUtilized> list = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_FLEET_UTILIZATION5");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
@@ -637,8 +594,17 @@ public class TripRepositoryImpl implements TripRepository {
         return list.get(0);
     }
 
+    public int getMinimumYear() {
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_MINIMUM_DATE");
+        procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
+        procedureQuery.execute();
+        Integer result = Integer.parseInt(procedureQuery.getSingleResult().toString());
+//int f=0;
+           return result;
+
+
 
     }
 
 
-
+}
