@@ -1,10 +1,15 @@
 package com.nxtLife.msil.views;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
+@JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
 public class FleetUtilizedMetrics {
 
     String custId;
+    private Integer year;
+    private Integer month;
     List<FleetUtilized> list;
 
     public FleetUtilizedMetrics() {
@@ -21,6 +26,22 @@ public class FleetUtilizedMetrics {
 
     public String getCustId() {
         return custId;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 
     public void setCustId(String custId) {

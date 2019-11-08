@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/metrics")
 public class MetricsController {
 
@@ -17,7 +18,7 @@ public class MetricsController {
     private DataService dataService;
 
     @GetMapping("tripsMonthly")
-    public ResponseEntity<TripMetrics> getAllTripsMetricMonthly(@RequestParam(value = "year") Integer year,
+    public ResponseEntity<TripMetrics> getAllTripsMetricMonthly(@RequestParam(value = "year" , required = false) Integer year,
                                                         @RequestParam(value = "month",required = false) Integer month){
 
         TripMetrics tripMetricsList= dataService.getTripsMetrics(year,month);
@@ -70,20 +71,31 @@ public class MetricsController {
         return new ResponseEntity<List<ViolationsMetrics>>(violationsMetrics,HttpStatus.OK);
     }
 
+
+
     @GetMapping("violations/{custId}")
-    public ResponseEntity<ViolationsMetrics> getViolationsByCust(@PathVariable String custId){
-        ViolationsMetrics violationsMetrics = dataService.getViolationsOfCust(custId);
+  public ResponseEntity<ViolationsMetrics> getViolationsByCust(@PathVariable("custId") String custId,@RequestParam(value = "year") Integer year,
+                                                                @RequestParam(value = "month",required = false) Integer month){
+        ViolationsMetrics violationsMetrics = dataService.getViolationsOfCust(custId,year,month);
         if(violationsMetrics == null)
             throw new NotFoundException("Couldn't find data");
         return new ResponseEntity<ViolationsMetrics>(violationsMetrics,HttpStatus.OK);
     }
-
 
     @GetMapping("fleetUtilization")
     public ResponseEntity<FleetUtilizedMetrics> getFleetUtilization(@RequestParam("month") Integer month,
                                                                     @RequestParam("year") Integer year , @RequestParam("custId") String custId ){
 
         FleetUtilizedMetrics metrics = dataService.getFleetUtilization(month,year,custId);
+        return new ResponseEntity<FleetUtilizedMetrics>(metrics,HttpStatus.OK);
+
+    }
+
+    @GetMapping("fleetUtilizationMonthly")
+    public ResponseEntity<FleetUtilizedMetrics> getFleetUtilization(
+                                                                    @RequestParam("year") Integer year , @RequestParam("custId") String custId ){
+
+        FleetUtilizedMetrics metrics = dataService.getFleetUtilization(year,custId);
         return new ResponseEntity<FleetUtilizedMetrics>(metrics,HttpStatus.OK);
 
     }

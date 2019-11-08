@@ -4,6 +4,7 @@ import com.nxtLife.msil.enums.Violations;
 import com.nxtLife.msil.views.*;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -47,17 +48,20 @@ public interface TripRepository {
 
     FleetUtilized getFleetUtilization(Date date, String custId);
 
-    ViolationsCount getContinousDrivingViolations2(String custId);
+    List<ViolationsCount> getContinousDrivingViolations2(String custId,Date firstDay,Date lastDay,String order);
 
-    ViolationsCount getFreeWheelingViolations2(String custId);
+    List<ViolationsCount> getFreeWheelingViolations2(String custId,Date firstDay,Date lastDay,String order);
 
-    ViolationsCount getHarshBreakViolations2(String custId);
+    List<ViolationsCount> getHarshBreakViolations2(String custId,Date firstDay,Date lastDay,String order);
 
-    ViolationsCount getRapidAccelerationViolations2(String custId);
+    List<ViolationsCount> getRapidAccelerationViolations2(String custId,Date firstDay,Date lastDay,String order);
 
-    ViolationsCount getStoppageViolations2(String custId);
+    List<ViolationsCount> getStoppageViolations2(String custId,Date firstDay,Date lastDay,String order);
 
-    ViolationsCount getNightDrivingViolations2(String custId);
+    List<ViolationsCount> getNightDrivingViolations2(String custId,Date firstDay,Date lastDay,String order);
 
-    ViolationsCount getOverspeedViolations2(String custId);
+    List<ViolationsCount> getOverspeedViolations2(String custId,Date firstDay,Date lastDay,String order);
+
+
+    FleetUtilized getFleetUtilization(Integer month,Date firstDate, Date lastDay, String custId);
 }
