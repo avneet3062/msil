@@ -101,4 +101,10 @@ public class MetricsController {
         return new ResponseEntity<FleetUtilizedMetrics>(metrics,HttpStatus.OK);
 
     }
+
+    @GetMapping("trips")
+    public ResponseEntity<List<TripMetrics>> getTrips(@RequestParam("year") Integer year, @RequestParam("month") Integer month){
+        List<TripMetrics> metrics = dataService.getTrips(year,month);
+        return new ResponseEntity<List<TripMetrics>>(metrics,HttpStatus.OK);
+    }
 }

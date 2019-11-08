@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Service
@@ -276,6 +277,7 @@ public class DataService {
             type=Duration.month;}
         violationsCounts=tripRepository.getContinousDrivingViolations2(custId, fromDate, toDate, order);
         allViolations.addAll(this.getAllViolations(violationsCounts,limit,Violations.ContinuousDriving,type));
+
         violationsCounts=tripRepository.getFreeWheelingViolations2(custId, fromDate, toDate, order);
         allViolations.addAll(this.getAllViolations(violationsCounts,limit,Violations.Freewheeling,type));
         violationsCounts=tripRepository.getHarshBreakViolations2(custId, fromDate, toDate, order);
@@ -382,36 +384,95 @@ public class DataService {
 //
 //    }
 
-    public List<ViolationsCount> getAllViolations(List<ViolationsCount> violations,int limit,Violations name, Duration type)
-                {
-                    int i=1;
-                  //  Integer minYear=tripRepository.getMinimumYear();
-                    if(type.equals(Duration.year))
-                       i=2017;
-                    ViolationsCount violationsCount = null;
-                    for( int j= 0; i<=limit;  ){
-                        if(!violations.isEmpty() && j< violations.size()) {
-                            violationsCount = violations.get(j);
-                            if ((type.equals(Duration.year) ||type.equals(Duration.month)||type.equals(Duration.day))&& violationsCount.getType() == i) {
-                                i++;
-                                j++;
-                            } else {
-                                violations.add(new ViolationsCount(name, 0, i));
-                                i++;
-                            }
-                        }else{
-                            violations.add(new ViolationsCount(name,0,i));
-                            i++;
-                        }
+    public List<ViolationsCount> getAllViolations(List<ViolationsCount> violations,int limit,Violations name, Duration type) {
+        int i=1;
+      //  Integer minYear=tripRepository.getMinimumYear();
+        if(type.equals(Duration.year))
+           i=2017;
+        ViolationsCount violationsCount = null;
+        for( int j= 0; i<=limit;  ){
+            if(!violations.isEmpty() && j< violations.size()) {
+                violationsCount = violations.get(j);
+                if ((type.equals(Duration.year) ||type.equals(Duration.month)||type.equals(Duration.day))&& violationsCount.getType() == i) {
+                    i++;
+                    j++;
+                } else {
+                    violations.add(new ViolationsCount(name, 0, i));
+                    i++;
+                }
+            }else{
+                violations.add(new ViolationsCount(name,0,i));
+                i++;
+            }
+        }
+        return violations;
+    }
 
-                    }
+    public List<TripMetrics> getTrips(Integer year,Integer month){
 
+        List<Trips> tripsList = new ArrayList<>();
+        List<TripMetrics> tripMetrics = new ArrayList<>();
+        LocalDate first = LocalDate.of(year,month,1);
+        LocalDate end = first.with(TemporalAdjusters.lastDayOfMonth());
+        if(year == null || month== null)
+            throw new NotFoundException("Year and Month are Mandatory");
 
-                        return violations;
-                    }
+            tripsList.addAll(addDays(tripRepository.getOpenTrips(year,month),first,end,TripTypes.Open));
+            tripsList.addAll(addDays(tripRepository.getClosedTrips(year, month),first,end,TripTypes.Closed ));
+            tripsList.addAll(addDays(tripRepository.getDelayedTrips(year,month),first,end,TripTypes.Delayed ));
+            tripsList.addAll(addDays(tripRepository.getTotalTrips(year,month),first,end,TripTypes.Total));
 
+            tripsList.sort(Comparator.comparing(Trips::getMonth).thenComparing(Trips::getTripType));
 
+//            tripMetrics = makeViewForTripsMetrics(tripsList);
 
+        Integer prev = 0;
+        List<TripMetrics> finalMetricsList = new ArrayList<>();
+        TripMetrics metrics = null;
+        List<Trips> trips= null;
+        for(Trips t :tripsList){
+            if(prev.equals(t.getMonth())){
+                trips.add(new Trips(t.getTripType(),t.getCount()));
+            }else{
+                metrics = new TripMetrics(Date.from(LocalDate.of(year,month,t.getMonth()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                trips = new ArrayList<>();
+                trips.add(new Trips(t.getTripType(),t.getCount()));
+                metrics.setTripsList(trips);
+
+                finalMetricsList.add(metrics);
+                prev = t.getMonth();
+            }
+        }
+
+            return finalMetricsList;
+        }
+
+    public List<Trips> addDays(List<Trips> tripsList,LocalDate first,LocalDate end, TripTypes tripTypes){
+
+        tripsList.sort(Comparator.comparing(Trips::getMonth));
+        Trips trip= null;
+        for( int i=0; first.isBefore(end);){
+            if( i < tripsList.size())
+                trip = tripsList.get(i);
+            if(!trip.getMonth().equals(first.getDayOfMonth())){
+                tripsList.add(new Trips(tripTypes.name(),0L,first.getDayOfMonth()));
+                first =first.plusDays(1);
+            }else{
+                i++;
+                first = first.plusDays(1);
+            }
+
+        }
+        if(!tripsList.get(tripsList.size()-1).getMonth().equals(first.getDayOfMonth()))
+            tripsList.add(new Trips(tripTypes.name(),0L,first.getDayOfMonth()));
+        return tripsList;
+    }
 
 
 }
+
+
+
+
+
+
