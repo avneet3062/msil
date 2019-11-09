@@ -1,5 +1,6 @@
 package com.nxtLife.msil.repository;
 
+import com.nxtLife.msil.enums.Duration;
 import com.nxtLife.msil.enums.TripTypes;
 import com.nxtLife.msil.enums.Violations;
 import com.nxtLife.msil.views.*;
@@ -408,7 +409,7 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public FleetUtilized getFleetUtilization(Date date, String custId) {
+    public FleetUtilized getFleetUtilization(Date date,Integer day, String custId) {
         List<FleetUtilized> fleetUtilizedList = new ArrayList<>();
         FleetUtilized utilized;
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_FLEET_UTILIZATION2");
@@ -420,7 +421,7 @@ public class TripRepositoryImpl implements TripRepository {
 //        Object result = procedureQuery.get();
         List<Object[]> result = procedureQuery.getResultList();
         result.stream().forEach(r -> {
-            FleetUtilized fleetUtilized = new FleetUtilized(date,
+            FleetUtilized fleetUtilized = new FleetUtilized(date,day,
                     ((BigDecimal) r[0]).longValue(), ((BigDecimal) r[1]).longValue(), (BigDecimal) r[2]);
             fleetUtilizedList.add(fleetUtilized);
         });
@@ -576,7 +577,7 @@ public class TripRepositoryImpl implements TripRepository {
 
     }
 
-    public FleetUtilized getFleetUtilization(Integer month, Date firstDate, Date lastDay, String custId) {
+    public FleetUtilized getFleetUtilization(Integer name, Date firstDate, Date lastDay, String custId, Duration type) {
         List<FleetUtilized> list = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_FLEET_UTILIZATION5");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
@@ -585,12 +586,20 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(4, String.class, ParameterMode.IN).setParameter(4, custId);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-
+if(type.equals(Duration.month)){
         result.stream().forEach(r -> {
-            FleetUtilized fleetUtilized = new FleetUtilized(month,
+            FleetUtilized fleetUtilized = new FleetUtilized(name,
                     ((BigDecimal) r[0]).longValue(), ((BigDecimal) r[1]).longValue(), (BigDecimal) r[2]);
             list.add(fleetUtilized);
-        });
+        });}
+else
+{
+    result.stream().forEach(r -> {
+        FleetUtilized fleetUtilized = new FleetUtilized(
+                ((BigDecimal) r[0]).longValue(), ((BigDecimal) r[1]).longValue(), (BigDecimal) r[2],name);
+        list.add(fleetUtilized);
+    });
+}
         return list.get(0);
     }
 
@@ -599,7 +608,6 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         procedureQuery.execute();
         Integer result = Integer.parseInt(procedureQuery.getSingleResult().toString());
-//int f=0;
            return result;
 
 

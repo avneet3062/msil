@@ -83,21 +83,10 @@ public class MetricsController {
     }
 
 
-
     @GetMapping("fleetUtilization")
-    public ResponseEntity<FleetUtilizedMetrics> getFleetUtilization(@RequestParam("month") Integer month,
-                                                                    @RequestParam("year") Integer year , @RequestParam("custId") String custId ){
+    public ResponseEntity<FleetUtilizedMetrics> getFleetUtilization(@RequestParam(value="year",required=false) Integer year ,@RequestParam(value="month",required=false) Integer month, @RequestParam(value="custId") String custId ){
 
-        FleetUtilizedMetrics metrics = dataService.getFleetUtilization(month,year,custId);
-        return new ResponseEntity<FleetUtilizedMetrics>(metrics,HttpStatus.OK);
-
-    }
-
-    @GetMapping("fleetUtilizationMonthly")
-    public ResponseEntity<FleetUtilizedMetrics> getFleetUtilization(
-                                                                    @RequestParam("year") Integer year , @RequestParam("custId") String custId ){
-
-        FleetUtilizedMetrics metrics = dataService.getFleetUtilization(year,custId);
+        FleetUtilizedMetrics metrics = dataService.getFleetUtilization(year,month,custId);
         return new ResponseEntity<FleetUtilizedMetrics>(metrics,HttpStatus.OK);
 
     }

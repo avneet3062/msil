@@ -1,5 +1,6 @@
 package com.nxtLife.msil.repository;
 
+import com.nxtLife.msil.enums.Duration;
 import com.nxtLife.msil.enums.Violations;
 import com.nxtLife.msil.views.*;
 
@@ -46,7 +47,7 @@ public interface TripRepository {
 
     List<ViolationsCount> getOverspeedViolations();
 
-    FleetUtilized getFleetUtilization(Date date, String custId);
+    FleetUtilized getFleetUtilization(Date date,Integer day, String custId);
 
     List<ViolationsCount> getContinousDrivingViolations2(String custId,Date firstDay,Date lastDay,String order);
 
@@ -63,7 +64,7 @@ public interface TripRepository {
     List<ViolationsCount> getOverspeedViolations2(String custId,Date firstDay,Date lastDay,String order);
 
 
-    FleetUtilized getFleetUtilization(Integer month,Date firstDate, Date lastDay, String custId);
+    FleetUtilized getFleetUtilization(Integer month, Date firstDate, Date lastDay, String custId, Duration duration);
 
     int getMinimumYear();
 }
