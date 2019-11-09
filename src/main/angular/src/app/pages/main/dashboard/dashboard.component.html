@@ -67,6 +67,11 @@
                         </h4>
                     </div>
                     <div class="content">
+                        <div class="slide-main">
+                            <div class="slide">
+                                <i class="fa fa-angle-left" aria-hidden="true"></i>
+                            </div>
+                        </div>
                         <div id="violationChart" class="ct-chart">
                             <img src="assets/img/loading.gif">
                         </div>
@@ -85,6 +90,11 @@
                             <select name="customer" id="" [(ngModel)]="Transporter" (ngModelChange)="getFleetUtilization(Month, Year, Transporter)">
                                 <option [value]="transporter.custId" *ngFor="let transporter of transporters">{{transporter.custName}}</option>
                             </select>
+                        </div>
+                        <div class="slide-main">
+                            <div class="slide">
+                                <i class="fa fa-angle-left" aria-hidden="true"></i>
+                            </div>
                         </div>
                         <div id="fleetUtilizationChart" class="ct-chart">
                             <img src="assets/img/loading.gif">
