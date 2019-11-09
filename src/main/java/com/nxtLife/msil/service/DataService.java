@@ -195,29 +195,6 @@ public class DataService {
     }
 
 
-    public FleetUtilizedMetrics getFleetUtilization(Integer month, Integer year, String custId) {
-        List<FleetUtilized> list = new ArrayList<>();
-        Calendar firstDay = Calendar.getInstance();
-        Calendar lastDay = Calendar.getInstance();
-
-        firstDay.set(year, month - 1, 1);
-        lastDay.set(year, month - 1, firstDay.getActualMaximum(Calendar.DATE));
-        lastDay.add(Calendar.DATE, 1);
-        Date d;
-        while (firstDay.before(lastDay)) {
-            d = firstDay.getTime();
-//            System.out.println(d);
-            list.add(tripRepository.getFleetUtilization(d, custId));
-            firstDay.add(Calendar.DATE, 1);
-        }
-        list.sort(Comparator.comparing(FleetUtilized::getDate));
-        FleetUtilizedMetrics metrics = new FleetUtilizedMetrics(custId);
-        metrics.setYear(year);
-        metrics.setMonth(month);
-        metrics.setList(list);
-        return metrics;
-    }
-
     public ViolationsMetrics getViolationsOfCust(String custId, Integer year, Integer month) {
         ViolationsMetrics metrics = new ViolationsMetrics(custId);
         Set<Integer> exist=new HashSet<>();
@@ -228,7 +205,6 @@ public class DataService {
         Date today = Calendar.getInstance().getTime();
 
         Duration type=null;
-        int lastMonth=12;
         int limit=0;
         if(year==null)
         { order = "year";
@@ -273,7 +249,7 @@ public class DataService {
             limit=lastDay.get(Calendar.YEAR);
              type=Duration.year;}
         else if(year!=null&&month==null)
-        { limit=lastDay.get(Calendar.MONTH);
+        { limit=lastDay.get(Calendar.MONTH)+1;
             type=Duration.month;}
         violationsCounts=tripRepository.getContinousDrivingViolations2(custId, fromDate, toDate, order);
         allViolations.addAll(this.getAllViolations(violationsCounts,limit,Violations.ContinuousDriving,type));
@@ -326,63 +302,81 @@ public class DataService {
         return metrics;
     }
 
-
-    public FleetUtilizedMetrics getFleetUtilization(Integer year, String custId) {
+    public FleetUtilizedMetrics getFleetUtilization(Integer year, Integer month, String custId) {
         FleetUtilizedMetrics metrics = new FleetUtilizedMetrics(custId);
-
-        try {
+        Integer day=0;
+        if(year!=null&&month!=null) {
             List<FleetUtilized> list = new ArrayList<>();
             Calendar firstDay = Calendar.getInstance();
             Calendar lastDay = Calendar.getInstance();
 
-        Integer currentMonth=12;
-       Integer currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        if(currentYear.equals(year))
-           currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+            firstDay.set(year, month - 1, 1);
+            lastDay.set(year, month - 1, firstDay.getActualMaximum(Calendar.DATE));
+            lastDay.add(Calendar.DATE, 1);
+            Date d;
+            while (firstDay.before(lastDay)) {
+                d = firstDay.getTime();
+                day=firstDay.get(Calendar.DATE);
 
-          for(int i=0;i<=currentMonth-1;i++) {
-                   firstDay.set(year,i,1,0,0,0);
-                  lastDay.set(year,i,firstDay.getActualMaximum(Calendar.DATE),0,0,0);
-              list.add(tripRepository.getFleetUtilization(i + 1,firstDay.getTime(),lastDay.getTime(), custId));
-
-           }
-          list.sort(Comparator.comparing(FleetUtilized::getMonth));
+                list.add(tripRepository.getFleetUtilization(d, day,custId));
+                firstDay.add(Calendar.DATE, 1);
+            }
+            list.sort(Comparator.comparing(FleetUtilized::getDate));
 
             metrics.setYear(year);
+            metrics.setMonth(month);
             metrics.setList(list);
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        else{
+            metrics=this.getFleetUtilization(year,custId);
+        }
+        return metrics;
+    }
 
+
+
+    public FleetUtilizedMetrics getFleetUtilization(Integer year, String custId) {
+        FleetUtilizedMetrics metrics = new FleetUtilizedMetrics(custId);
+        List<FleetUtilized> list = new ArrayList<>();
+        Date today = Calendar.getInstance().getTime();
+        Integer currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        Calendar firstDay = Calendar.getInstance();
+        Calendar lastDay = Calendar.getInstance();
+        int limit=0;
+        if(year==null)
+        {
+            Integer minYear=tripRepository.getMinimumYear();
+            firstDay.set(2017, 0, 1);
+            lastDay.setTime(today);
+            limit=lastDay.get(Calendar.YEAR);
+            for(int i=2017;i<=limit;i++) {
+                firstDay.set(i,1,1,0,0,0);
+                lastDay.set(i,12,31,0,0,0);
+                list.add(tripRepository.getFleetUtilization(i,firstDay.getTime(),lastDay.getTime(), custId,Duration.year));
+            }
+        }
+        else {
+            if (currentYear.equals(year))
+                limit = Calendar.getInstance().get(Calendar.MONTH) + 1;
+            else {
+                limit = 12;
+            }
+            for (int i = 1; i <= limit; i++) {
+                firstDay.set(year, i-1, 1, 0, 0, 0);
+                lastDay.set(year, i-1, firstDay.getActualMaximum(Calendar.DATE), 0, 0, 0);
+                list.add(tripRepository.getFleetUtilization(i, firstDay.getTime(), lastDay.getTime(), custId,Duration.month));
+
+            }
+            list.sort(Comparator.comparing(FleetUtilized::getMonth));
+            metrics.setYear(year);
+        }
+        metrics.setList(list);
 
         return metrics;
 
 
     }
-//    public List<ViolationsCount> getAllViolationsDaywise(List<ViolationsCount> violations,int lastDay,Violations name)
-//    {
-//        ViolationsCount violationsCount = null;
-//        for(int i= 1,j= 0; i<=lastDay;  ){
-//            if(!violations.isEmpty() && j< violations.size()) {
-//                violationsCount = violations.get(j);
-//                if (violationsCount.getDay() == i) {
-//                    i++;
-//                    j++;
-//                } else {
-//                    violations.add(new ViolationsCount( 0,name, i));
-//                    i++;
-//                }
-//            }else{
-//                violations.add(new ViolationsCount(0,name,i));
-//                i++;
-//            }
-//
-//        }
-//        return violations;
-//
-//
-//    }
+
 
     public List<ViolationsCount> getAllViolations(List<ViolationsCount> violations,int limit,Violations name, Duration type) {
         int i=1;
@@ -411,18 +405,25 @@ public class DataService {
     public List<TripMetrics> getTrips(Integer year,Integer month){
 
         List<Trips> tripsList = new ArrayList<>();
+        int limit;
         List<TripMetrics> tripMetrics = new ArrayList<>();
         LocalDate first = LocalDate.of(year,month,1);
         LocalDate end = first.with(TemporalAdjusters.lastDayOfMonth());
+        limit=end.getDayOfMonth();
         if(year == null || month== null)
             throw new NotFoundException("Year and Month are Mandatory");
+        List<Trips> allTrips=new ArrayList<>();
 
-            tripsList.addAll(addDays(tripRepository.getOpenTrips(year,month),first,end,TripTypes.Open));
-            tripsList.addAll(addDays(tripRepository.getClosedTrips(year, month),first,end,TripTypes.Closed ));
-            tripsList.addAll(addDays(tripRepository.getDelayedTrips(year,month),first,end,TripTypes.Delayed ));
-            tripsList.addAll(addDays(tripRepository.getTotalTrips(year,month),first,end,TripTypes.Total));
+            tripsList=this.getOpenTripsDaily(year,month);
+            allTrips.addAll(addDays(tripsList,limit,TripTypes.Open));
+            tripsList=tripRepository.getClosedTrips(year, month);
+            allTrips.addAll(addDays(tripsList,limit,TripTypes.Closed));
+            tripsList=tripRepository.getDelayedTrips(year,month);
+            allTrips.addAll(addDays(tripsList,limit,TripTypes.Delayed));
+            tripsList=tripRepository.getTotalTrips(year,month);
+            allTrips.addAll(addDays(tripsList,limit,TripTypes.Total));
 
-            tripsList.sort(Comparator.comparing(Trips::getMonth).thenComparing(Trips::getTripType));
+            allTrips.sort(Comparator.comparing(Trips::getDay).thenComparing(Trips::getTripType));
 
 //            tripMetrics = makeViewForTripsMetrics(tripsList);
 
@@ -430,42 +431,85 @@ public class DataService {
         List<TripMetrics> finalMetricsList = new ArrayList<>();
         TripMetrics metrics = null;
         List<Trips> trips= null;
-        for(Trips t :tripsList){
-            if(prev.equals(t.getMonth())){
+        for(Trips t :allTrips){
+            if(prev.equals(t.getDay())){
                 trips.add(new Trips(t.getTripType(),t.getCount()));
             }else{
-                metrics = new TripMetrics(Date.from(LocalDate.of(year,month,t.getMonth()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                metrics = new TripMetrics(Date.from(LocalDate.of(year,month,t.getDay()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
                 trips = new ArrayList<>();
                 trips.add(new Trips(t.getTripType(),t.getCount()));
                 metrics.setTripsList(trips);
 
                 finalMetricsList.add(metrics);
-                prev = t.getMonth();
+                prev = t.getDay();
             }
         }
 
             return finalMetricsList;
         }
 
-    public List<Trips> addDays(List<Trips> tripsList,LocalDate first,LocalDate end, TripTypes tripTypes){
-
-        tripsList.sort(Comparator.comparing(Trips::getMonth));
-        Trips trip= null;
-        for( int i=0; first.isBefore(end);){
-            if( i < tripsList.size())
-                trip = tripsList.get(i);
-            if(!trip.getMonth().equals(first.getDayOfMonth())){
-                tripsList.add(new Trips(tripTypes.name(),0L,first.getDayOfMonth()));
-                first =first.plusDays(1);
-            }else{
-                i++;
-                first = first.plusDays(1);
+        public List<Trips> addDays(List<Trips> trips,int limit,TripTypes tripTypes) {
+            Trips trip = null;
+            for (int i = 1, j = 0; i <= limit; ) {
+                if (!trips.isEmpty() && j < trips.size()) {
+                    trip = trips.get(j);
+                    if (trip.getDay() == i) {
+                        i++;
+                        j++;
+                    } else {
+                        trips.add(new Trips(tripTypes.name(), i, 0L));
+                        i++;
+                    }
+                } else {
+                    trips.add(new Trips(tripTypes.name(), i, 0L));
+                    i++;
+                }
             }
+            return trips;
 
         }
-        if(!tripsList.get(tripsList.size()-1).getMonth().equals(first.getDayOfMonth()))
-            tripsList.add(new Trips(tripTypes.name(),0L,first.getDayOfMonth()));
-        return tripsList;
+
+//    public List<Trips> addDays(List<Trips> tripsList,LocalDate first,LocalDate end, TripTypes tripTypes){
+//
+//        tripsList.sort(Comparator.comparing(Trips::getDay));
+//        Trips trip= null;
+//        for( int i=0; first.isBefore(end);){
+//            if( i < tripsList.size())
+//                trip = tripsList.get(i);
+//            if(!trip.getDay().equals(first.getDayOfMonth())){
+//                tripsList.add(new Trips(tripTypes.name(),0L,first.getDayOfMonth()));
+//                first =first.plusDays(1);
+//            }else{
+//                i++;
+//                first = first.plusDays(1);
+//            }
+//
+//        }
+//        if(!tripsList.get(tripsList.size()-1).getDay().equals(first.getDayOfMonth()))
+//            tripsList.add(new Trips(tripTypes.name(),0L,first.getDayOfMonth()));
+//        return tripsList;
+//    }
+
+    public List<Trips> getOpenTripsDaily(Integer year,Integer month)
+    {
+        Calendar firstDay=Calendar.getInstance();
+        Calendar lastDay=Calendar.getInstance();
+        Integer day=0;
+
+        List<Trips> openTrips=new ArrayList<>();
+        firstDay.set(year, month - 1, 1);
+        lastDay.set(year, month - 1, firstDay.getActualMaximum(Calendar.DATE));
+        lastDay.add(Calendar.DATE, 1);
+        Date d;
+        while (firstDay.before(lastDay)) {
+            d = firstDay.getTime();
+            day=firstDay.get(Calendar.DATE);
+            openTrips.add(tripRepository.getOpenTrips(d, day));
+            firstDay.add(Calendar.DATE, 1);
+        }
+
+return openTrips;
+
     }
 
 

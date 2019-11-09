@@ -411,7 +411,7 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public FleetUtilized getFleetUtilization(Date date, String custId) {
+    public FleetUtilized getFleetUtilization(Date date,Integer day, String custId) {
         List<FleetUtilized> fleetUtilizedList = new ArrayList<>();
         FleetUtilized utilized;
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_FLEET_UTILIZATION2");
@@ -423,7 +423,7 @@ public class TripRepositoryImpl implements TripRepository {
 //        Object result = procedureQuery.get();
         List<Object[]> result = procedureQuery.getResultList();
         result.stream().forEach(r -> {
-            FleetUtilized fleetUtilized = new FleetUtilized(date,
+            FleetUtilized fleetUtilized = new FleetUtilized(date,day,
                     ((BigDecimal) r[0]).longValue(), ((BigDecimal) r[1]).longValue(), (BigDecimal) r[2]);
             fleetUtilizedList.add(fleetUtilized);
         });
@@ -579,7 +579,7 @@ public class TripRepositoryImpl implements TripRepository {
 
     }
 
-    public FleetUtilized getFleetUtilization(Integer month, Date firstDate, Date lastDay, String custId) {
+    public FleetUtilized getFleetUtilization(Integer name, Date firstDate, Date lastDay, String custId, Duration type) {
         List<FleetUtilized> list = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_FLEET_UTILIZATION5");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
@@ -588,12 +588,20 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(4, String.class, ParameterMode.IN).setParameter(4, custId);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-
+if(type.equals(Duration.month)){
         result.stream().forEach(r -> {
-            FleetUtilized fleetUtilized = new FleetUtilized(month,
+            FleetUtilized fleetUtilized = new FleetUtilized(name,
                     ((BigDecimal) r[0]).longValue(), ((BigDecimal) r[1]).longValue(), (BigDecimal) r[2]);
             list.add(fleetUtilized);
-        });
+        });}
+else
+{
+    result.stream().forEach(r -> {
+        FleetUtilized fleetUtilized = new FleetUtilized(
+                ((BigDecimal) r[0]).longValue(), ((BigDecimal) r[1]).longValue(), (BigDecimal) r[2],name);
+        list.add(fleetUtilized);
+    });
+}
         return list.get(0);
     }
 
@@ -602,45 +610,44 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         procedureQuery.execute();
         Integer result = Integer.parseInt(procedureQuery.getSingleResult().toString());
-//int f=0;
            return result;
     }
 
     @Override
     public List<Trips> getTotalTrips(Integer year, Integer month) {
+        LocalDateTime firstDay= LocalDateTime.of(year,month,1,0,0,0);
+        LocalDateTime lastDay= firstDay.with(TemporalAdjusters.lastDayOfMonth());
         List<Trips> dayWise = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_TOTALTRIPS6");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2019, 1, 1, 0, 0, 0)));
-        procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(firstDay));
+        procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(lastDay));
         procedureQuery.registerStoredProcedureParameter(4,String.class,ParameterMode.IN).setParameter(4, Duration.day.name().toUpperCase());
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
 
         result.stream().forEach(r -> {
-            Trips t = new Trips(TripTypes.Total.name(), ((BigDecimal) r[0]).longValue(), Integer.parseInt(r[1].toString()));
+            Trips t = new Trips(TripTypes.Total.name(),Integer.parseInt(r[0].toString()), ((BigDecimal) r[1]).longValue() );
             dayWise.add(t);
         });
         return dayWise;
     }
 
     @Override
-    public List<Trips> getOpenTrips(Integer year, Integer month) {
-        List<Trips> dayWise = new ArrayList<>();
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_OPENTRIPS5");
+    public Trips getOpenTrips(Date d,Integer day) {
+        Trips dayWise = new Trips();
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_OPENTRIPS6");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2019, 1, 1, 0, 0, 0)));
-        procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
-        procedureQuery.registerStoredProcedureParameter(4, String.class, ParameterMode.IN).setParameter(4, "PAST");
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, new java.sql.Timestamp(d.getTime()));
+      //  procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
+        procedureQuery.registerStoredProcedureParameter(3, String.class, ParameterMode.IN).setParameter(3, "PAST");
 
         procedureQuery.execute();
-        List<Object[]> result = procedureQuery.getResultList();
+       Long result = Long.parseLong(procedureQuery.getSingleResult().toString());
 
-        result.stream().forEach(r -> {
-            Trips t = new Trips(TripTypes.Total.name(), ((BigDecimal) r[0]).longValue() , Integer.parseInt(r[1].toString()));
-            dayWise.add(t);
-        });
-        return dayWise;
+
+        Trips t = new Trips(TripTypes.Open.name(),day,result);
+        return t;
     }
 
     @Override
@@ -658,7 +665,7 @@ public class TripRepositoryImpl implements TripRepository {
         List<Object[]> result = procedureQuery.getResultList();
 
         result.stream().forEach(r -> {
-            Trips t = new Trips( TripTypes.Closed.name(), ((BigDecimal) r[0]).longValue() , Integer.parseInt(r[1].toString()));
+            Trips t = new Trips( TripTypes.Closed.name(), Integer.parseInt(r[1].toString()), ((BigDecimal) r[0]).longValue() );
             dayWise.add(t);
         });
         return dayWise;
@@ -679,9 +686,11 @@ public class TripRepositoryImpl implements TripRepository {
         List<Object[]> result = procedureQuery.getResultList();
 
         result.stream().forEach(r -> {
-            Trips t = new Trips(TripTypes.Delayed.name(), ((BigDecimal) r[0]).longValue() , Integer.parseInt(r[1].toString()));
+            Trips t = new Trips(TripTypes.Delayed.name() , Integer.parseInt(r[1].toString()),((BigDecimal) r[0]).longValue() );
             dayWise.add(t);
         });
         return dayWise;
     }
+
+
 }
