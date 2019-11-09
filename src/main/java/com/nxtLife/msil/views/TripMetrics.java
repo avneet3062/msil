@@ -1,5 +1,6 @@
 package com.nxtLife.msil.views;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.List;
 public class TripMetrics {
     private Integer year;
     private Integer month;
+
+    @JsonFormat(pattern = "dd-MMM-YYYY",timezone = "IST")
     private Date date;
     private List<Trips> tripsList ;
     private List<TripMonthly> tripMonthlyList ;
@@ -18,7 +21,11 @@ public class TripMetrics {
 
     }
 
-    public TripMetrics(Integer year, Integer month, List<Trips> tripsList,Date date) {
+    public TripMetrics(Date date) {
+        this.date = date;
+    }
+
+    public TripMetrics(Integer year, Integer month, List<Trips> tripsList, Date date) {
         this.year = year;
         this.month = month;
         this.tripsList = tripsList;

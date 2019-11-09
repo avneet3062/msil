@@ -69,7 +69,6 @@ export class DashboardComponent implements OnInit {
   getAllChart() {
     this.getTrips();
     this.getVehicleAvailability('001');
-    this.getViolations();
     this.getTransporters();
   }
 
@@ -222,17 +221,9 @@ export class DashboardComponent implements OnInit {
       this.transporters = response;
       this.Transporter = 'ECUS519'
       this.getFleetUtilization(this.Month, this.Year, this.Transporter);
-    })
-  }
-
-  getViolations() {
-    this.dashboardservice.getViolations().subscribe((response: any[]) => {
-      this.violations = response;
       this.getViolationsByCustomer('ECUS875');
-
     })
   }
-
   getViolationsByCustomer(custId) {
     this.dashboardservice.getViolationsByCustomerId(custId).subscribe(response => {
       this.drawViolationChart(response.violations);

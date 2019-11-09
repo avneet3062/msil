@@ -5,6 +5,7 @@ import com.nxtLife.msil.enums.Violations;
 import com.nxtLife.msil.views.*;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -67,4 +68,11 @@ public interface TripRepository {
     FleetUtilized getFleetUtilization(Integer month, Date firstDate, Date lastDay, String custId, Duration duration);
 
     int getMinimumYear();
+
+    List<Trips> getTotalTrips(Integer year, Integer month);
+    Trips getOpenTrips(Date date,Integer day);
+
+    List<Trips> getClosedTrips(Integer year, Integer month);
+
+    List<Trips> getDelayedTrips(Integer year, Integer month);
 }

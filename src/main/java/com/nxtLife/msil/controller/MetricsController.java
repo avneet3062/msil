@@ -18,7 +18,7 @@ public class MetricsController {
     private DataService dataService;
 
     @GetMapping("tripsMonthly")
-    public ResponseEntity<TripMetrics> getAllTripsMetricMonthly(@RequestParam(value = "year") Integer year,
+    public ResponseEntity<TripMetrics> getAllTripsMetricMonthly(@RequestParam(value = "year" , required = false) Integer year,
                                                         @RequestParam(value = "month",required = false) Integer month){
 
         TripMetrics tripMetricsList= dataService.getTripsMetrics(year,month);
@@ -89,5 +89,11 @@ public class MetricsController {
         FleetUtilizedMetrics metrics = dataService.getFleetUtilization(year,month,custId);
         return new ResponseEntity<FleetUtilizedMetrics>(metrics,HttpStatus.OK);
 
+    }
+
+    @GetMapping("trips")
+    public ResponseEntity<List<TripMetrics>> getTrips(@RequestParam("year") Integer year, @RequestParam("month") Integer month){
+        List<TripMetrics> metrics = dataService.getTrips(year,month);
+        return new ResponseEntity<List<TripMetrics>>(metrics,HttpStatus.OK);
     }
 }

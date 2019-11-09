@@ -10,6 +10,9 @@ import java.util.Date;
 public class FleetUtilized {
 
     @JsonFormat(pattern = "dd-MMM-YY", timezone = "IST")
+/*
+    @JsonFormat(pattern = "dd", timezone = "IST")
+*/
     Date date;
     private Integer day;
     private Integer year;
