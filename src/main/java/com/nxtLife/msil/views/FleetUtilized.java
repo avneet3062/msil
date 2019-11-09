@@ -9,7 +9,7 @@ import java.util.Date;
 @JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
 public class FleetUtilized {
 
-    @JsonFormat(pattern = "dd-MMM", timezone = "IST")
+    @JsonFormat(pattern = "dd", timezone = "IST")
     Date date;
     private Integer month;
     Long total;

@@ -75,7 +75,6 @@ export class DashboardComponent implements OnInit {
     this.getTrips();
     this.locationCode = '001';
     this.getVehicleAvailability('001');
-    this.getViolations();
     this.getTransporters();
   }
 
@@ -245,10 +244,8 @@ export class DashboardComponent implements OnInit {
       this.violations = response;
       this.selectedCustomer = 'ECUS875';
       this.getViolationsByCustomer('ECUS875');
-
     })
   }
-
   getViolationsByCustomer(custId) {
     this.dashboardservice.getViolationsByCustomerId(custId).subscribe(response => {
       this.drawViolationChart(custId, response.violationsMetricsList);

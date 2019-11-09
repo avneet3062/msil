@@ -101,7 +101,7 @@ export class CustomHttpService {
         switch (errorResponse.status) {
             case 401:
                 this.router.navigate(['/login']).then(() => {
-                    this.tost.errorAlert('invalid credentials please try again ');
+
                 });
                 this.storage.clearData();
                 break;

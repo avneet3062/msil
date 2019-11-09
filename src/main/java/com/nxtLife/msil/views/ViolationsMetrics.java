@@ -1,10 +1,13 @@
 package com.nxtLife.msil.views;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
-@JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(value = JsonInclude.Include.NON_ABSENT)
 public class ViolationsMetrics {
     private  String custId;
     private String custName;
@@ -13,7 +16,12 @@ public class ViolationsMetrics {
     private Integer day;
     private List<ViolationsCount> violations;
     private List<ViolationsMetrics> violationsMetricsList;
-    ViolationsCount violationsCount;
+    private ViolationsCount violationsCount;
+
+    @JsonFormat(pattern = "dd-MMM-YY" , timezone = "IST")
+    private Date date;
+
+//    private String
 
     public ViolationsMetrics() {
     }
@@ -88,7 +96,19 @@ public class ViolationsMetrics {
         return violationsCount;
     }
 
-    public void setViolationsCount(ViolationsCount violationsCount) {
-        this.violationsCount = violationsCount;
+//    public void setViolationsCount(ViolationsCount violationsCount) {
+//        this.violationsCount = violationsCount;
+//    }
+//
+//    public void setViolationsMetricsList(List<ViolationsMetrics> violationsMetricsList) {
+//        this.violationsMetricsList = violationsMetricsList;
+//    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

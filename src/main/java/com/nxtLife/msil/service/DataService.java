@@ -1,7 +1,9 @@
 package com.nxtLife.msil.service;
 
+import com.nxtLife.msil.enums.Duration;
 import com.nxtLife.msil.enums.TripTypes;
 import com.nxtLife.msil.enums.Violations;
+import com.nxtLife.msil.ex.NotFoundException;
 import com.nxtLife.msil.repository.TripRepository;
 import com.nxtLife.msil.views.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Service
@@ -18,20 +23,21 @@ public class DataService {
     @Autowired
     private TripRepository tripRepository;
 
-    public TripMetrics getTripsMetrics(int year, int month) {
+    public TripMetrics getTripsMetrics(Integer year, Integer month) {
         //TODO- check for year and month
 
         TripMetrics metrics = null;
         List<Trips> tripsList = new ArrayList<>();
+
         try {
-            tripsList.addAll(tripRepository.getOpenTrips());
             tripsList.addAll(tripRepository.getClosedTrips());
             tripsList.addAll(tripRepository.getDelayedTrips());
             tripsList.addAll(tripRepository.getTotalTrips());
+            tripsList.addAll(tripRepository.getOpenTrips());
 
             tripsList.sort(Comparator.comparing(Trips::getMonth).thenComparing(Trips::getTripType));
 
-            metrics = makeViewForTripsMetrics(tripsList, 2019);
+            metrics = makeViewForTripsMetrics(tripsList, year);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -188,6 +194,7 @@ public class DataService {
         return finalList;
     }
 
+
     public FleetUtilizedMetrics getFleetUtilization(Integer month, Integer year, String custId) {
         List<FleetUtilized> list = new ArrayList<>();
         Calendar firstDay = Calendar.getInstance();
@@ -213,84 +220,107 @@ public class DataService {
 
     public ViolationsMetrics getViolationsOfCust(String custId, Integer year, Integer month) {
         ViolationsMetrics metrics = new ViolationsMetrics(custId);
+        Set<Integer> exist=new HashSet<>();
+
         String order = null;
         Calendar firstDay = Calendar.getInstance();
         Calendar lastDay = Calendar.getInstance();
         Date today = Calendar.getInstance().getTime();
 
-        if (month == null) {
+        Duration type=null;
+        int lastMonth=12;
+        int limit=0;
+        if(year==null)
+        { order = "year";
+            Integer minYear=tripRepository.getMinimumYear();
+            firstDay.set(2017, 0, 1);
+            lastDay.setTime(today);
+        }
+
+       else if (year !=null&&month == null) {
             order = "month";
             firstDay.set(year, 0, 1);
             lastDay.set(year, 11, 31);
             metrics.setYear(year);
-        } else {
+            if (lastDay.getTime().after(today)) {
+                lastDay.setTime(today);
+            }
+       } else if (year!=null&&month!=null){
             order = "day";
             firstDay.set(year, month - 1, 1);
             lastDay.set(year, month - 1, firstDay.getActualMaximum(Calendar.DATE));
             metrics.setYear(year);
             metrics.setMonth(month);
+            if (lastDay.getTime().after(today)) {
+                lastDay.setTime(today);
+            }
+       }
+       else
+        {
+            throw new NotFoundException("Year is not specified");
         }
-        if (lastDay.getTime().after(today))
-            lastDay.setTime(today);
+
         List<ViolationsCount> violationsCounts = new ArrayList<>();
         Date fromDate, toDate;
         fromDate = firstDay.getTime();
         toDate = lastDay.getTime();
+        List<ViolationsCount> allViolations=new ArrayList<>();
 
-        violationsCounts.addAll(tripRepository.getContinousDrivingViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getFreeWheelingViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getHarshBreakViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getNightDrivingViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getRapidAccelerationViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getStoppageViolations2(custId, fromDate, toDate, order));
-        violationsCounts.addAll(tripRepository.getOverspeedViolations2(custId, fromDate, toDate, order));
+        if(year!=null&&month!=null){
+            limit=lastDay.get(Calendar.DATE);
+            type=Duration.day;}
+        else if(year==null){
+            limit=lastDay.get(Calendar.YEAR);
+             type=Duration.year;}
+        else if(year!=null&&month==null)
+        { limit=lastDay.get(Calendar.MONTH);
+            type=Duration.month;}
+        violationsCounts=tripRepository.getContinousDrivingViolations2(custId, fromDate, toDate, order);
+        allViolations.addAll(this.getAllViolations(violationsCounts,limit,Violations.ContinuousDriving,type));
 
-
-        //metrics.setViolations(violationsCounts);
+        violationsCounts=tripRepository.getFreeWheelingViolations2(custId, fromDate, toDate, order);
+        allViolations.addAll(this.getAllViolations(violationsCounts,limit,Violations.Freewheeling,type));
+        violationsCounts=tripRepository.getHarshBreakViolations2(custId, fromDate, toDate, order);
+        allViolations.addAll(this.getAllViolations(violationsCounts,limit,Violations.HarshBreaking,type));
+        violationsCounts=tripRepository.getNightDrivingViolations2(custId, fromDate, toDate, order);
+        allViolations.addAll(this.getAllViolations(violationsCounts,limit,Violations.NightDriving,type));
+        violationsCounts=tripRepository.getRapidAccelerationViolations2(custId, fromDate, toDate, order);
+        allViolations.addAll(this.getAllViolations(violationsCounts,limit,Violations.RapidAcceleration,type));
+        violationsCounts=tripRepository.getStoppageViolations2(custId, fromDate, toDate, order);
+        allViolations.addAll(this.getAllViolations(violationsCounts,limit,Violations.Stoppage,type));
+        violationsCounts=tripRepository.getOverspeedViolations2(custId, fromDate, toDate, order);
+        allViolations.addAll(this.getAllViolations(violationsCounts,limit,Violations.Overspeed,type));
         List<ViolationsMetrics> violationsMetricsList = null;
         List<ViolationsMetrics> finalList = new ArrayList<>();
         ViolationsCount violationsCount = null;
         List<ViolationsCount> violationsCountList = null;
-        if (month == null) {
-            violationsCounts.sort(Comparator.comparing(ViolationsCount::getMonth));
-            int prevMonth = 0;
-            ViolationsMetrics monthwise = null;
-            for (ViolationsCount violations : violationsCounts) {
-                if (prevMonth == violations.getMonth()) {
+        allViolations.sort(Comparator.comparing(ViolationsCount::getType));
+            int prev = 0;
+            ViolationsMetrics typewise = null;
+            for (ViolationsCount violations : allViolations) {
+                if (prev == violations.getType()) {
                     violationsCount = new ViolationsCount(violations.getName(), violations.getCount());
                     violationsCountList.add(violationsCount);
                 } else {
-                    monthwise = new ViolationsMetrics(violations.getMonth());
-                    violationsCount = new ViolationsCount(violations.getName(), violations.getCount());
+                    typewise=new ViolationsMetrics();
+                 if(type.equals(Duration.year))
+                     typewise.setYear(violations.getType());
+                   else if(type.equals(Duration.month)){
+                       typewise.setMonth(violations.getType()); }
+                   else {
+                     typewise.setDay(violations.getType());
+                   typewise.setDate(Date.from(LocalDate.of(year,month,violations.getType()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                   }
+                   violationsCount = new ViolationsCount(violations.getName(), violations.getCount());
                     violationsCountList = new ArrayList<>();
                     violationsCountList.add(violationsCount);
-                    monthwise.setViolations(violationsCountList);
-                    finalList.add(monthwise);
+                    typewise.setViolations(violationsCountList);
+                    finalList.add(typewise);
                     metrics.setMetricsList(finalList);
                 }
-                prevMonth = violations.getMonth();
+                prev = violations.getType();
             }
-        } else {
-            violationsCounts.sort(Comparator.comparing(ViolationsCount::getDay));
-            int prevDay = 0;
-            ViolationsMetrics daywise = null;
-            for (ViolationsCount violations : violationsCounts) {
-                if (prevDay == violations.getDay()) {
-                    violationsCount = new ViolationsCount(violations.getName(), violations.getCount());
-                    violationsCountList.add(violationsCount);
-                } else {
-                    daywise = new ViolationsMetrics();
-                    daywise.setDay(violations.getDay());
-                    violationsCount = new ViolationsCount(violations.getName(), violations.getCount());
-                    violationsCountList = new ArrayList<>();
-                    violationsCountList.add(violationsCount);
-                    daywise.setViolations(violationsCountList);
-                    finalList.add(daywise);
-                    metrics.setMetricsList(finalList);
-                }
-                prevDay = violations.getDay();
-            }
-        }
+
 
 
         return metrics;
@@ -330,4 +360,119 @@ public class DataService {
 
 
     }
+//    public List<ViolationsCount> getAllViolationsDaywise(List<ViolationsCount> violations,int lastDay,Violations name)
+//    {
+//        ViolationsCount violationsCount = null;
+//        for(int i= 1,j= 0; i<=lastDay;  ){
+//            if(!violations.isEmpty() && j< violations.size()) {
+//                violationsCount = violations.get(j);
+//                if (violationsCount.getDay() == i) {
+//                    i++;
+//                    j++;
+//                } else {
+//                    violations.add(new ViolationsCount( 0,name, i));
+//                    i++;
+//                }
+//            }else{
+//                violations.add(new ViolationsCount(0,name,i));
+//                i++;
+//            }
+//
+//        }
+//        return violations;
+//
+//
+//    }
+
+    public List<ViolationsCount> getAllViolations(List<ViolationsCount> violations,int limit,Violations name, Duration type) {
+        int i=1;
+      //  Integer minYear=tripRepository.getMinimumYear();
+        if(type.equals(Duration.year))
+           i=2017;
+        ViolationsCount violationsCount = null;
+        for( int j= 0; i<=limit;  ){
+            if(!violations.isEmpty() && j< violations.size()) {
+                violationsCount = violations.get(j);
+                if ((type.equals(Duration.year) ||type.equals(Duration.month)||type.equals(Duration.day))&& violationsCount.getType() == i) {
+                    i++;
+                    j++;
+                } else {
+                    violations.add(new ViolationsCount(name, 0, i));
+                    i++;
+                }
+            }else{
+                violations.add(new ViolationsCount(name,0,i));
+                i++;
+            }
+        }
+        return violations;
+    }
+
+    public List<TripMetrics> getTrips(Integer year,Integer month){
+
+        List<Trips> tripsList = new ArrayList<>();
+        List<TripMetrics> tripMetrics = new ArrayList<>();
+        LocalDate first = LocalDate.of(year,month,1);
+        LocalDate end = first.with(TemporalAdjusters.lastDayOfMonth());
+        if(year == null || month== null)
+            throw new NotFoundException("Year and Month are Mandatory");
+
+            tripsList.addAll(addDays(tripRepository.getOpenTrips(year,month),first,end,TripTypes.Open));
+            tripsList.addAll(addDays(tripRepository.getClosedTrips(year, month),first,end,TripTypes.Closed ));
+            tripsList.addAll(addDays(tripRepository.getDelayedTrips(year,month),first,end,TripTypes.Delayed ));
+            tripsList.addAll(addDays(tripRepository.getTotalTrips(year,month),first,end,TripTypes.Total));
+
+            tripsList.sort(Comparator.comparing(Trips::getMonth).thenComparing(Trips::getTripType));
+
+//            tripMetrics = makeViewForTripsMetrics(tripsList);
+
+        Integer prev = 0;
+        List<TripMetrics> finalMetricsList = new ArrayList<>();
+        TripMetrics metrics = null;
+        List<Trips> trips= null;
+        for(Trips t :tripsList){
+            if(prev.equals(t.getMonth())){
+                trips.add(new Trips(t.getTripType(),t.getCount()));
+            }else{
+                metrics = new TripMetrics(Date.from(LocalDate.of(year,month,t.getMonth()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                trips = new ArrayList<>();
+                trips.add(new Trips(t.getTripType(),t.getCount()));
+                metrics.setTripsList(trips);
+
+                finalMetricsList.add(metrics);
+                prev = t.getMonth();
+            }
+        }
+
+            return finalMetricsList;
+        }
+
+    public List<Trips> addDays(List<Trips> tripsList,LocalDate first,LocalDate end, TripTypes tripTypes){
+
+        tripsList.sort(Comparator.comparing(Trips::getMonth));
+        Trips trip= null;
+        for( int i=0; first.isBefore(end);){
+            if( i < tripsList.size())
+                trip = tripsList.get(i);
+            if(!trip.getMonth().equals(first.getDayOfMonth())){
+                tripsList.add(new Trips(tripTypes.name(),0L,first.getDayOfMonth()));
+                first =first.plusDays(1);
+            }else{
+                i++;
+                first = first.plusDays(1);
+            }
+
+        }
+        if(!tripsList.get(tripsList.size()-1).getMonth().equals(first.getDayOfMonth()))
+            tripsList.add(new Trips(tripTypes.name(),0L,first.getDayOfMonth()));
+        return tripsList;
+    }
+
+
 }
+
+
+
+
+
+
