@@ -9,7 +9,7 @@ import { DashboardService } from '../../providers/dashboard.service';
 })
 export class MainComponent implements OnInit {
   selectedYear: string;
-  yearList: string[];
+  yearList: any[];
   constructor(
     private router: Router,
     private activateRoute: ActivatedRoute,
@@ -17,6 +17,7 @@ export class MainComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.yearList = [2018, 2019, 2020];
     // this.getMinYear();
     this.activateRoute.queryParams.subscribe((res) => {
       this.selectedYear = (res.year) ? res.year : (new Date()).getFullYear() - 1;
@@ -26,6 +27,7 @@ export class MainComponent implements OnInit {
   getMinYear() {
     this.dashboardService.getMinYear()
       .subscribe(res => {
+        debugger
         const currentYear = new Date().getFullYear();
         let minY = res[0].year;
 
