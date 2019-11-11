@@ -37,19 +37,10 @@ public class TripRepositoryImpl implements TripRepository {
     private DataSource dataSource;
 
     @Override
-    public List<Trips> getOpenTrips() throws SQLException {
-        java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(2019, 1, 1, 0, 0, 0));
-        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(2019, 12, 31, 23, 59, 59));
+    public List<Trips> getOpenTrips(Integer year) throws SQLException {
+        java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
+        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59));
 
-        //works with jpa version 2.0
-//        BigDecimal countOfOpenTrips= (BigDecimal) em.unwrap(Session.class).createStoredProcedureCall("MSIL_OPENTRIPS")
-//                .registerStoredProcedureParameter(1, Class.class,ParameterMode.REF_CURSOR)
-//                  .registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2,date).getSingleResult();
-        //        return countOfOpenTrips.longValue();
-
-
-        //Failed because Oracle doesn't support result sets bis stored procedure.(~v 1.5.19)
-//
         List<Trips> trips = new ArrayList<>();
         StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_OPENTRIPS3");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
@@ -65,26 +56,15 @@ public class TripRepositoryImpl implements TripRepository {
             trips.add(t);
         });
 
-//        BigDecimal count= (BigDecimal) query.getSingleResult();
-//
-//        return count.longValue();
-////
-//        CallableStatement statment= dataSource.getConnection().prepareCall("{ call MSIL_OPENTRIPS(?,?)}");
-//        statment.setC
-
         return trips;
     }
 
     //
     @Override
-    public List<Trips> getClosedTrips() throws SQLException {
-        java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(2019, 1, 1, 0, 0, 0));
-        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(2019, 12, 31, 23, 59, 59));
+    public List<Trips> getClosedTrips(Integer year) throws SQLException {
+        java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
+        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59));
         List<Trips> trips = new ArrayList<>();
-//        BigDecimal countOfClosedTrips= (BigDecimal) em.unwrap(Session.class).createStoredProcedureCall("MSIL_CLOSEDTRIPS")
-//                .registerStoredProcedureParameter(1, Class.class,ParameterMode.REF_CURSOR)
-//                .registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2,date).getSingleResult();
-//        return countOfClosedTrips.longValue();
 
         StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_CLOSEDTRIPS3");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
@@ -97,29 +77,21 @@ public class TripRepositoryImpl implements TripRepository {
             Trips t = new Trips(TripTypes.Closed.name(), ((BigDecimal) r[0]).longValue(), Integer.valueOf(r[1].toString()));
             trips.add(t);
         });
-//        BigDecimal count= (BigDecimal) query.getSingleResult();
-//
-//        return count.longValue();
+
         return trips;
     }
 
     @Override
-    public List<Trips> getDelayedTrips() throws SQLException {
-        java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(2019, 1, 1, 0, 0, 0));
-        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(2019, 12, 31, 23, 59, 59));
-//        BigDecimal countOfDelayedTrips= (BigDecimal) em.unwrap(Session.class).createStoredProcedureCall("MSIL_DELAYTRIPS")
-//                .registerStoredProcedureParameter(1, Class.class,ParameterMode.REF_CURSOR).getSingleResult();
-//        return countOfDelayedTrips.longValue();
+    public List<Trips> getDelayedTrips(Integer year) throws SQLException {
+        java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
+        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59));
+
         StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_DELAYTRIPS3");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         query.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, start);
         query.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, end);
-//        query.registerStoredProcedureParameter(2,Timestamp.class,ParameterMode.IN).setParameter(2,date);
         query.execute();
 
-//        BigDecimal count= (BigDecimal) query.getSingleResult();
-//
-//        return count.longValue();
         List<Trips> trips = new ArrayList<>();
         List<Object[]> result = query.getResultList();
         result.forEach(r -> {
@@ -130,22 +102,16 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public List<Trips> getTotalTrips() throws SQLException {
-        java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(2019, 1, 1, 0, 0, 0));
-        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(2019, 12, 31, 23, 59, 59));
-//        BigDecimal countOfTotalTrips= (BigDecimal) em.unwrap(Session.class).createStoredProcedureCall("MSIL_TOTALTRIPS")
-//                .registerStoredProcedureParameter(1, Class.class,ParameterMode.REF_CURSOR)
-//                .registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2,date).getSingleResult();
-//        return countOfTotalTrips.longValue();
+    public List<Trips> getTotalTrips(Integer year) throws SQLException {
+        java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
+        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59));
+
         StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_TOTALTRIPS3");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         query.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, start);
         query.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, end);
         query.execute();
-//
-//        BigDecimal count= (BigDecimal) query.getSingleResult();
-//
-//        return  count.longValue();
+
         List<Trips> trips = new ArrayList<>();
         List<Object[]> result = query.getResultList();
         result.forEach(r -> {
@@ -160,9 +126,7 @@ public class TripRepositoryImpl implements TripRepository {
     public List<VehicleAvaliabiltyMetrics> getVehiclesAvailable(String code) {
         List<VehicleAvaliabiltyMetrics> vehicleAvaliabiltyMetrics = new ArrayList<>();
         java.sql.Timestamp date = java.sql.Timestamp.valueOf(LocalDateTime.now().minusDays(13).withHour(0).withMinute(0).withSecond(0));
-//        List<Object[]> listOfVehicles = em.unwrap(Session.class).createStoredProcedureCall("MSIL_VEH_AVAILABILITY")
-//                .registerStoredProcedureParameter(1,void.class,ParameterMode.REF_CURSOR)
-//                .registerStoredProcedureParameter(2,Timestamp.class,ParameterMode.IN).setParameter(2,date).getResultList();
+
         StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_VEH_AVAILABILITY");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         query.registerStoredProcedureParameter(2, String.class, ParameterMode.IN).setParameter(2, code);
@@ -192,7 +156,7 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public List<Trips> getOpenTripsYearly() throws SQLException {
+    public List<Trips> getOpenTrips() throws SQLException {
         List<Trips> yearlyTrips = new ArrayList<>();
         java.sql.Timestamp startDate = java.sql.Timestamp.valueOf(LocalDateTime.of(2017, 1, 1, 0, 0, 0));
 
@@ -206,10 +170,7 @@ public class TripRepositoryImpl implements TripRepository {
         List<Object[]> result = procedureQuery.getResultList();
         Trips t;
         yearlyTrips = new ArrayList<>();
-//        result.stream().forEach(r->{
-//            Trips t = new Trips(((BigDecimal)r[1]).intValue(),TripTypes.Open.name(),((BigDecimal)r[0]).longValue());
-//            yearlyTrips.add(t);
-//        });
+
         for (Object[] r : result) {
             t = new Trips(((BigDecimal) r[1]).intValue(), TripTypes.Open.name(), ((BigDecimal) r[0]).longValue());
             yearlyTrips.add(t);
@@ -218,7 +179,7 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public List<Trips> getClosedTripsYearly() throws SQLException {
+    public List<Trips> getClosedTrips() throws SQLException {
         List<Trips> yearlyTrips = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_CLOSEDTRIPS4");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
@@ -236,7 +197,7 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public List<Trips> getDelayedTripsYearly() throws SQLException {
+    public List<Trips> getDelayedTrips() throws SQLException {
         List<Trips> yearlyTrips = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_DELAYTRIPS4");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
@@ -254,7 +215,7 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public List<Trips> getTotaltripsYearly() throws SQLException {
+    public List<Trips> getTotaltrips() throws SQLException {
         List<Trips> yearlyTrips = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_TOTALTRIPS4");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
@@ -292,7 +253,6 @@ public class TripRepositoryImpl implements TripRepository {
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_CONTIDRIVE_VIOLATIONS");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2019, 9, 1, 0, 0, 0)));
-//                .setParameter(2,Timestamp.valueOf(LocalDateTime.now().minusDays(1l)));
         procedureQuery.execute();
 
         List<Object[]> result = procedureQuery.getResultList();
@@ -420,14 +380,12 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(3, String.class, ParameterMode.IN).setParameter(3, custId);
 
         procedureQuery.execute();
-//        Object result = procedureQuery.get();
         List<Object[]> result = procedureQuery.getResultList();
         result.stream().forEach(r -> {
             FleetUtilized fleetUtilized = new FleetUtilized(date,day,
                     ((BigDecimal) r[0]).longValue(), ((BigDecimal) r[1]).longValue(), (BigDecimal) r[2]);
             fleetUtilizedList.add(fleetUtilized);
         });
-//         = new FleetUtilized((BigDecimal)r[0]).longValue(),((BigDecimal)r[1]).longValue(),(BigDecimal) r[2]);
         return fleetUtilizedList.get(0);
     }
 
@@ -588,20 +546,21 @@ public class TripRepositoryImpl implements TripRepository {
         procedureQuery.registerStoredProcedureParameter(4, String.class, ParameterMode.IN).setParameter(4, custId);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-if(type.equals(Duration.month)){
+
+        if(type.equals(Duration.month)){
         result.stream().forEach(r -> {
             FleetUtilized fleetUtilized = new FleetUtilized(name,
                     ((BigDecimal) r[0]).longValue(), ((BigDecimal) r[1]).longValue(), (BigDecimal) r[2]);
             list.add(fleetUtilized);
         });}
-else
-{
-    result.stream().forEach(r -> {
-        FleetUtilized fleetUtilized = new FleetUtilized(
+        else
+        {
+         result.stream().forEach(r -> {
+            FleetUtilized fleetUtilized = new FleetUtilized(
                 ((BigDecimal) r[0]).longValue(), ((BigDecimal) r[1]).longValue(), (BigDecimal) r[2],name);
-        list.add(fleetUtilized);
-    });
-}
+            list.add(fleetUtilized);
+            });
+        }
         return list.get(0);
     }
 
@@ -639,13 +598,10 @@ else
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_OPENTRIPS6");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, new java.sql.Timestamp(d.getTime()));
-      //  procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
         procedureQuery.registerStoredProcedureParameter(3, String.class, ParameterMode.IN).setParameter(3, "PAST");
 
         procedureQuery.execute();
-       Long result = Long.parseLong(procedureQuery.getSingleResult().toString());
-
-
+        Long result = Long.parseLong(procedureQuery.getSingleResult().toString());
         Trips t = new Trips(TripTypes.Open.name(),day,result);
         return t;
     }
