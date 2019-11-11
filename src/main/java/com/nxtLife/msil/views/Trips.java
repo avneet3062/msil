@@ -43,6 +43,10 @@ public class Trips {
     public Trips() {
     }
 
+    public Trips(Integer month) {
+        this.month = month;
+    }
+
     public Trips(String tripType, Long count) {
         this.tripType = tripType;
         this.count = count;
@@ -86,4 +90,6 @@ public class Trips {
     public void setMonth(Integer month) {
         this.month = month;
     }
+
+
 }

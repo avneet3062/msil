@@ -65,7 +65,15 @@ export class DashboardService {
   }
 
   getYearlyTrips() {
-    return this.api.get('api/metrics/tripsYearly');
+    return this.api.get('api/metrics/trips');
+  }
+
+  getMonthlyTrips(year) {
+    return this.api.get('api/metrics/trips?year=' + year);
+  }
+
+  getDayWiseTrips(year, month) {
+    return this.api.get('api/metrics/trips?year=' + year + '&month=' + month);
   }
 
   getTripsByYear(year) {
