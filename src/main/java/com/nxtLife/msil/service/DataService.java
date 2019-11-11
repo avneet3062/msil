@@ -417,10 +417,10 @@ public class DataService {
         if(year == null || month== null)
             throw new NotFoundException("Year and Month are Mandatory");
 
-            tripsList.addAll(addDays(tripRepository.getOpenTrips(year,month),first,end,TripTypes.Open));
+//            tripsList.addAll(addDays(tripRepository.getOpenTrips(year,month),first,end,TripTypes.Open));
             tripsList.addAll(addDays(tripRepository.getClosedTrips(year, month),first,end,TripTypes.Closed ));
             tripsList.addAll(addDays(tripRepository.getDelayedTrips(year,month),first,end,TripTypes.Delayed ));
-            tripsList.addAll(addDays(tripRepository.getTotalTrips(year,month),first,end,TripTypes.Total));
+//            tripsList.addAll(addDays(tripRepository.getTotalTrips(year,month),first,end,TripTypes.Total));
 
             tripsList.sort(Comparator.comparing(Trips::getMonth).thenComparing(Trips::getTripType));
 
