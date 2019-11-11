@@ -989,10 +989,10 @@ DBMS_OUTPUT.put_line(SQL_STMT);
                         WHEN b.utilized IS NULL THEN 0
                         ELSE b.utilized
                     END "UTILIZED_COUNT",
-                    round(CASE
+                    DECODE(a.all_days,0,0,round(CASE
                         WHEN b.utilized IS NULL THEN 0
                         ELSE b.utilized
-                    END / a.all_days * 100,2) "Percentage"
+                    END / a.all_days * 100,2)) "Percentage"
                 FROM
                     t7 a
                     CROSS JOIN t5 b;

@@ -18,12 +18,12 @@ export class NavbarComponent implements OnInit {
     @ViewChild('app-navbar-cmp') button;
     @Output() year: EventEmitter<string> = new EventEmitter(null);
     @Input() selectedYear: string;
-    @Input() yearList: string[];
-    yearList1 = ['2018', '2019', '2020', '2021'];
+    @Input() yearList: string[] = ['2018', '2019', '2020', '2021'];
     constructor(location: Location, private renderer: Renderer, private router: Router, private element: ElementRef) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
+        this.yearChange(new Date().getFullYear().toString());
     }
 
     ngOnInit() {
@@ -59,7 +59,7 @@ export class NavbarComponent implements OnInit {
     }
 
     yearChange(year) {
-        // this.year.emit(year);
+        this.year.emit(year);
     }
 
     logout() {

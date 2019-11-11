@@ -1,5 +1,6 @@
 package com.nxtLife.msil.repository;
 
+import com.nxtLife.msil.enums.Duration;
 import com.nxtLife.msil.enums.Violations;
 import com.nxtLife.msil.views.*;
 
@@ -11,25 +12,25 @@ import java.util.List;
 
 public interface TripRepository {
 
+    List<Trips> getOpenTrips(Integer month) throws SQLException;
+
+    List<Trips> getClosedTrips(Integer month) throws SQLException;
+
+    List<Trips> getDelayedTrips(Integer month) throws SQLException;
+
+    List<Trips> getTotalTrips(Integer month) throws SQLException;
+
+    List<VehicleAvaliabiltyMetrics> getVehiclesAvailable(String code);
+
+    List<Locations> getLocations();
+
     List<Trips> getOpenTrips() throws SQLException;
 
     List<Trips> getClosedTrips() throws SQLException;
 
     List<Trips> getDelayedTrips() throws SQLException;
 
-    List<Trips> getTotalTrips() throws SQLException;
-
-    List<VehicleAvaliabiltyMetrics> getVehiclesAvailable(String code);
-
-    List<Locations> getLocations();
-
-    List<Trips> getOpenTripsYearly() throws SQLException;
-
-    List<Trips> getClosedTripsYearly() throws SQLException;
-
-    List<Trips> getDelayedTripsYearly() throws SQLException;
-
-    List<Trips> getTotaltripsYearly() throws SQLException;
+    List<Trips> getTotaltrips() throws SQLException;
 
     List<Transporters> getTransporters();
 
@@ -47,7 +48,7 @@ public interface TripRepository {
 
     List<ViolationsCount> getOverspeedViolations();
 
-    FleetUtilized getFleetUtilization(Date date, String custId);
+    FleetUtilized getFleetUtilization(Date date,Integer day, String custId);
 
     List<ViolationsCount> getContinousDrivingViolations2(String custId,Date firstDay,Date lastDay,String order);
 
@@ -64,13 +65,13 @@ public interface TripRepository {
     List<ViolationsCount> getOverspeedViolations2(String custId,Date firstDay,Date lastDay,String order);
 
 
-    FleetUtilized getFleetUtilization(Integer month,Date firstDate, Date lastDay, String custId);
+    FleetUtilized getFleetUtilization(Integer month, Date firstDate, Date lastDay, String custId, Duration duration);
 
     int getMinimumYear();
 
     List<Trips> getTotalTrips(Integer year, Integer month);
 
-    List<Trips> getOpenTrips(Integer year, Integer month);
+    Trips getOpenTrips(Date date,Integer day);
 
     List<Trips> getClosedTrips(Integer year, Integer month);
 
