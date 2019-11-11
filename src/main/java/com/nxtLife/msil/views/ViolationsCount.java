@@ -9,7 +9,7 @@ public class ViolationsCount {
     String custName;
     private Violations name;
     private Integer count;
-    int type;
+    Integer type;
 
 
 
@@ -72,10 +72,10 @@ public class ViolationsCount {
         this.custId = custId;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;}
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type; }
 
 

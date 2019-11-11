@@ -968,7 +968,7 @@ DBMS_OUTPUT.put_line(SQL_STMT);
                     FROM
                         etrk_vehicle_mst
                     WHERE
-                        evm_customer_id = CUSTOMER_ID
+                        evm_customer_id = CUSTOMER_ID AND evm_device_installed_on <= TO_DATE(end_date,'DD-MM-YY')
                     GROUP BY
                         evm_regn_no,
                         evm_device_installed_on,
