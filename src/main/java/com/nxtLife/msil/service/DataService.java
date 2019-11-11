@@ -103,7 +103,6 @@ public class DataService {
                 tripsList = getAllTrips(null);
                 trip.setTripsList(tripsList);
                 metricsList.add(trip);
-
                 j++;
             }else{
                 i++;

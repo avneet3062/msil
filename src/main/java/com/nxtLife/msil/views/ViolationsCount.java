@@ -16,7 +16,7 @@ public class ViolationsCount {
     public ViolationsCount() {
     }
 
-    public ViolationsCount(Violations name, Integer count, int type) {
+    public ViolationsCount(Violations name, Integer count, Integer type) {
         this.name = name;
         this.count = count;
         this.type = type;
@@ -37,7 +37,7 @@ public class ViolationsCount {
         this.count = count;
     }
 
-    public ViolationsCount(int type) {
+    public ViolationsCount(Integer type) {
         this.type = type;
     }
 
@@ -77,8 +77,6 @@ public class ViolationsCount {
 
     public void setType(Integer type) {
         this.type = type; }
-
-
 
     public String getCustName() {
         return custName;
