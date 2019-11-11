@@ -30,10 +30,10 @@ public class DataService {
         List<Trips> tripsList = new ArrayList<>();
 
         try {
-            tripsList.addAll(tripRepository.getClosedTrips());
-            tripsList.addAll(tripRepository.getDelayedTrips());
-            tripsList.addAll(tripRepository.getTotalTrips());
-            tripsList.addAll(tripRepository.getOpenTrips());
+            tripsList.addAll(tripRepository.getClosedTrips(year));
+            tripsList.addAll(tripRepository.getDelayedTrips(year));
+            tripsList.addAll(tripRepository.getTotalTrips(year));
+            tripsList.addAll(tripRepository.getOpenTrips(year));
 
             tripsList.sort(Comparator.comparing(Trips::getMonth).thenComparing(Trips::getTripType));
 
@@ -107,10 +107,10 @@ public class DataService {
         List<Trips> tripsList = new ArrayList<>();
         List<TripMetrics> tripMetrics = null;
         try {
-            tripsList.addAll(tripRepository.getOpenTripsYearly());
-            tripsList.addAll(tripRepository.getClosedTripsYearly());
-            tripsList.addAll(tripRepository.getDelayedTripsYearly());
-            tripsList.addAll(tripRepository.getTotaltripsYearly());
+            tripsList.addAll(tripRepository.getOpenTrips());
+            tripsList.addAll(tripRepository.getClosedTrips());
+            tripsList.addAll(tripRepository.getDelayedTrips());
+            tripsList.addAll(tripRepository.getTotaltrips());
 
             tripsList.sort(Comparator.comparing(Trips::getYear).thenComparing(Trips::getTripType));
 
@@ -469,26 +469,6 @@ public class DataService {
 
         }
 
-//    public List<Trips> addDays(List<Trips> tripsList,LocalDate first,LocalDate end, TripTypes tripTypes){
-//
-//        tripsList.sort(Comparator.comparing(Trips::getDay));
-//        Trips trip= null;
-//        for( int i=0; first.isBefore(end);){
-//            if( i < tripsList.size())
-//                trip = tripsList.get(i);
-//            if(!trip.getDay().equals(first.getDayOfMonth())){
-//                tripsList.add(new Trips(tripTypes.name(),0L,first.getDayOfMonth()));
-//                first =first.plusDays(1);
-//            }else{
-//                i++;
-//                first = first.plusDays(1);
-//            }
-//
-//        }
-//        if(!tripsList.get(tripsList.size()-1).getDay().equals(first.getDayOfMonth()))
-//            tripsList.add(new Trips(tripTypes.name(),0L,first.getDayOfMonth()));
-//        return tripsList;
-//    }
 
     public List<Trips> getOpenTripsDaily(Integer year,Integer month)
     {
