@@ -89,7 +89,7 @@ export class DashboardComponent implements OnInit {
       });
       tripMonthlyList.forEach((element, index) => {
         tripsData[index + 1] = [];
-        tripsData[index + 1].push(element.year);
+        tripsData[index + 1].push('' + element.year);
         element.tripsList.forEach(el => {
           tripsData[index + 1].push(el.count);
         })
@@ -97,29 +97,29 @@ export class DashboardComponent implements OnInit {
 
       const data = google.visualization.arrayToDataTable(tripsData);
       const options = {
+        bar: { groupWidth: "10%" },
         hAxis: {
           title: 'Year',
           format: ' ',
-          viewWindow: {
-            max: new Date().getFullYear() - 2,
-            min: new Date().getFullYear() + 2
-          }
+          // viewWindow: {
+          //   max: new Date().getFullYear() - 2,
+          //   min: new Date().getFullYear()
+          // }
         },
         vAxis: {
           title: 'Count'
-        }
+        },
+        isStacked: true
         // title: 'Tags Issued Monthly Trend',
         // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
       };
-      const chart = new google.visualization.LineChart(document.getElementById('tripChart'));
+      const chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
       google.visualization.events.addListener(chart, 'click', (e) => {
-        console.log(e);
-
         const parts = e.targetID.split('#');
-        if (parts[0] == "hAxis")
-          console.log(parts);
+        if (parts[0] == "hAxis") {
+          this.getTripsByYear(tripsData[parseInt(parts[3]) + 1][0]);
+        }
 
-        // this.getTripsByYear(2019);
       });
       chart.draw(data, options);
     })
@@ -127,30 +127,68 @@ export class DashboardComponent implements OnInit {
   }
 
   getTripsByYear(year: number) {
-    this.dashboardservice.getTripsByYear(year).subscribe((response: any) => {
-      const tripMonthlyList = response.tripMonthlyList;
+    this.dashboardservice.getMonthlyTrips(year).subscribe((response: any) => {
+      const tripMonthlyList = response;
       const tripsData = [[]];
       tripsData[0] = [];
       tripsData[0].push('month')
-      tripMonthlyList[0].trips.forEach(element => {
+      tripMonthlyList[0].tripsList.forEach(element => {
         tripsData[0].push(element.tripType);
       });
       tripMonthlyList.forEach((element, index) => {
         tripsData[index + 1] = [];
         tripsData[index + 1].push(months[element.month - 1]);
-        element.trips.forEach(el => {
+        element.tripsList.forEach(el => {
           tripsData[index + 1].push(el.count);
         })
       });
 
       const data = google.visualization.arrayToDataTable(tripsData);
       const options = {
-        hAxis: { title: 'Month' },
-        vAxis: { title: 'Count' }
+        hAxis: { title: 'Months of ' + year },
+        vAxis: { title: 'Count' },
+        isStacked: true
         // title: 'Tags Issued Monthly Trend',
         // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
       };
-      const chart = new google.visualization.LineChart(document.getElementById('tripChart'));
+      const chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
+      google.visualization.events.addListener(chart, 'click', (e) => {
+        const parts = e.targetID.split('#');
+        if (parts[0] == "hAxis") {
+          this.getTripsByMonth(year, months.indexOf(tripsData[parseInt(parts[3]) + 1][0]) + 1);
+        }
+
+      });
+      chart.draw(data, options);
+    })
+  }
+
+  getTripsByMonth(year: number, month: number) {
+    this.dashboardservice.getDayWiseTrips(year, month).subscribe((response: any) => {
+      const tripMonthlyList = response;
+      const tripsData = [[]];
+      tripsData[0] = [];
+      tripsData[0].push('Day')
+      tripMonthlyList[0].tripsList.forEach(element => {
+        tripsData[0].push(element.tripType);
+      });
+      tripMonthlyList.forEach((element, index) => {
+        tripsData[index + 1] = [];
+        tripsData[index + 1].push('' + element.day);
+        element.tripsList.forEach(el => {
+          tripsData[index + 1].push(el.count);
+        })
+      });
+
+      const data = google.visualization.arrayToDataTable(tripsData);
+      const options = {
+        hAxis: { title: 'Days of ' + months[month - 1] + '-' + year },
+        vAxis: { title: 'Count' },
+        isStacked: true
+        // title: 'Tags Issued Monthly Trend',
+        // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+      };
+      const chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
       chart.draw(data, options);
     })
   }
@@ -235,17 +273,13 @@ export class DashboardComponent implements OnInit {
     this.dashboardservice.getTransporters().subscribe((response: any[]) => {
       this.transporters = response;
       this.Transporter = 'ECUS519'
+      this.selectedCustomer = 'ECUS875';
       this.getFleetUtilizationByCustId(this.Transporter);
+      this.getViolationsByCustomer(this.selectedCustomer);
     })
   }
 
-  getViolations() {
-    this.dashboardservice.getViolations().subscribe((response: any[]) => {
-      this.violations = response;
-      this.selectedCustomer = 'ECUS875';
-      this.getViolationsByCustomer('ECUS875');
-    })
-  }
+
   getViolationsByCustomer(custId) {
     this.dashboardservice.getViolationsByCustomerId(custId).subscribe(response => {
       this.drawViolationChart(custId, response.violationsMetricsList);
