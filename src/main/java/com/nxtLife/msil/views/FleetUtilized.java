@@ -18,30 +18,30 @@ public class FleetUtilized {
     private Integer year;
     private Integer month;
     Long total;
-    Long count;
+    Long utilized;
     BigDecimal percent;
 
 
     public FleetUtilized() {
     }
 
-    public FleetUtilized(Date date,Integer day, Long total, Long count, BigDecimal percent) {
+    public FleetUtilized(Date date,Integer day, Long total, Long utilized, BigDecimal percent) {
         this.day=day;
         this.date = date;
         this.total = total;
-        this.count = count;
+        this.utilized = utilized;
         this.percent = percent;
     }
-    public FleetUtilized(Integer month, Long total, Long count, BigDecimal percent) {
+    public FleetUtilized(Integer month, Long total, Long utilized, BigDecimal percent) {
         this.month = month;
         this.total = total;
-        this.count = count;
+        this.utilized = utilized;
         this.percent = percent;
     }
-    public FleetUtilized( Long total, Long count, BigDecimal percent,Integer year) {
+    public FleetUtilized( Long total, Long utilized, BigDecimal percent,Integer year) {
         this.year = year;
         this.total = total;
-        this.count = count;
+        this.utilized = utilized;
         this.percent = percent;
     }
 
@@ -88,12 +88,12 @@ public class FleetUtilized {
         this.total = total;
     }
 
-    public Long getCount() {
-        return count;
+    public Long getUtilized() {
+        return utilized;
     }
 
-    public void setCount(Long count) {
-        this.count = count;
+    public void setUtilized(Long utilized) {
+        this.utilized = utilized;
     }
 
     public BigDecimal getPercent() {
