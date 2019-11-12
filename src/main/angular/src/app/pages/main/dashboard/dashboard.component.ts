@@ -15,7 +15,6 @@ export class DashboardComponent implements OnInit {
   locationCode: any;
   selectedCustomer: string;
   selectedYear: any;
-  fleetUtilizationData: { "custId": string; "list": { "date": string; "total": number; "count": number; "percent": number; }[]; };
   violations: any[];
   transporters: any[];
   Transporter = "";
@@ -36,9 +35,14 @@ export class DashboardComponent implements OnInit {
   totalRecharge = 0;
   totalRechargeValue = false;
   months = months;
+
+  tripsChart: any = {};
+  violationsChart: any = {};
+  fleetUtilizationsChart: any = {};
   constructor(private dashboardservice: DashboardService, private activateRoute: ActivatedRoute) {
 
   }
+
   ngOnInit() {
     this.dashboardservice.getLocations().subscribe((response: any[]) => {
       this.locations = response
@@ -80,55 +84,62 @@ export class DashboardComponent implements OnInit {
 
   getTrips() {
     this.dashboardservice.getYearlyTrips().subscribe((response: any[]) => {
-      const tripMonthlyList = response;
-      const tripsData = [[]];
-      tripsData[0] = [];
-      tripsData[0].push('year')
-      tripMonthlyList[0].tripsList.forEach(element => {
-        tripsData[0].push(element.tripType);
-      });
-      tripMonthlyList.forEach((element, index) => {
-        tripsData[index + 1] = [];
-        tripsData[index + 1].push('' + element.year);
-        element.tripsList.forEach(el => {
-          tripsData[index + 1].push(el.count);
-        })
-      });
+      this.tripsChart.data = response;
+      this.drawTripsChartYearwise(response);
+    });
+  }
 
-      const data = google.visualization.arrayToDataTable(tripsData);
-      const options = {
-        bar: { groupWidth: "10%" },
-        hAxis: {
-          title: 'Year',
-          format: ' ',
-          // viewWindow: {
-          //   max: new Date().getFullYear() - 2,
-          //   min: new Date().getFullYear()
-          // }
-        },
-        vAxis: {
-          title: 'Count'
-        },
-        isStacked: true
-        // title: 'Tags Issued Monthly Trend',
-        // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
-      };
-      const chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
-      google.visualization.events.addListener(chart, 'click', (e) => {
-        const parts = e.targetID.split('#');
-        if (parts[0] == "hAxis") {
-          this.getTripsByYear(tripsData[parseInt(parts[3]) + 1][0]);
-        }
+  drawTripsChartYearwise(tripsResponse) {
+    debugger
+    this.tripsChart.drill = 0;
+    const tripsData = [[]];
+    tripsData[0] = [];
+    tripsData[0].push('year')
+    tripsResponse[0].tripsList.forEach(element => {
+      tripsData[0].push(element.tripType);
+    });
+    tripsResponse.forEach((element, index) => {
+      tripsData[index + 1] = [];
+      tripsData[index + 1].push('' + element.year);
+      element.tripsList.forEach(el => {
+        tripsData[index + 1].push(el.count);
+      })
+    });
 
-      });
-      chart.draw(data, options);
-    })
+    const data = google.visualization.arrayToDataTable(tripsData);
+    const options = {
+      bar: { groupWidth: "10%" },
+      hAxis: {
+        title: 'Year',
+        format: ' ',
+        // viewWindow: {
+        //   max: new Date().getFullYear() - 2,
+        //   min: new Date().getFullYear()
+        // }
+      },
+      vAxis: {
+        title: 'Count'
+      },
+      isStacked: true
+      // title: 'Tags Issued Monthly Trend',
+      // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+    };
+    const chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
+    google.visualization.events.addListener(chart, 'click', (e) => {
+      const parts = e.targetID.split('#');
+      if (parts[0] == "hAxis") {
+        this.getTripsByYear(tripsData[parseInt(parts[3]) + 1][0]);
+      }
 
+    });
+    chart.draw(data, options);
   }
 
   getTripsByYear(year: number) {
+    this.tripsChart.year = year;
     this.dashboardservice.getMonthlyTrips(year).subscribe((response: any) => {
       const tripMonthlyList = response;
+      this.tripsChart.drill = 1;
       const tripsData = [[]];
       tripsData[0] = [];
       tripsData[0].push('month')
@@ -164,8 +175,11 @@ export class DashboardComponent implements OnInit {
   }
 
   getTripsByMonth(year: number, month: number) {
+    this.tripsChart.year = year;
+    this.tripsChart.month = month;
     this.dashboardservice.getDayWiseTrips(year, month).subscribe((response: any) => {
       const tripMonthlyList = response;
+      this.tripsChart.drill = 2;
       const tripsData = [[]];
       tripsData[0] = [];
       tripsData[0].push('Day')
@@ -282,11 +296,13 @@ export class DashboardComponent implements OnInit {
 
   getViolationsByCustomer(custId) {
     this.dashboardservice.getViolationsByCustomerId(custId).subscribe(response => {
+      this.violationsChart.data = response.violationsMetricsList;
       this.drawViolationChart(custId, response.violationsMetricsList);
     })
   }
 
   drawViolationChart(custId, violationsMetricsList): any {
+    this.violationsChart.drill = 0;
     const violationChartData = [[]];
     violationChartData[0] = ['Year']
     violationsMetricsList[0].violations.forEach(element => {
@@ -323,6 +339,8 @@ export class DashboardComponent implements OnInit {
   }
 
   drawViolationChartByMonth(custId, year, violationsMetricsList): any {
+    this.violationsChart.drill = 1;
+    this.violationsChart.year = year;
     const violationChartData = [[]];
     violationChartData[0] = ['Month']
     violationsMetricsList[0].violations.forEach(element => {
@@ -359,6 +377,7 @@ export class DashboardComponent implements OnInit {
   }
 
   drawViolationChartByDay(year, month, violationsMetricsList): any {
+    this.violationsChart.drill = 2;
     const violationChartData = [[]];
     violationChartData[0] = ['Day']
     violationsMetricsList[0].violations.forEach(element => {
@@ -385,6 +404,7 @@ export class DashboardComponent implements OnInit {
 
   getFleetUtilizationByCustId(custId) {
     this.dashboardservice.getFleetUtilizationByCustId(custId).subscribe((response) => {
+      this.fleetUtilizationsChart.data = response.list;
       this.drawFleetUtilization(custId, response.list);
     }, (error) => {
 
@@ -392,6 +412,7 @@ export class DashboardComponent implements OnInit {
   }
 
   drawFleetUtilization(custId, fleetUtilizations) {
+    this.fleetUtilizationsChart.drill = 0;
     const fleetUtilizationChartData = [[]];
     fleetUtilizationChartData[0] = ['Year', 'Percent', { type: 'string', role: 'tooltip' }];
     fleetUtilizations.forEach(v => {
@@ -426,6 +447,8 @@ export class DashboardComponent implements OnInit {
   }
 
   drawFleetUtilizationByYear(year, custId, fleetUtilizations) {
+    this.fleetUtilizationsChart.drill = 1;
+    this.fleetUtilizationsChart.year = year;
     const fleetUtilizationChartData = [[]];
     fleetUtilizationChartData[0] = ['Month', 'Percent', { type: 'string', role: 'tooltip' }];
     fleetUtilizations.forEach(v => {
@@ -462,6 +485,7 @@ export class DashboardComponent implements OnInit {
   }
 
   drawFleetUtilizationByYearAndMonth(month, year, custId, fleetUtilizations) {
+    this.fleetUtilizationsChart.drill = 2;
     const fleetUtilizationChartData = [[]];
     fleetUtilizationChartData[0] = ['Day', 'Percent', { type: 'string', role: 'tooltip' }];
     fleetUtilizations.forEach(v => {
@@ -480,6 +504,49 @@ export class DashboardComponent implements OnInit {
     };
     const chart = new google.visualization.ColumnChart(document.getElementById('fleetUtilizationChart'));
     chart.draw(data, options);
+  }
+
+  onResizeWindow() {
+    this.drawTripsChartYearwise(this.tripsChart.data);
+    this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data);
+    this.drawViolationChart(this.selectedCustomer, this.violationsChart.data);
+  }
+
+  drillBackCharts(name, drillCount) {
+    switch (name) {
+      case 'tripChart':
+        switch (drillCount) {
+          case 1:
+            this.getTrips();
+            break;
+          case 2:
+            this.getTripsByYear(this.tripsChart.year);
+            break;
+        }
+        break;
+
+      case 'violationChart':
+        switch (drillCount) {
+          case 1:
+            this.getViolationsByCustomer(this.selectedCustomer);
+            break;
+          case 2:
+            this.getViolatonsByYear(this.violationsChart.year, this.selectedCustomer);
+            break;
+        }
+        break;
+
+      case 'fleetUtilizationChart':
+        switch (drillCount) {
+          case 1:
+            this.getFleetUtilizationByCustId(this.Transporter);
+            break;
+          case 2:
+            this.getFleetUtilizationByCustIdAndYear(this.fleetUtilizationsChart.year, this.Transporter);
+            break;
+        }
+        break;
+    }
   }
 
 }

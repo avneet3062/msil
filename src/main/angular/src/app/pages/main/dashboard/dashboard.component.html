@@ -12,6 +12,12 @@
                         <h4 class="">Trips</h4>
                     </div>
                     <div class="content">
+
+                        <div *ngIf="tripsChart.drill" class="slide-main" (click)="drillBackCharts('tripChart', tripsChart.drill)">
+                            <div class="slide">
+                                <i class="fa fa-angle-left" aria-hidden="true"></i>
+                            </div>
+                        </div>
                         <div id="tripChart" class="ct-chart">
                             <img src="assets/img/loading.gif">
                         </div>
@@ -67,7 +73,7 @@
                         </h4>
                     </div>
                     <div class="content">
-                        <div class="slide-main">
+                        <div *ngIf="violationsChart.drill" class="slide-main" (click)="drillBackCharts('violationChart', violationsChart.drill)">
                             <div class="slide">
                                 <i class="fa fa-angle-left" aria-hidden="true"></i>
                             </div>
@@ -88,7 +94,7 @@
                         </h4>
                     </div>
                     <div class="content">
-                        <div class="slide-main">
+                        <div *ngIf="fleetUtilizationsChart.drill" class="slide-main" (click)="drillBackCharts('fleetUtilizationChart', fleetUtilizationsChart.drill)">
                             <div class="slide">
                                 <i class="fa fa-angle-left" aria-hidden="true"></i>
                             </div>
