@@ -9,14 +9,14 @@ public class ViolationsCount {
     String custName;
     private Violations name;
     private Integer count;
-    int type;
+    Integer type;
 
 
 
     public ViolationsCount() {
     }
 
-    public ViolationsCount(Violations name, Integer count, int type) {
+    public ViolationsCount(Violations name, Integer count, Integer type) {
         this.name = name;
         this.count = count;
         this.type = type;
@@ -37,7 +37,7 @@ public class ViolationsCount {
         this.count = count;
     }
 
-    public ViolationsCount(int type) {
+    public ViolationsCount(Integer type) {
         this.type = type;
     }
 
@@ -72,13 +72,11 @@ public class ViolationsCount {
         this.custId = custId;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;}
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type; }
-
-
 
     public String getCustName() {
         return custName;

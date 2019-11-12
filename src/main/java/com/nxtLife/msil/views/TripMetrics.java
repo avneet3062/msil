@@ -9,6 +9,7 @@ import java.util.List;
 public class TripMetrics {
     private Integer year;
     private Integer month;
+    private Integer day;
 
     @JsonFormat(pattern = "dd-MMM-YYYY",timezone = "IST")
     private Date date;
@@ -81,5 +82,13 @@ public class TripMetrics {
 
     public void setTripMonthly(TripMonthly tripMonthly) {
         this.tripMonthly = tripMonthly;
+    }
+
+    public Integer getDay() {
+        return day;
+    }
+
+    public void setDay(Integer day) {
+        this.day = day;
     }
 }

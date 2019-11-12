@@ -23,70 +23,104 @@ public class DataService {
     @Autowired
     private TripRepository tripRepository;
 
-    public TripMetrics getTripsMetrics(Integer year, Integer month) {
+    public List<TripMetrics> getTripsMetrics(Integer year, Integer month) {
         //TODO- check for year and month
 
         TripMetrics metrics = null;
         List<Trips> tripsList = new ArrayList<>();
+        List<TripMetrics> finalList= new ArrayList<>();
 
-        try {
-            tripsList.addAll(tripRepository.getClosedTrips(year));
-            tripsList.addAll(tripRepository.getDelayedTrips(year));
-            tripsList.addAll(tripRepository.getTotalTrips(year));
-            tripsList.addAll(tripRepository.getOpenTrips(year));
+        if(year == null && month == null)
+            finalList = getAlltripsYearly();
 
-            tripsList.sort(Comparator.comparing(Trips::getMonth).thenComparing(Trips::getTripType));
 
-            metrics = makeViewForTripsMetrics(tripsList, year);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if(year != null && month!=null)
+            finalList = getTrips(year,month);
+
+        if( year!= null && month == null){
+            try {
+                tripsList.addAll(tripRepository.getClosedTrips(year));
+                tripsList.addAll(tripRepository.getDelayedTrips(year));
+                tripsList.addAll(tripRepository.getTotalTrips(year));
+                tripsList.addAll(tripRepository.getOpenTrips(year));
+
+                tripsList.sort(Comparator.comparing(Trips::getMonth).thenComparing(Trips::getTripType));
+
+                finalList = makeViewForTripsMetrics(tripsList, year);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        return metrics;
+        return finalList;
     }
 
-    public TripMetrics makeViewForTripsMetrics(List<Trips> trips, int year) {
+    public List<TripMetrics> makeViewForTripsMetrics(List<Trips> trips, int year) {
         TripMetrics metrics = null;
         int prevMonth = 0;
-        Trips tripData = null;
-        TripMonthly tripsMonthly = null;
         List<Trips> tripInMonth = null;
-        List<TripMonthly> finalList = new ArrayList<>();
 
-        metrics = new TripMetrics(2019);
-        for (Trips t : trips) {
-            if (t.getMonth() == prevMonth) {
-                tripInMonth.add(new Trips(t.getTripType(), t.getCount()));
-                tripsMonthly.setTrips(tripInMonth);
+        List<TripMetrics> finalList = new ArrayList<>();
+        List<TripMetrics> list = null;
+        TripMetrics trip;
 
-            } else {
-                if (tripsMonthly != null && tripsMonthly.getTrips().size() < 4) {
-                    tripsMonthly.setTrips(getAllTrips(tripsMonthly.getTrips()));
+        for(Trips t1 :trips){
+            if(prevMonth == t1.getMonth()){
+                tripInMonth.add(new Trips(t1.getTripType(),t1.getCount()));
+            }
+            else{
+                if(tripInMonth != null && tripInMonth.size() < 4){
+                    tripInMonth=getAllTrips(tripInMonth);
                 }
-                tripsMonthly = new TripMonthly();
+
+                trip= new TripMetrics();
+                trip.setMonth(t1.getMonth());
                 tripInMonth = new ArrayList<>();
+                tripInMonth.add(new Trips(t1.getTripType(),t1.getCount()));
+                trip.setTripsList(tripInMonth);
 
-                tripsMonthly.setMonth(t.getMonth());
-                tripInMonth.add(new Trips(t.getTripType(), t.getCount()));
-                tripsMonthly.setTrips(tripInMonth);
-
-                finalList.add(tripsMonthly);
-                metrics.setTripMonthlyList(finalList);
-
-                prevMonth = t.getMonth();
+                prevMonth = t1.getMonth();
+                finalList.add(trip);
             }
         }
 
-        if (tripsMonthly != null && tripsMonthly.getTrips().size() < 4) {
-            tripsMonthly.setTrips(getAllTrips(tripsMonthly.getTrips()));
+        if(tripInMonth != null && tripInMonth.size() < 4){
+            tripInMonth.addAll(getAllTrips(tripInMonth));
         }
-        return metrics;
+        finalList = finalList.size() < 12 ? getMonthsList(finalList) : finalList;
+        return finalList;
+    }
+
+    public List<TripMetrics> getMonthsList(List<TripMetrics> metricsList){
+        TripMetrics trip= null ;
+        List<Trips> tripsList= null;
+        List<TripMetrics> finalList = new ArrayList<>();
+
+        for(int j=1, i=0; j<=12; ){
+            if(!metricsList.get(i).getMonth().equals(j) ){
+                trip = new TripMetrics();
+                trip.setMonth(j);
+                tripsList = new ArrayList<>();
+                tripsList = getAllTrips(null);
+                trip.setTripsList(tripsList);
+                metricsList.add(trip);
+                j++;
+            }else{
+                i++;
+                j++;
+            }
+        }
+        metricsList.sort(Comparator.comparing(TripMetrics::getMonth));
+     return metricsList;
     }
 
     public List<Trips> getAllTrips(List<Trips> trips) {
         boolean notExits = false;
+        if(trips == null){
+            trips = new ArrayList<>();
+            trips.add(new Trips(TripTypes.Open.name(),0L));
+        }
         for (TripTypes t : TripTypes.values()) {
             notExits = trips.stream().noneMatch(trip -> trip.getTripType().equals(t.name()));
-
             if (notExits)
                 trips.add(new Trips(t.name(), 0l));
         }
@@ -425,8 +459,6 @@ public class DataService {
 
             allTrips.sort(Comparator.comparing(Trips::getDay).thenComparing(Trips::getTripType));
 
-//            tripMetrics = makeViewForTripsMetrics(tripsList);
-
         Integer prev = 0;
         List<TripMetrics> finalMetricsList = new ArrayList<>();
         TripMetrics metrics = null;
@@ -436,6 +468,7 @@ public class DataService {
                 trips.add(new Trips(t.getTripType(),t.getCount()));
             }else{
                 metrics = new TripMetrics(Date.from(LocalDate.of(year,month,t.getDay()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                metrics.setDay(t.getDay());
                 trips = new ArrayList<>();
                 trips.add(new Trips(t.getTripType(),t.getCount()));
                 metrics.setTripsList(trips);
@@ -488,7 +521,7 @@ public class DataService {
             firstDay.add(Calendar.DATE, 1);
         }
 
-return openTrips;
+        return openTrips;
 
     }
 
