@@ -470,7 +470,6 @@ var CustomHttpService = /** @class */ (function () {
             switch (errorResponse.status) {
                 case 401:
                     _this.router.navigate(['/login']).then(function () {
-                        _this.tost.errorAlert('invalid credentials please try again ');
                     });
                     _this.storage.clearData();
                     break;

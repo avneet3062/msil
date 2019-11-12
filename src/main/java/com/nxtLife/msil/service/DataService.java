@@ -86,7 +86,11 @@ public class DataService {
         if(tripInMonth != null && tripInMonth.size() < 4){
             tripInMonth.addAll(getAllTrips(tripInMonth));
         }
-        finalList = finalList.size() < 12 ? getMonthsList(finalList) : finalList;
+
+
+
+//        finalList.sort(Comparator.comparing(TripMetrics::getMonth));
+//        finalList = finalList.size() < 12 ? getMonthsList(finalList) : finalList;
         return finalList;
     }
 
@@ -96,20 +100,22 @@ public class DataService {
         List<TripMetrics> finalList = new ArrayList<>();
 
         for(int j=1, i=0; j<=12; ){
-            if(!metricsList.get(i).getMonth().equals(j) ){
+            if(metricsList.get(i).getMonth().equals(j) && i < metricsList.size()){
+                i++;
+                j++;
+            }else{
                 trip = new TripMetrics();
                 trip.setMonth(j);
                 tripsList = new ArrayList<>();
                 tripsList = getAllTrips(null);
                 trip.setTripsList(tripsList);
                 metricsList.add(trip);
-                j++;
-            }else{
-                i++;
+
                 j++;
             }
         }
-        metricsList.sort(Comparator.comparing(TripMetrics::getMonth));
+
+     metricsList.sort(Comparator.comparing(TripMetrics::getMonth));
      return metricsList;
     }
 
@@ -343,10 +349,12 @@ public class DataService {
             List<FleetUtilized> list = new ArrayList<>();
             Calendar firstDay = Calendar.getInstance();
             Calendar lastDay = Calendar.getInstance();
-
+            Date today = Calendar.getInstance().getTime();
             firstDay.set(year, month - 1, 1);
             lastDay.set(year, month - 1, firstDay.getActualMaximum(Calendar.DATE));
             lastDay.add(Calendar.DATE, 1);
+            if(today.before(lastDay.getTime()))
+                lastDay.setTime(today);
             Date d;
             while (firstDay.before(lastDay)) {
                 d = firstDay.getTime();

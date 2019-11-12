@@ -270,7 +270,7 @@ var FooterModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-default\">\r\n    <div class=\"container-fluid\">\r\n        <div class=\"navbar-header\">\r\n            <button type=\"button\" class=\"navbar-toggle\" (click)=\"sidebarToggle()\">\r\n                <span class=\"sr-only\">Toggle navigation</span>\r\n                <span class=\"icon-bar bar1\"></span>\r\n                <span class=\"icon-bar bar2\"></span>\r\n                <span class=\"icon-bar bar3\"></span>\r\n            </button>\r\n            <a class=\"navbar-brand\">{{getTitle()}}</a>\r\n        </div>\r\n        <div class=\"collapse navbar-collapse\">\r\n            <ul class=\"nav navbar-nav navbar-right\">\r\n                <li>\r\n                    <a>\r\n                        <i class=\"logout\">\r\n                            <img src=\"../assets/img/logout.png\" /> </i>\r\n                        <p (click)=\"logout()\">logout</p>\r\n                    </a>\r\n                </li>\r\n            </ul>\r\n\r\n        </div>\r\n    </div>\r\n</nav>"
+module.exports = "<nav class=\"navbar navbar-default\">\r\n    <div class=\"container-fluid\">\r\n        <div class=\"navbar-header\">\r\n            <button type=\"button\" class=\"navbar-toggle\" (click)=\"sidebarToggle()\">\r\n                <span class=\"sr-only\">Toggle navigation</span>\r\n                <span class=\"icon-bar bar1\"></span>\r\n                <span class=\"icon-bar bar2\"></span>\r\n                <span class=\"icon-bar bar3\"></span>\r\n            </button>\r\n            <a class=\"navbar-brand\">{{getTitle()}}</a>\r\n        </div>\r\n        <div class=\"collapse navbar-collapse\">\r\n            <ul class=\"nav navbar-nav navbar-right\">\r\n                <!-- <li class=\"dropdown year-drop\">\r\n                    <a class=\"dropdown-toggle\" data-toggle=\"dropdown\">\r\n                        <p> Year {{selectedYear}} </p>\r\n                        <b class=\"caret\"></b>\r\n                    </a>\r\n                    <ul class=\"dropdown-menu\">\r\n                        <li *ngFor=\"let y of yearList\">\r\n                            <a (click)=\"yearChange(y)\">{{y}} </a>\r\n                        </li>\r\n                    </ul>\r\n                </li> -->\r\n                <li>\r\n                    <a>\r\n                        <i class=\"logout\">\r\n                            <img src=\"../assets/img/logout.png\" /> </i>\r\n                        <p (click)=\"logout()\">logout</p>\r\n                    </a>\r\n                </li>\r\n            </ul>\r\n\r\n        </div>\r\n    </div>\r\n</nav>"
 
 /***/ }),
 
@@ -311,10 +311,11 @@ var NavbarComponent = /** @class */ (function () {
         this.router = router;
         this.element = element;
         this.year = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"](null);
-        this.yearList1 = ['2018', '2019', '2020', '2021'];
+        this.yearList = ['2018', '2019', '2020', '2021'];
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
+        this.yearChange(new Date().getFullYear().toString());
     }
     NavbarComponent.prototype.ngOnInit = function () {
         this.listTitles = _sidebar_sidebar_component__WEBPACK_IMPORTED_MODULE_2__["ROUTES"].filter(function (listTitle) { return listTitle; });
@@ -348,7 +349,7 @@ var NavbarComponent = /** @class */ (function () {
         }
     };
     NavbarComponent.prototype.yearChange = function (year) {
-        // this.year.emit(year);
+        this.year.emit(year);
     };
     NavbarComponent.prototype.logout = function () {
         localStorage.clear();
@@ -520,7 +521,7 @@ var SidebarModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <section>\r\n        <div class=\"row\">\r\n            <!-- Trips -->\r\n            <div class=\"col-md-6\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Trips\r\n                            <select class=\"pull-right\" name=\"year\" id=\"\" [(ngModel)]=\"selectedYear\" (ngModelChange)=\"getTripsByYear($event)\">\r\n                                <option value=\"2017\">2017</option>\r\n                                <option value=\"2018\">2018</option>\r\n                                <option value=\"2019\">2019</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div id=\"tripChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Monthly transactions -->\r\n            <div class=\"col-md-6\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Vehicle Availablity\r\n                            <select name=\"location\" id=\"\" [(ngModel)]=\"locationCode\" (ngModelChange)=\"getVehicleAvailability($event)\">\r\n                                <option [value]=\"loc.code\" *ngFor=\"let loc of locations;\">\r\n                                    {{loc.locName}}\r\n                                </option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\" *ngIf=\"vehicleAvailablity.length\">\r\n                        <div class=\"ct-chart\">\r\n                            <div class=\"c2\" *ngIf=\"vehicleAvailablity.length\">\r\n                                <div class=\"text\">\r\n                                    <div>{{vehicleAvailablity[2].range}} </div>\r\n                                    <div>{{vehicleAvailablity[2].count}}</div>\r\n                                </div>\r\n                                <div class=\"c1\">\r\n                                    <div class=\"text\">\r\n                                        <div>{{vehicleAvailablity[1].range}} </div>\r\n                                        <div>{{vehicleAvailablity[1].count}}</div>\r\n                                    </div>\r\n                                    <div class=\"c0\">\r\n                                        <div class=\"text\">\r\n                                            <div>{{vehicleAvailablity[0].range}} </div>\r\n                                            <div>{{vehicleAvailablity[0].count}}</div>\r\n                                        </div>\r\n                                    </div>\r\n                                </div>\r\n                            </div>\r\n                            <img src=\"assets/img/loading.gif\" *ngIf=\"!vehicleAvailablity.length\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- Violations Chart -->\r\n            <div class=\"col-md-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Violations Chart\r\n                            <select class=\"pull-right\" name=\"customer\" id=\"\" [(ngModel)]=\"selectedCustomer\" (ngModelChange)=\"getViolationsByCustomer($event)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div id=\"violationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"col-md-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Fleet Utilization Chart\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div class=\"form-group\">\r\n                            <label for=\"transporters\">Transporters: </label>\r\n                            <select name=\"customer\" id=\"\" [(ngModel)]=\"Transporter\" (ngModelChange)=\"getFleetUtilization(Month, Year, Transporter)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </div>\r\n                        <div class=\"form-group\">\r\n                            <label for=\"year\">Year</label>\r\n                            <select name=\"year\" id=\"\" [(ngModel)]=\"Year\" (ngModelChange)=\"getFleetUtilization(Month, Year, Transporter)\">\r\n                                <option value=\"2017\">2017</option>\r\n                                <option value=\"2018\">2018</option>\r\n                                <option value=\"2019\">2019</option>\r\n                            </select>\r\n                        </div>\r\n                        <div class=\"form-group\">\r\n                            <label for=\"month\">Month</label>\r\n                            <select name=\"month\" id=\"\" [(ngModel)]=\"Month\" (ngModelChange)=\"getFleetUtilization(Month, Year, Transporter)\">\r\n                                <option value=\"{{i + 1}}\" *ngFor=\"let m of months;let i = index\">{{m}}</option>\r\n                            </select>\r\n                        </div>\r\n                        <div id=\"fleetUtilizationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </section>\r\n</div>"
+module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <section>\r\n        <div class=\"row\">\r\n            <!-- Trips -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Trips</h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div id=\"tripChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Monthly transactions -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Vehicle Availablity\r\n                            <select class=\"pull-right\" name=\"location\" id=\"\" [(ngModel)]=\"locationCode\" (ngModelChange)=\"getVehicleAvailability($event)\">\r\n                                <option [value]=\"loc.code\" *ngFor=\"let loc of locations;\">\r\n                                    {{loc.locName}}\r\n                                </option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\" *ngIf=\"vehicleAvailablity.length\">\r\n                        <div class=\"ct-chart\">\r\n                            <div class=\"c2\" *ngIf=\"vehicleAvailablity.length\">\r\n                                <div class=\"text\">\r\n                                    <div>{{vehicleAvailablity[2].range}} </div>\r\n                                    <div>{{vehicleAvailablity[2].count}}</div>\r\n                                </div>\r\n                                <div class=\"c1\">\r\n                                    <div class=\"text\">\r\n                                        <div>{{vehicleAvailablity[1].range}} </div>\r\n                                        <div>{{vehicleAvailablity[1].count}}</div>\r\n                                    </div>\r\n                                    <div class=\"c0\">\r\n                                        <div class=\"text\">\r\n                                            <div>{{vehicleAvailablity[0].range}} </div>\r\n                                            <div>{{vehicleAvailablity[0].count}}</div>\r\n                                        </div>\r\n                                    </div>\r\n                                </div>\r\n                            </div>\r\n                            <img src=\"assets/img/loading.gif\" *ngIf=\"!vehicleAvailablity.length\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- Violations Chart -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Violations Chart\r\n                            <select class=\"pull-right\" name=\"customer\" id=\"\" [(ngModel)]=\"selectedCustomer\" (ngModelChange)=\"getViolationsByCustomer($event)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div class=\"slide-main\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"violationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Fleet Utilization Chart\r\n                            <select class=\"pull-right\" name=\"customer\" id=\"\" [(ngModel)]=\"Transporter\" (ngModelChange)=\"getFleetUtilizationByCustId(Transporter)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div class=\"slide-main\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"fleetUtilizationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </section>\r\n</div>"
 
 /***/ }),
 
@@ -531,7 +532,7 @@ module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <sectio
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "img {\n  padding-left: 50%;\n  padding-top: 11%; }\n\n.card {\n  border-radius: 0; }\n\n.notfound {\n  text-align: center;\n  color: red !important;\n  vertical-align: middle;\n  font-size: 24px;\n  height: 245px; }\n\n.section {\n  margin: 10px 0px 20px 0;\n  background: white;\n  padding: 20px 0px;\n  border-radius: 6px; }\n\n.tittle {\n  padding: 10px;\n  color: #333;\n  border-bottom: solid 1px #ddd;\n  background: #fafafa; }\n\n.tittle h4 {\n    font-size: 20px;\n    margin: 0;\n    font-weight: 400;\n    text-transform: uppercase; }\n\n.chart-contant-main {\n  height: 100px; }\n\n.chart-contant-main .chart-contant-left {\n    text-align: right;\n    padding: 15px;\n    background: #28b6f6;\n    height: 100px;\n    position: relative; }\n\n.chart-contant-main .chart-contant-left .numbers {\n      font-size: 2em;\n      text-align: right;\n      position: absolute;\n      top: 33%;\n      right: 12px; }\n\n.chart-contant-main .chart-contant-left .numbers h6 {\n        font-weight: normal;\n        text-transform: uppercase;\n        color: white;\n        font-size: 15px; }\n\n.chart-contant-main .chart-contant-left p {\n      color: white;\n      font-weight: 900;\n      padding-top: 2px; }\n\n.chart-contant-main .chart-icon {\n    background: #6362bb;\n    height: 100px;\n    line-height: 100px; }\n\n.card-box {\n  border-radius: 0;\n  box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);\n  background-color: #FFFFFF;\n  color: #252422;\n  margin-bottom: 20px;\n  position: relative;\n  padding: 15px;\n  min-height: 100px;\n  display: inline-block;\n  width: 100%; }\n\n.card-box .numbers {\n    display: inline-block;\n    width: auto;\n    float: right;\n    color: white; }\n\n.card-box .numbers h6 {\n      font-size: 16px; }\n\n.card-box .chart-icon {\n    display: inline-block;\n    width: auto;\n    color: white; }\n\n.card-box .chart-icon i {\n      color: white; }\n\n.card-box .chart-icon i::before {\n        font-size: 50px; }\n\n.card-box .chart-icon img {\n      max-width: 60px;\n      padding: 0;\n      margin-top: 5px; }\n\n/*-----if-only-one-box----*/\n\n.card-box.taggs_issue {\n  background-image: linear-gradient(to right, #008385 0, #27c6d9 100%);\n  background-image: -moz-gradient(linear, left top, right top, from(#008385), to(#27c6d9));\n  background-image: -o-linear-gradient(to right, #008385 0, #27c6d9 100%);\n  background-repeat: repeat-x; }\n\n.card-box.taggs_issue .chart-icon i {\n    color: white; }\n\n.card-box.taggs_issue .numbers {\n    color: white; }\n\n.card-box.new-tags {\n  background-image: linear-gradient(to right, #ff425c 0, #eb7c8b 100%);\n  background-image: -moz-gradient(linear, left top, right top, from(#ff425c), to(#eb7c8b));\n  background-image: -o-linear-gradient(to right, #ff425c 0, #eb7c8b 100%);\n  background-repeat: repeat-x; }\n\n.card-box.total-recharge {\n  background: linear-gradient(to right, #ff864a 0, #db8d67 100%);\n  background-image: -moz-gradient(linear, left top, right top, from(#ff864a), to(#db8d67));\n  background-image: -o-linear-gradient(to right, #ff864a 0, #db8d67 100%);\n  background-repeat: repeat-x; }\n\n.card-box.total-revenue {\n  background: linear-gradient(to right, #13a579 0, #29cd9b 100%);\n  background-image: -moz-gradient(linear, left top, right top, from(#13a579), to(#29cd9b));\n  background-image: -o-linear-gradient(to right, #13a579 0, #29cd9b 100%);\n  background-repeat: repeat-x; }\n\n.ct-chart {\n  margin: 30px 0 30px;\n  height: 315px; }\n\n.ct-chart .text {\n    position: absolute;\n    top: 10px;\n    width: 100%;\n    text-align: center; }\n\n.ct-chart .c2 {\n    background: green;\n    color: white;\n    height: 330px;\n    width: 330px;\n    border-radius: 50%;\n    text-align: center;\n    margin: auto;\n    position: relative;\n    vertical-align: middle; }\n\n.ct-chart .c2 .c1 {\n      background: yellow;\n      color: black;\n      height: 210px;\n      width: 210px;\n      border-radius: 50%;\n      margin: auto;\n      vertical-align: middle;\n      position: relative;\n      top: 50%;\n      -webkit-transform: translateY(-50%);\n              transform: translateY(-50%); }\n\n.ct-chart .c2 .c1 .c0 {\n        background: red;\n        color: white;\n        height: 100px;\n        width: 100px;\n        border-radius: 50%;\n        margin: auto;\n        vertical-align: middle;\n        position: relative;\n        top: 50%;\n        -webkit-transform: translateY(-50%);\n                transform: translateY(-50%); }\n\n.ct-chart .c2 .c1 .c0 .text {\n          top: 50%;\n          -webkit-transform: translateY(-50%);\n                  transform: translateY(-50%); }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvcGFnZXMvbWFpbi9kYXNoYm9hcmQvRjpcXG1zaWxcXG1zaWxcXHNyY1xcbWFpblxcYW5ndWxhci9zcmNcXGFwcFxccGFnZXNcXG1haW5cXGRhc2hib2FyZFxcZGFzaGJvYXJkLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUtBO0VBQ0EsaUJBQWlCO0VBQ2IsZ0JBQWdCLEVBQUE7O0FBR3BCO0VBQ0ksZ0JBQWdCLEVBQUE7O0FBRXBCO0VBQ0csa0JBQWtCO0VBQ2xCLHFCQUFxQjtFQUNyQixzQkFBc0I7RUFDdEIsZUFBZTtFQUNmLGFBQWEsRUFBQTs7QUFFaEI7RUFDSSx1QkFBdUI7RUFDdkIsaUJBQWlCO0VBQ2pCLGlCQUFpQjtFQUNqQixrQkFBa0IsRUFBQTs7QUFFdEI7RUFDSSxhQUFhO0VBQ2IsV0FBVztFQUNYLDZCQUE2QjtFQUM3QixtQkFBbUIsRUFBQTs7QUFKdkI7SUFPUSxlQUFlO0lBQ2YsU0FBUztJQUNULGdCQUFnQjtJQUNoQix5QkFBeUIsRUFBQTs7QUFJakM7RUFDSSxhQUFhLEVBQUE7O0FBRGpCO0lBSVEsaUJBQWlCO0lBQ2pCLGFBQWE7SUFDYixtQkFBbUI7SUFDbkIsYUFBYTtJQUNiLGtCQUFrQixFQUFBOztBQVIxQjtNQVdZLGNBQWM7TUFDZCxpQkFBaUI7TUFDakIsa0JBQWtCO01BQ2xCLFFBQVE7TUFDUixXQUFXLEVBQUE7O0FBZnZCO1FBaUJZLG1CQUFtQjtRQUN2Qix5QkFBeUI7UUFDekIsWUFBWTtRQUNaLGVBQWUsRUFBQTs7QUFwQnZCO01BeUJZLFlBQVk7TUFDWixnQkFBZ0I7TUFDaEIsZ0JBQWdCLEVBQUE7O0FBM0I1QjtJQW1DUSxtQkFBbUI7SUFDbkIsYUFBYTtJQUNiLGtCQUFrQixFQUFBOztBQUsxQjtFQUNJLGdCQUFnQjtFQUNoQiw4Q0FBOEM7RUFDOUMseUJBQXlCO0VBQ3pCLGNBQWM7RUFDZCxtQkFBbUI7RUFDbkIsa0JBQWtCO0VBQ2xCLGFBQWE7RUFDYixpQkFBaUI7RUFDakIscUJBQXFCO0VBQ3JCLFdBQVcsRUFBQTs7QUFWZjtJQWFRLHFCQUFxQjtJQUNyQixXQUFXO0lBQ1gsWUFBWTtJQUNaLFlBQVksRUFBQTs7QUFoQnBCO01BbUJZLGVBQWUsRUFBQTs7QUFuQjNCO0lBdUJRLHFCQUFxQjtJQUNyQixXQUFXO0lBQ1gsWUFBWSxFQUFBOztBQXpCcEI7TUE0QlksWUFBWSxFQUFBOztBQTVCeEI7UUErQmdCLGVBQWUsRUFBQTs7QUEvQi9CO01BbUNZLGVBQWU7TUFDZixVQUFVO01BQ1YsZUFBZSxFQUFBOztBQWlCM0IsMkJBQUE7O0FBRUE7RUFFUSxvRUFBa0U7RUFJbEUsd0ZBQW9GO0VBQ3BGLHVFQUFxRTtFQUNyRSwyQkFBMkIsRUFBQTs7QUFSbkM7SUFZZ0IsWUFBWSxFQUFBOztBQVo1QjtJQWdCWSxZQUFZLEVBQUE7O0FBS3hCO0VBRVEsb0VBQWtFO0VBSWxFLHdGQUFvRjtFQUNwRix1RUFBcUU7RUFDckUsMkJBQTJCLEVBQUE7O0FBUm5DO0VBWVEsOERBQTREO0VBSTVELHdGQUFvRjtFQUNwRix1RUFBcUU7RUFDckUsMkJBQTJCLEVBQUE7O0FBbEJuQztFQXFCUSw4REFBNEQ7RUFJNUQsd0ZBQW9GO0VBQ3BGLHVFQUFxRTtFQUNyRSwyQkFBMkIsRUFBQTs7QUFNbkM7RUFDSSxtQkFBbUI7RUFDbkIsYUFBYSxFQUFBOztBQUZqQjtJQUtRLGtCQUFrQjtJQUNsQixTQUFTO0lBQ1QsV0FBVztJQUNYLGtCQUFrQixFQUFBOztBQVIxQjtJQVlRLGlCQUFpQjtJQUNqQixZQUFZO0lBQ1osYUFBYTtJQUNiLFlBQVk7SUFDWixrQkFBa0I7SUFDbEIsa0JBQWtCO0lBQ2xCLFlBQVk7SUFDWixrQkFBa0I7SUFDbEIsc0JBQXNCLEVBQUE7O0FBcEI5QjtNQXVCWSxrQkFBa0I7TUFDbEIsWUFBWTtNQUNaLGFBQWE7TUFDYixZQUFZO01BQ1osa0JBQWtCO01BQ2xCLFlBQVk7TUFDWixzQkFBc0I7TUFDdEIsa0JBQWtCO01BQ2xCLFFBQVE7TUFDUixtQ0FBMkI7Y0FBM0IsMkJBQTJCLEVBQUE7O0FBaEN2QztRQWtDZ0IsZUFBZTtRQUNmLFlBQVk7UUFDWixhQUFhO1FBQ2IsWUFBWTtRQUNaLGtCQUFrQjtRQUNsQixZQUFZO1FBQ1osc0JBQXNCO1FBQ3RCLGtCQUFrQjtRQUNsQixRQUFRO1FBQ1IsbUNBQTJCO2dCQUEzQiwyQkFBMkIsRUFBQTs7QUEzQzNDO1VBOENvQixRQUFRO1VBQ1IsbUNBQTJCO2tCQUEzQiwyQkFBMkIsRUFBQSIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL21haW4vZGFzaGJvYXJkL2Rhc2hib2FyZC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIiAgICAvLyBDYXBhY2l0eSA6ICNGM0JCNDVcclxuLy8gUmV2ZW51ZSAgOiAjN0FDMjlBXHJcbi8vIGVycm9yICAgIDogI0REMDMzMFxyXG4vLyB0d2V0dGVyICA6ICM2OEIzQzhcclxuXHJcbmltZyB7XHJcbnBhZGRpbmctbGVmdDogNTAlO1xyXG4gICAgcGFkZGluZy10b3A6IDExJTtcclxuXHJcbn1cclxuLmNhcmR7XHJcbiAgICBib3JkZXItcmFkaXVzOiAwO1xyXG59XHJcbi5ub3Rmb3VuZCB7XHJcbiAgIHRleHQtYWxpZ246IGNlbnRlcjtcclxuICAgY29sb3I6IHJlZCAhaW1wb3J0YW50O1xyXG4gICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlOyBcclxuICAgZm9udC1zaXplOiAyNHB4O1xyXG4gICBoZWlnaHQ6IDI0NXB4O1xyXG59XHJcbi5zZWN0aW9uIHtcclxuICAgIG1hcmdpbjogMTBweCAwcHggMjBweCAwO1xyXG4gICAgYmFja2dyb3VuZDogd2hpdGU7XHJcbiAgICBwYWRkaW5nOiAyMHB4IDBweDtcclxuICAgIGJvcmRlci1yYWRpdXM6IDZweDtcclxufVxyXG4udGl0dGxlIHtcclxuICAgIHBhZGRpbmc6IDEwcHg7XHJcbiAgICBjb2xvcjogIzMzMztcclxuICAgIGJvcmRlci1ib3R0b206IHNvbGlkIDFweCAjZGRkO1xyXG4gICAgYmFja2dyb3VuZDogI2ZhZmFmYTtcclxuXHJcbiAgICBoNHtcclxuICAgICAgICBmb250LXNpemU6IDIwcHg7XHJcbiAgICAgICAgbWFyZ2luOiAwO1xyXG4gICAgICAgIGZvbnQtd2VpZ2h0OiA0MDA7XHJcbiAgICAgICAgdGV4dC10cmFuc2Zvcm06IHVwcGVyY2FzZTtcclxuICAgIH1cclxufVxyXG5cclxuLmNoYXJ0LWNvbnRhbnQtbWFpbntcclxuICAgIGhlaWdodDogMTAwcHg7XHJcblxyXG4gICAgLmNoYXJ0LWNvbnRhbnQtbGVmdCB7XHJcbiAgICAgICAgdGV4dC1hbGlnbjogcmlnaHQ7XHJcbiAgICAgICAgcGFkZGluZzogMTVweDtcclxuICAgICAgICBiYWNrZ3JvdW5kOiAjMjhiNmY2O1xyXG4gICAgICAgIGhlaWdodDogMTAwcHg7XHJcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xyXG4gICAgXHJcbiAgICAgICAgLm51bWJlcnN7XHJcbiAgICAgICAgICAgIGZvbnQtc2l6ZTogMmVtO1xyXG4gICAgICAgICAgICB0ZXh0LWFsaWduOiByaWdodDtcclxuICAgICAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xyXG4gICAgICAgICAgICB0b3A6IDMzJTtcclxuICAgICAgICAgICAgcmlnaHQ6IDEycHg7XHJcbiAgICAgICAgaDZ7XHJcbiAgICAgICAgICAgIGZvbnQtd2VpZ2h0OiBub3JtYWw7XHJcbiAgICAgICAgdGV4dC10cmFuc2Zvcm06IHVwcGVyY2FzZTtcclxuICAgICAgICBjb2xvcjogd2hpdGU7XHJcbiAgICAgICAgZm9udC1zaXplOiAxNXB4O1xyXG5cclxuICAgICAgICB9XHJcbiAgICB9XHJcbiAgICAgICAgcCB7XHJcbiAgICAgICAgICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgICAgICAgICAgZm9udC13ZWlnaHQ6IDkwMDtcclxuICAgICAgICAgICAgcGFkZGluZy10b3A6IDJweDtcclxuICAgICAgICAgICAgXHJcbiAgICAgICAgfVxyXG4gICAgfVxyXG4gICAgXHJcblxyXG5cclxuICAgIC5jaGFydC1pY29uIHtcclxuICAgICAgICBiYWNrZ3JvdW5kOiAjNjM2MmJiO1xyXG4gICAgICAgIGhlaWdodDogMTAwcHg7XHJcbiAgICAgICAgbGluZS1oZWlnaHQ6IDEwMHB4O1xyXG59XHJcblxyXG59XHJcblxyXG4uY2FyZC1ib3h7XHJcbiAgICBib3JkZXItcmFkaXVzOiAwO1xyXG4gICAgYm94LXNoYWRvdzogMCAycHggMnB4IHJnYmEoMjA0LCAxOTcsIDE4NSwgMC41KTtcclxuICAgIGJhY2tncm91bmQtY29sb3I6ICNGRkZGRkY7XHJcbiAgICBjb2xvcjogIzI1MjQyMjtcclxuICAgIG1hcmdpbi1ib3R0b206IDIwcHg7XHJcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XHJcbiAgICBwYWRkaW5nOiAxNXB4O1xyXG4gICAgbWluLWhlaWdodDogMTAwcHg7XHJcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XHJcbiAgICB3aWR0aDogMTAwJTtcclxuXHJcbiAgICAubnVtYmVycyB7XHJcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xyXG4gICAgICAgIHdpZHRoOiBhdXRvO1xyXG4gICAgICAgIGZsb2F0OiByaWdodDtcclxuICAgICAgICBjb2xvcjogd2hpdGU7XHJcblxyXG4gICAgICAgIGg2IHtcclxuICAgICAgICAgICAgZm9udC1zaXplOiAxNnB4O1xyXG4gICAgICAgIH1cclxuICAgIH1cclxuICAgIC5jaGFydC1pY29uIHtcclxuICAgICAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XHJcbiAgICAgICAgd2lkdGg6IGF1dG87XHJcbiAgICAgICAgY29sb3I6IHdoaXRlO1xyXG4gICAgICAgIGkge1xyXG4gICAgICAgICAgICBcclxuICAgICAgICAgICAgY29sb3I6IHdoaXRlO1xyXG5cclxuICAgICAgICAgICAgJjo6YmVmb3Jle1xyXG4gICAgICAgICAgICAgICAgZm9udC1zaXplOiA1MHB4O1xyXG4gICAgICAgICAgICB9XHJcbiAgICAgICAgfVxyXG4gICAgICAgIGltZyB7XHJcbiAgICAgICAgICAgIG1heC13aWR0aDogNjBweDtcclxuICAgICAgICAgICAgcGFkZGluZzogMDtcclxuICAgICAgICAgICAgbWFyZ2luLXRvcDogNXB4O1xyXG4gICAgICAgIH1cclxuXHJcbiAgICB9XHJcbiAgICAvLyBpbWcge1xyXG4gICAgLy8gICAgIHdpZHRoOiAxMDAlO1xyXG4gICAgLy8gICAgIGhlaWdodDogYXV0bztcclxuICAgIC8vICAgICBwYWRkaW5nOiAwO1xyXG4gICAgLy8gICAgIG9wYWNpdHk6IDAuMztcclxuICAgIC8vICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XHJcbiAgICAvLyAgICAgbGVmdDogMDtcclxuICAgIC8vICAgICBib3R0b206IDA7XHJcbiAgICAvLyAgICAgZGlzcGxheTogbm9uZTtcclxuICAgIC8vIH1cclxufVxyXG5cclxuXHJcbi8qLS0tLS1pZi1vbmx5LW9uZS1ib3gtLS0tKi9cclxuXHJcbi5jYXJkLWJveHtcclxuICAgICYudGFnZ3NfaXNzdWV7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCMwMDgzODUgMCwjMjdjNmQ5IDEwMCUpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6LXdlYmtpdC1ncmFkaWVudChsaW5lYXIsbGVmdCB0b3AscmlnaHQgdG9wLGZyb20oIzAwODM4NSksdG8oIzI3YzZkOSkpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC13ZWJraXQtbGluZWFyLWdyYWRpZW50KGxlZnQsIzAwODM4NSAwLCMyN2M2ZDkgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW1vei1saW5lYXItZ3JhZGllbnQodG8gcmlnaHQsIzAwODM4NSAwLCMyN2M2ZDkgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW1vei1ncmFkaWVudChsaW5lYXIsbGVmdCB0b3AscmlnaHQgdG9wLGZyb20oIzAwODM4NSksdG8oIzI3YzZkOSkpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC1vLWxpbmVhci1ncmFkaWVudCh0byByaWdodCwjMDA4Mzg1IDAsIzI3YzZkOSAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLXJlcGVhdDogcmVwZWF0LXg7XHJcbiAgXHJcbiAgICAgICAgLmNoYXJ0LWljb257XHJcbiAgICAgICAgICAgIGl7XHJcbiAgICAgICAgICAgICAgICBjb2xvcjogd2hpdGU7XHJcbiAgICAgICAgICAgIH1cclxuICAgICAgICB9XHJcbiAgICAgICAgLm51bWJlcnMge1xyXG4gICAgICAgICAgICBjb2xvcjogd2hpdGU7XHJcbiAgICAgICAgfVxyXG4gICAgfVxyXG59XHJcblxyXG4uY2FyZC1ib3h7XHJcbiAgICAmLm5ldy10YWdze1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IGxpbmVhci1ncmFkaWVudCh0byByaWdodCwjZmY0MjVjIDAsI2ViN2M4YiAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOi13ZWJraXQtZ3JhZGllbnQobGluZWFyLGxlZnQgdG9wLHJpZ2h0IHRvcCxmcm9tKCNmZjQyNWMpLHRvKCNlYjdjOGIpKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtd2Via2l0LWxpbmVhci1ncmFkaWVudChsZWZ0LCNmZjQyNWMgMCwjZWI3YzhiIDEwMCUpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC1tb3otbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCNmZjQyNWMgMCwjZWI3YzhiIDEwMCUpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC1tb3otZ3JhZGllbnQobGluZWFyLGxlZnQgdG9wLHJpZ2h0IHRvcCxmcm9tKCNmZjQyNWMpLHRvKCNlYjdjOGIpKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtby1saW5lYXItZ3JhZGllbnQodG8gcmlnaHQsI2ZmNDI1YyAwLCNlYjdjOGIgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1yZXBlYXQ6IHJlcGVhdC14O1xyXG4gICAgICAgIFxyXG4gICAgfVxyXG4gICAgJi50b3RhbC1yZWNoYXJnZXtcclxuICAgICAgICBiYWNrZ3JvdW5kOiBsaW5lYXItZ3JhZGllbnQodG8gcmlnaHQsI2ZmODY0YSAwLCNkYjhkNjcgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTotd2Via2l0LWdyYWRpZW50KGxpbmVhcixsZWZ0IHRvcCxyaWdodCB0b3AsZnJvbSgjZmY4NjRhKSx0bygjZGI4ZDY3KSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLXdlYmtpdC1saW5lYXItZ3JhZGllbnQobGVmdCwjZmY4NjRhIDAsI2RiOGQ2NyAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtbW96LWxpbmVhci1ncmFkaWVudCh0byByaWdodCwjZmY4NjRhIDAsI2RiOGQ2NyAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtbW96LWdyYWRpZW50KGxpbmVhcixsZWZ0IHRvcCxyaWdodCB0b3AsZnJvbSgjZmY4NjRhKSx0bygjZGI4ZDY3KSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW8tbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCNmZjg2NGEgMCwjZGI4ZDY3IDEwMCUpO1xyXG4gICAgICAgIGJhY2tncm91bmQtcmVwZWF0OiByZXBlYXQteDtcclxuICAgIH1cclxuICAgICYudG90YWwtcmV2ZW51ZXtcclxuICAgICAgICBiYWNrZ3JvdW5kOiBsaW5lYXItZ3JhZGllbnQodG8gcmlnaHQsIzEzYTU3OSAwLCMyOWNkOWIgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTotd2Via2l0LWdyYWRpZW50KGxpbmVhcixsZWZ0IHRvcCxyaWdodCB0b3AsZnJvbSgjMTNhNTc5KSx0bygjMjljZDliKSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLXdlYmtpdC1saW5lYXItZ3JhZGllbnQobGVmdCwjMTNhNTc5IDAsIzI5Y2Q5YiAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtbW96LWxpbmVhci1ncmFkaWVudCh0byByaWdodCwjMTNhNTc5IDAsIzI5Y2Q5YiAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtbW96LWdyYWRpZW50KGxpbmVhcixsZWZ0IHRvcCxyaWdodCB0b3AsZnJvbSgjMTNhNTc5KSx0bygjMjljZDliKSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW8tbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCMxM2E1NzkgMCwjMjljZDliIDEwMCUpO1xyXG4gICAgICAgIGJhY2tncm91bmQtcmVwZWF0OiByZXBlYXQteDtcclxuICAgIH1cclxuICAgIFxyXG59XHJcblxyXG5cclxuLmN0LWNoYXJ0e1xyXG4gICAgbWFyZ2luOiAzMHB4IDAgMzBweDtcclxuICAgIGhlaWdodDogMzE1cHg7XHJcblxyXG4gICAgLnRleHQge1xyXG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxuICAgICAgICB0b3A6IDEwcHg7XHJcbiAgICAgICAgd2lkdGg6IDEwMCU7XHJcbiAgICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xyXG4gICAgfVxyXG5cclxuICAgIC5jMntcclxuICAgICAgICBiYWNrZ3JvdW5kOiBncmVlbjtcclxuICAgICAgICBjb2xvcjogd2hpdGU7XHJcbiAgICAgICAgaGVpZ2h0OiAzMzBweDtcclxuICAgICAgICB3aWR0aDogMzMwcHg7XHJcbiAgICAgICAgYm9yZGVyLXJhZGl1czogNTAlO1xyXG4gICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjtcclxuICAgICAgICBtYXJnaW46IGF1dG87XHJcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xyXG4gICAgICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XHJcblxyXG4gICAgICAgIC5jMXtcclxuICAgICAgICAgICAgYmFja2dyb3VuZDogeWVsbG93O1xyXG4gICAgICAgICAgICBjb2xvcjogYmxhY2s7XHJcbiAgICAgICAgICAgIGhlaWdodDogMjEwcHg7XHJcbiAgICAgICAgICAgIHdpZHRoOiAyMTBweDtcclxuICAgICAgICAgICAgYm9yZGVyLXJhZGl1czogNTAlO1xyXG4gICAgICAgICAgICBtYXJnaW46IGF1dG87XHJcbiAgICAgICAgICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XHJcbiAgICAgICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcclxuICAgICAgICAgICAgdG9wOiA1MCU7XHJcbiAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWSgtNTAlKTtcclxuICAgICAgICAgICAgLmMwe1xyXG4gICAgICAgICAgICAgICAgYmFja2dyb3VuZDogcmVkO1xyXG4gICAgICAgICAgICAgICAgY29sb3I6IHdoaXRlO1xyXG4gICAgICAgICAgICAgICAgaGVpZ2h0OiAxMDBweDtcclxuICAgICAgICAgICAgICAgIHdpZHRoOiAxMDBweDtcclxuICAgICAgICAgICAgICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcclxuICAgICAgICAgICAgICAgIG1hcmdpbjogYXV0bztcclxuICAgICAgICAgICAgICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XHJcbiAgICAgICAgICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XHJcbiAgICAgICAgICAgICAgICB0b3A6IDUwJTtcclxuICAgICAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWSgtNTAlKTtcclxuXHJcbiAgICAgICAgICAgICAgICAudGV4dCB7XHJcbiAgICAgICAgICAgICAgICAgICAgdG9wOiA1MCU7XHJcbiAgICAgICAgICAgICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKC01MCUpO1xyXG4gICAgICAgICAgICAgICAgfVxyXG5cclxuICAgICAgICAgICAgfVxyXG4gICAgICAgIH1cclxuICAgIH1cclxufSJdfQ== */"
+module.exports = "img {\n  padding-left: 50%;\n  padding-top: 11%; }\n\n.card {\n  border-radius: 0; }\n\n.notfound {\n  text-align: center;\n  color: red !important;\n  vertical-align: middle;\n  font-size: 24px;\n  height: 245px; }\n\n.section {\n  margin: 10px 0px 20px 0;\n  background: white;\n  padding: 20px 0px;\n  border-radius: 6px; }\n\n.tittle {\n  padding: 10px;\n  color: #333;\n  border-bottom: solid 1px #ddd;\n  background: #fafafa; }\n\n.tittle h4 {\n    font-size: 20px;\n    margin: 0;\n    font-weight: 400;\n    text-transform: uppercase; }\n\n.chart-contant-main {\n  height: 100px; }\n\n.chart-contant-main .chart-contant-left {\n    text-align: right;\n    padding: 15px;\n    background: #28b6f6;\n    height: 100px;\n    position: relative; }\n\n.chart-contant-main .chart-contant-left .numbers {\n      font-size: 2em;\n      text-align: right;\n      position: absolute;\n      top: 33%;\n      right: 12px; }\n\n.chart-contant-main .chart-contant-left .numbers h6 {\n        font-weight: normal;\n        text-transform: uppercase;\n        color: white;\n        font-size: 15px; }\n\n.chart-contant-main .chart-contant-left p {\n      color: white;\n      font-weight: 900;\n      padding-top: 2px; }\n\n.chart-contant-main .chart-icon {\n    background: #6362bb;\n    height: 100px;\n    line-height: 100px; }\n\n.card-box {\n  border-radius: 0;\n  box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);\n  background-color: #FFFFFF;\n  color: #252422;\n  margin-bottom: 20px;\n  position: relative;\n  padding: 15px;\n  min-height: 100px;\n  display: inline-block;\n  width: 100%; }\n\n.card-box .numbers {\n    display: inline-block;\n    width: auto;\n    float: right;\n    color: white; }\n\n.card-box .numbers h6 {\n      font-size: 16px; }\n\n.card-box .chart-icon {\n    display: inline-block;\n    width: auto;\n    color: white; }\n\n.card-box .chart-icon i {\n      color: white; }\n\n.card-box .chart-icon i::before {\n        font-size: 50px; }\n\n.card-box .chart-icon img {\n      max-width: 60px;\n      padding: 0;\n      margin-top: 5px; }\n\n/*-----if-only-one-box----*/\n\n.card-box.taggs_issue {\n  background-image: linear-gradient(to right, #008385 0, #27c6d9 100%);\n  background-image: -moz-gradient(linear, left top, right top, from(#008385), to(#27c6d9));\n  background-image: -o-linear-gradient(to right, #008385 0, #27c6d9 100%);\n  background-repeat: repeat-x; }\n\n.card-box.taggs_issue .chart-icon i {\n    color: white; }\n\n.card-box.taggs_issue .numbers {\n    color: white; }\n\n.card-box.new-tags {\n  background-image: linear-gradient(to right, #ff425c 0, #eb7c8b 100%);\n  background-image: -moz-gradient(linear, left top, right top, from(#ff425c), to(#eb7c8b));\n  background-image: -o-linear-gradient(to right, #ff425c 0, #eb7c8b 100%);\n  background-repeat: repeat-x; }\n\n.card-box.total-recharge {\n  background: linear-gradient(to right, #ff864a 0, #db8d67 100%);\n  background-image: -moz-gradient(linear, left top, right top, from(#ff864a), to(#db8d67));\n  background-image: -o-linear-gradient(to right, #ff864a 0, #db8d67 100%);\n  background-repeat: repeat-x; }\n\n.card-box.total-revenue {\n  background: linear-gradient(to right, #13a579 0, #29cd9b 100%);\n  background-image: -moz-gradient(linear, left top, right top, from(#13a579), to(#29cd9b));\n  background-image: -o-linear-gradient(to right, #13a579 0, #29cd9b 100%);\n  background-repeat: repeat-x; }\n\n.ct-chart {\n  margin: 30px 0 30px;\n  height: 315px; }\n\n.ct-chart .text {\n    position: absolute;\n    top: 10px;\n    width: 100%;\n    text-align: center; }\n\n.ct-chart .c2 {\n    background: green;\n    color: white;\n    height: 330px;\n    width: 330px;\n    border-radius: 50%;\n    text-align: center;\n    margin: auto;\n    position: relative;\n    vertical-align: middle; }\n\n.ct-chart .c2 .c1 {\n      background: yellow;\n      color: black;\n      height: 210px;\n      width: 210px;\n      border-radius: 50%;\n      margin: auto;\n      vertical-align: middle;\n      position: relative;\n      top: 50%;\n      -webkit-transform: translateY(-50%);\n              transform: translateY(-50%); }\n\n.ct-chart .c2 .c1 .c0 {\n        background: red;\n        color: white;\n        height: 100px;\n        width: 100px;\n        border-radius: 50%;\n        margin: auto;\n        vertical-align: middle;\n        position: relative;\n        top: 50%;\n        -webkit-transform: translateY(-50%);\n                transform: translateY(-50%); }\n\n.ct-chart .c2 .c1 .c0 .text {\n          top: 50%;\n          -webkit-transform: translateY(-50%);\n                  transform: translateY(-50%); }\n\n.slide-main {\n  width: 30px;\n  height: 355px;\n  position: relative;\n  transition: 0.6s;\n  float: left;\n  z-index: 1;\n  cursor: pointer; }\n\n.slide-main .slide {\n    position: absolute;\n    -webkit-transform: translate(-50%, -50%);\n            transform: translate(-50%, -50%);\n    top: 50%;\n    left: 50%;\n    transition: 0.6s; }\n\n.slide-main .slide i {\n      font-size: 41px;\n      color: #a7a7a7; }\n\n.slide-main:hover {\n    background-image: linear-gradient(to right, #008385 0, #27c6d9 100%);\n    opacity: 0.8;\n    transition: 0.6s; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvcGFnZXMvbWFpbi9kYXNoYm9hcmQvRjpcXG1zaWxcXG1zaWxcXHNyY1xcbWFpblxcYW5ndWxhci9zcmNcXGFwcFxccGFnZXNcXG1haW5cXGRhc2hib2FyZFxcZGFzaGJvYXJkLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUtBO0VBQ0EsaUJBQWlCO0VBQ2IsZ0JBQWdCLEVBQUE7O0FBR3BCO0VBQ0ksZ0JBQWdCLEVBQUE7O0FBRXBCO0VBQ0csa0JBQWtCO0VBQ2xCLHFCQUFxQjtFQUNyQixzQkFBc0I7RUFDdEIsZUFBZTtFQUNmLGFBQWEsRUFBQTs7QUFFaEI7RUFDSSx1QkFBdUI7RUFDdkIsaUJBQWlCO0VBQ2pCLGlCQUFpQjtFQUNqQixrQkFBa0IsRUFBQTs7QUFFdEI7RUFDSSxhQUFhO0VBQ2IsV0FBVztFQUNYLDZCQUE2QjtFQUM3QixtQkFBbUIsRUFBQTs7QUFKdkI7SUFPUSxlQUFlO0lBQ2YsU0FBUztJQUNULGdCQUFnQjtJQUNoQix5QkFBeUIsRUFBQTs7QUFJakM7RUFDSSxhQUFhLEVBQUE7O0FBRGpCO0lBSVEsaUJBQWlCO0lBQ2pCLGFBQWE7SUFDYixtQkFBbUI7SUFDbkIsYUFBYTtJQUNiLGtCQUFrQixFQUFBOztBQVIxQjtNQVdZLGNBQWM7TUFDZCxpQkFBaUI7TUFDakIsa0JBQWtCO01BQ2xCLFFBQVE7TUFDUixXQUFXLEVBQUE7O0FBZnZCO1FBaUJZLG1CQUFtQjtRQUN2Qix5QkFBeUI7UUFDekIsWUFBWTtRQUNaLGVBQWUsRUFBQTs7QUFwQnZCO01BeUJZLFlBQVk7TUFDWixnQkFBZ0I7TUFDaEIsZ0JBQWdCLEVBQUE7O0FBM0I1QjtJQW1DUSxtQkFBbUI7SUFDbkIsYUFBYTtJQUNiLGtCQUFrQixFQUFBOztBQUsxQjtFQUNJLGdCQUFnQjtFQUNoQiw4Q0FBOEM7RUFDOUMseUJBQXlCO0VBQ3pCLGNBQWM7RUFDZCxtQkFBbUI7RUFDbkIsa0JBQWtCO0VBQ2xCLGFBQWE7RUFDYixpQkFBaUI7RUFDakIscUJBQXFCO0VBQ3JCLFdBQVcsRUFBQTs7QUFWZjtJQWFRLHFCQUFxQjtJQUNyQixXQUFXO0lBQ1gsWUFBWTtJQUNaLFlBQVksRUFBQTs7QUFoQnBCO01BbUJZLGVBQWUsRUFBQTs7QUFuQjNCO0lBdUJRLHFCQUFxQjtJQUNyQixXQUFXO0lBQ1gsWUFBWSxFQUFBOztBQXpCcEI7TUE0QlksWUFBWSxFQUFBOztBQTVCeEI7UUErQmdCLGVBQWUsRUFBQTs7QUEvQi9CO01BbUNZLGVBQWU7TUFDZixVQUFVO01BQ1YsZUFBZSxFQUFBOztBQWlCM0IsMkJBQUE7O0FBRUE7RUFFUSxvRUFBa0U7RUFJbEUsd0ZBQW9GO0VBQ3BGLHVFQUFxRTtFQUNyRSwyQkFBMkIsRUFBQTs7QUFSbkM7SUFZZ0IsWUFBWSxFQUFBOztBQVo1QjtJQWdCWSxZQUFZLEVBQUE7O0FBS3hCO0VBRVEsb0VBQWtFO0VBSWxFLHdGQUFvRjtFQUNwRix1RUFBcUU7RUFDckUsMkJBQTJCLEVBQUE7O0FBUm5DO0VBWVEsOERBQTREO0VBSTVELHdGQUFvRjtFQUNwRix1RUFBcUU7RUFDckUsMkJBQTJCLEVBQUE7O0FBbEJuQztFQXFCUSw4REFBNEQ7RUFJNUQsd0ZBQW9GO0VBQ3BGLHVFQUFxRTtFQUNyRSwyQkFBMkIsRUFBQTs7QUFNbkM7RUFDSSxtQkFBbUI7RUFDbkIsYUFBYSxFQUFBOztBQUZqQjtJQUtRLGtCQUFrQjtJQUNsQixTQUFTO0lBQ1QsV0FBVztJQUNYLGtCQUFrQixFQUFBOztBQVIxQjtJQVlRLGlCQUFpQjtJQUNqQixZQUFZO0lBQ1osYUFBYTtJQUNiLFlBQVk7SUFDWixrQkFBa0I7SUFDbEIsa0JBQWtCO0lBQ2xCLFlBQVk7SUFDWixrQkFBa0I7SUFDbEIsc0JBQXNCLEVBQUE7O0FBcEI5QjtNQXVCWSxrQkFBa0I7TUFDbEIsWUFBWTtNQUNaLGFBQWE7TUFDYixZQUFZO01BQ1osa0JBQWtCO01BQ2xCLFlBQVk7TUFDWixzQkFBc0I7TUFDdEIsa0JBQWtCO01BQ2xCLFFBQVE7TUFDUixtQ0FBMkI7Y0FBM0IsMkJBQTJCLEVBQUE7O0FBaEN2QztRQWtDZ0IsZUFBZTtRQUNmLFlBQVk7UUFDWixhQUFhO1FBQ2IsWUFBWTtRQUNaLGtCQUFrQjtRQUNsQixZQUFZO1FBQ1osc0JBQXNCO1FBQ3RCLGtCQUFrQjtRQUNsQixRQUFRO1FBQ1IsbUNBQTJCO2dCQUEzQiwyQkFBMkIsRUFBQTs7QUEzQzNDO1VBOENvQixRQUFRO1VBQ1IsbUNBQTJCO2tCQUEzQiwyQkFBMkIsRUFBQTs7QUFPL0M7RUFDSSxXQUFXO0VBQ1gsYUFBYTtFQUNiLGtCQUFrQjtFQUNsQixnQkFBZ0I7RUFDaEIsV0FBVztFQUNYLFVBQVU7RUFDVixlQUFlLEVBQUE7O0FBUG5CO0lBU1Esa0JBQWtCO0lBQ2xCLHdDQUFnQztZQUFoQyxnQ0FBZ0M7SUFDaEMsUUFBUTtJQUNSLFNBQVM7SUFDVCxnQkFBZ0IsRUFBQTs7QUFieEI7TUFnQlksZUFBZTtNQUNmLGNBQWMsRUFBQTs7QUFqQjFCO0lBcUJRLG9FQUFvRTtJQUNwRSxZQUFZO0lBQ1osZ0JBQWdCLEVBQUEiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9tYWluL2Rhc2hib2FyZC9kYXNoYm9hcmQuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIgICAgLy8gQ2FwYWNpdHkgOiAjRjNCQjQ1XHJcbi8vIFJldmVudWUgIDogIzdBQzI5QVxyXG4vLyBlcnJvciAgICA6ICNERDAzMzBcclxuLy8gdHdldHRlciAgOiAjNjhCM0M4XHJcblxyXG5pbWcge1xyXG5wYWRkaW5nLWxlZnQ6IDUwJTtcclxuICAgIHBhZGRpbmctdG9wOiAxMSU7XHJcblxyXG59XHJcbi5jYXJke1xyXG4gICAgYm9yZGVyLXJhZGl1czogMDtcclxufVxyXG4ubm90Zm91bmQge1xyXG4gICB0ZXh0LWFsaWduOiBjZW50ZXI7XHJcbiAgIGNvbG9yOiByZWQgIWltcG9ydGFudDtcclxuICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTsgXHJcbiAgIGZvbnQtc2l6ZTogMjRweDtcclxuICAgaGVpZ2h0OiAyNDVweDtcclxufVxyXG4uc2VjdGlvbiB7XHJcbiAgICBtYXJnaW46IDEwcHggMHB4IDIwcHggMDtcclxuICAgIGJhY2tncm91bmQ6IHdoaXRlO1xyXG4gICAgcGFkZGluZzogMjBweCAwcHg7XHJcbiAgICBib3JkZXItcmFkaXVzOiA2cHg7XHJcbn1cclxuLnRpdHRsZSB7XHJcbiAgICBwYWRkaW5nOiAxMHB4O1xyXG4gICAgY29sb3I6ICMzMzM7XHJcbiAgICBib3JkZXItYm90dG9tOiBzb2xpZCAxcHggI2RkZDtcclxuICAgIGJhY2tncm91bmQ6ICNmYWZhZmE7XHJcblxyXG4gICAgaDR7XHJcbiAgICAgICAgZm9udC1zaXplOiAyMHB4O1xyXG4gICAgICAgIG1hcmdpbjogMDtcclxuICAgICAgICBmb250LXdlaWdodDogNDAwO1xyXG4gICAgICAgIHRleHQtdHJhbnNmb3JtOiB1cHBlcmNhc2U7XHJcbiAgICB9XHJcbn1cclxuXHJcbi5jaGFydC1jb250YW50LW1haW57XHJcbiAgICBoZWlnaHQ6IDEwMHB4O1xyXG5cclxuICAgIC5jaGFydC1jb250YW50LWxlZnQge1xyXG4gICAgICAgIHRleHQtYWxpZ246IHJpZ2h0O1xyXG4gICAgICAgIHBhZGRpbmc6IDE1cHg7XHJcbiAgICAgICAgYmFja2dyb3VuZDogIzI4YjZmNjtcclxuICAgICAgICBoZWlnaHQ6IDEwMHB4O1xyXG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcclxuICAgIFxyXG4gICAgICAgIC5udW1iZXJze1xyXG4gICAgICAgICAgICBmb250LXNpemU6IDJlbTtcclxuICAgICAgICAgICAgdGV4dC1hbGlnbjogcmlnaHQ7XHJcbiAgICAgICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxuICAgICAgICAgICAgdG9wOiAzMyU7XHJcbiAgICAgICAgICAgIHJpZ2h0OiAxMnB4O1xyXG4gICAgICAgIGg2e1xyXG4gICAgICAgICAgICBmb250LXdlaWdodDogbm9ybWFsO1xyXG4gICAgICAgIHRleHQtdHJhbnNmb3JtOiB1cHBlcmNhc2U7XHJcbiAgICAgICAgY29sb3I6IHdoaXRlO1xyXG4gICAgICAgIGZvbnQtc2l6ZTogMTVweDtcclxuXHJcbiAgICAgICAgfVxyXG4gICAgfVxyXG4gICAgICAgIHAge1xyXG4gICAgICAgICAgICBjb2xvcjogd2hpdGU7XHJcbiAgICAgICAgICAgIGZvbnQtd2VpZ2h0OiA5MDA7XHJcbiAgICAgICAgICAgIHBhZGRpbmctdG9wOiAycHg7XHJcbiAgICAgICAgICAgIFxyXG4gICAgICAgIH1cclxuICAgIH1cclxuICAgIFxyXG5cclxuXHJcbiAgICAuY2hhcnQtaWNvbiB7XHJcbiAgICAgICAgYmFja2dyb3VuZDogIzYzNjJiYjtcclxuICAgICAgICBoZWlnaHQ6IDEwMHB4O1xyXG4gICAgICAgIGxpbmUtaGVpZ2h0OiAxMDBweDtcclxufVxyXG5cclxufVxyXG5cclxuLmNhcmQtYm94e1xyXG4gICAgYm9yZGVyLXJhZGl1czogMDtcclxuICAgIGJveC1zaGFkb3c6IDAgMnB4IDJweCByZ2JhKDIwNCwgMTk3LCAxODUsIDAuNSk7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjRkZGRkZGO1xyXG4gICAgY29sb3I6ICMyNTI0MjI7XHJcbiAgICBtYXJnaW4tYm90dG9tOiAyMHB4O1xyXG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xyXG4gICAgcGFkZGluZzogMTVweDtcclxuICAgIG1pbi1oZWlnaHQ6IDEwMHB4O1xyXG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xyXG4gICAgd2lkdGg6IDEwMCU7XHJcblxyXG4gICAgLm51bWJlcnMge1xyXG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcclxuICAgICAgICB3aWR0aDogYXV0bztcclxuICAgICAgICBmbG9hdDogcmlnaHQ7XHJcbiAgICAgICAgY29sb3I6IHdoaXRlO1xyXG5cclxuICAgICAgICBoNiB7XHJcbiAgICAgICAgICAgIGZvbnQtc2l6ZTogMTZweDtcclxuICAgICAgICB9XHJcbiAgICB9XHJcbiAgICAuY2hhcnQtaWNvbiB7XHJcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xyXG4gICAgICAgIHdpZHRoOiBhdXRvO1xyXG4gICAgICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgICAgICBpIHtcclxuICAgICAgICAgICAgXHJcbiAgICAgICAgICAgIGNvbG9yOiB3aGl0ZTtcclxuXHJcbiAgICAgICAgICAgICY6OmJlZm9yZXtcclxuICAgICAgICAgICAgICAgIGZvbnQtc2l6ZTogNTBweDtcclxuICAgICAgICAgICAgfVxyXG4gICAgICAgIH1cclxuICAgICAgICBpbWcge1xyXG4gICAgICAgICAgICBtYXgtd2lkdGg6IDYwcHg7XHJcbiAgICAgICAgICAgIHBhZGRpbmc6IDA7XHJcbiAgICAgICAgICAgIG1hcmdpbi10b3A6IDVweDtcclxuICAgICAgICB9XHJcblxyXG4gICAgfVxyXG4gICAgLy8gaW1nIHtcclxuICAgIC8vICAgICB3aWR0aDogMTAwJTtcclxuICAgIC8vICAgICBoZWlnaHQ6IGF1dG87XHJcbiAgICAvLyAgICAgcGFkZGluZzogMDtcclxuICAgIC8vICAgICBvcGFjaXR5OiAwLjM7XHJcbiAgICAvLyAgICAgcG9zaXRpb246IGFic29sdXRlO1xyXG4gICAgLy8gICAgIGxlZnQ6IDA7XHJcbiAgICAvLyAgICAgYm90dG9tOiAwO1xyXG4gICAgLy8gICAgIGRpc3BsYXk6IG5vbmU7XHJcbiAgICAvLyB9XHJcbn1cclxuXHJcblxyXG4vKi0tLS0taWYtb25seS1vbmUtYm94LS0tLSovXHJcblxyXG4uY2FyZC1ib3h7XHJcbiAgICAmLnRhZ2dzX2lzc3Vle1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IGxpbmVhci1ncmFkaWVudCh0byByaWdodCwjMDA4Mzg1IDAsIzI3YzZkOSAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOi13ZWJraXQtZ3JhZGllbnQobGluZWFyLGxlZnQgdG9wLHJpZ2h0IHRvcCxmcm9tKCMwMDgzODUpLHRvKCMyN2M2ZDkpKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtd2Via2l0LWxpbmVhci1ncmFkaWVudChsZWZ0LCMwMDgzODUgMCwjMjdjNmQ5IDEwMCUpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC1tb3otbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCMwMDgzODUgMCwjMjdjNmQ5IDEwMCUpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC1tb3otZ3JhZGllbnQobGluZWFyLGxlZnQgdG9wLHJpZ2h0IHRvcCxmcm9tKCMwMDgzODUpLHRvKCMyN2M2ZDkpKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtby1saW5lYXItZ3JhZGllbnQodG8gcmlnaHQsIzAwODM4NSAwLCMyN2M2ZDkgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1yZXBlYXQ6IHJlcGVhdC14O1xyXG4gIFxyXG4gICAgICAgIC5jaGFydC1pY29ue1xyXG4gICAgICAgICAgICBpe1xyXG4gICAgICAgICAgICAgICAgY29sb3I6IHdoaXRlO1xyXG4gICAgICAgICAgICB9XHJcbiAgICAgICAgfVxyXG4gICAgICAgIC5udW1iZXJzIHtcclxuICAgICAgICAgICAgY29sb3I6IHdoaXRlO1xyXG4gICAgICAgIH1cclxuICAgIH1cclxufVxyXG5cclxuLmNhcmQtYm94e1xyXG4gICAgJi5uZXctdGFnc3tcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiBsaW5lYXItZ3JhZGllbnQodG8gcmlnaHQsI2ZmNDI1YyAwLCNlYjdjOGIgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTotd2Via2l0LWdyYWRpZW50KGxpbmVhcixsZWZ0IHRvcCxyaWdodCB0b3AsZnJvbSgjZmY0MjVjKSx0bygjZWI3YzhiKSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLXdlYmtpdC1saW5lYXItZ3JhZGllbnQobGVmdCwjZmY0MjVjIDAsI2ViN2M4YiAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtbW96LWxpbmVhci1ncmFkaWVudCh0byByaWdodCwjZmY0MjVjIDAsI2ViN2M4YiAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtbW96LWdyYWRpZW50KGxpbmVhcixsZWZ0IHRvcCxyaWdodCB0b3AsZnJvbSgjZmY0MjVjKSx0bygjZWI3YzhiKSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW8tbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCNmZjQyNWMgMCwjZWI3YzhiIDEwMCUpO1xyXG4gICAgICAgIGJhY2tncm91bmQtcmVwZWF0OiByZXBlYXQteDtcclxuICAgICAgICBcclxuICAgIH1cclxuICAgICYudG90YWwtcmVjaGFyZ2V7XHJcbiAgICAgICAgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCNmZjg2NGEgMCwjZGI4ZDY3IDEwMCUpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6LXdlYmtpdC1ncmFkaWVudChsaW5lYXIsbGVmdCB0b3AscmlnaHQgdG9wLGZyb20oI2ZmODY0YSksdG8oI2RiOGQ2NykpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC13ZWJraXQtbGluZWFyLWdyYWRpZW50KGxlZnQsI2ZmODY0YSAwLCNkYjhkNjcgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW1vei1saW5lYXItZ3JhZGllbnQodG8gcmlnaHQsI2ZmODY0YSAwLCNkYjhkNjcgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW1vei1ncmFkaWVudChsaW5lYXIsbGVmdCB0b3AscmlnaHQgdG9wLGZyb20oI2ZmODY0YSksdG8oI2RiOGQ2NykpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC1vLWxpbmVhci1ncmFkaWVudCh0byByaWdodCwjZmY4NjRhIDAsI2RiOGQ2NyAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLXJlcGVhdDogcmVwZWF0LXg7XHJcbiAgICB9XHJcbiAgICAmLnRvdGFsLXJldmVudWV7XHJcbiAgICAgICAgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCMxM2E1NzkgMCwjMjljZDliIDEwMCUpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6LXdlYmtpdC1ncmFkaWVudChsaW5lYXIsbGVmdCB0b3AscmlnaHQgdG9wLGZyb20oIzEzYTU3OSksdG8oIzI5Y2Q5YikpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC13ZWJraXQtbGluZWFyLWdyYWRpZW50KGxlZnQsIzEzYTU3OSAwLCMyOWNkOWIgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW1vei1saW5lYXItZ3JhZGllbnQodG8gcmlnaHQsIzEzYTU3OSAwLCMyOWNkOWIgMTAwJSk7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW1vei1ncmFkaWVudChsaW5lYXIsbGVmdCB0b3AscmlnaHQgdG9wLGZyb20oIzEzYTU3OSksdG8oIzI5Y2Q5YikpO1xyXG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC1vLWxpbmVhci1ncmFkaWVudCh0byByaWdodCwjMTNhNTc5IDAsIzI5Y2Q5YiAxMDAlKTtcclxuICAgICAgICBiYWNrZ3JvdW5kLXJlcGVhdDogcmVwZWF0LXg7XHJcbiAgICB9XHJcbiAgICBcclxufVxyXG5cclxuXHJcbi5jdC1jaGFydHtcclxuICAgIG1hcmdpbjogMzBweCAwIDMwcHg7XHJcbiAgICBoZWlnaHQ6IDMxNXB4O1xyXG5cclxuICAgIC50ZXh0IHtcclxuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XHJcbiAgICAgICAgdG9wOiAxMHB4O1xyXG4gICAgICAgIHdpZHRoOiAxMDAlO1xyXG4gICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjtcclxuICAgIH1cclxuXHJcbiAgICAuYzJ7XHJcbiAgICAgICAgYmFja2dyb3VuZDogZ3JlZW47XHJcbiAgICAgICAgY29sb3I6IHdoaXRlO1xyXG4gICAgICAgIGhlaWdodDogMzMwcHg7XHJcbiAgICAgICAgd2lkdGg6IDMzMHB4O1xyXG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcclxuICAgICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XHJcbiAgICAgICAgbWFyZ2luOiBhdXRvO1xyXG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcclxuICAgICAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xyXG5cclxuICAgICAgICAuYzF7XHJcbiAgICAgICAgICAgIGJhY2tncm91bmQ6IHllbGxvdztcclxuICAgICAgICAgICAgY29sb3I6IGJsYWNrO1xyXG4gICAgICAgICAgICBoZWlnaHQ6IDIxMHB4O1xyXG4gICAgICAgICAgICB3aWR0aDogMjEwcHg7XHJcbiAgICAgICAgICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcclxuICAgICAgICAgICAgbWFyZ2luOiBhdXRvO1xyXG4gICAgICAgICAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xyXG4gICAgICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XHJcbiAgICAgICAgICAgIHRvcDogNTAlO1xyXG4gICAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoLTUwJSk7XHJcbiAgICAgICAgICAgIC5jMHtcclxuICAgICAgICAgICAgICAgIGJhY2tncm91bmQ6IHJlZDtcclxuICAgICAgICAgICAgICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgICAgICAgICAgICAgIGhlaWdodDogMTAwcHg7XHJcbiAgICAgICAgICAgICAgICB3aWR0aDogMTAwcHg7XHJcbiAgICAgICAgICAgICAgICBib3JkZXItcmFkaXVzOiA1MCU7XHJcbiAgICAgICAgICAgICAgICBtYXJnaW46IGF1dG87XHJcbiAgICAgICAgICAgICAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xyXG4gICAgICAgICAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xyXG4gICAgICAgICAgICAgICAgdG9wOiA1MCU7XHJcbiAgICAgICAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoLTUwJSk7XHJcblxyXG4gICAgICAgICAgICAgICAgLnRleHQge1xyXG4gICAgICAgICAgICAgICAgICAgIHRvcDogNTAlO1xyXG4gICAgICAgICAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWSgtNTAlKTtcclxuICAgICAgICAgICAgICAgIH1cclxuXHJcbiAgICAgICAgICAgIH1cclxuICAgICAgICB9XHJcbiAgICB9XHJcbn1cclxuLnNsaWRlLW1haW4ge1xyXG4gICAgd2lkdGg6IDMwcHg7XHJcbiAgICBoZWlnaHQ6IDM1NXB4O1xyXG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xyXG4gICAgdHJhbnNpdGlvbjogMC42cztcclxuICAgIGZsb2F0OiBsZWZ0O1xyXG4gICAgei1pbmRleDogMTtcclxuICAgIGN1cnNvcjogcG9pbnRlcjtcclxuICAgIC5zbGlkZSB7XHJcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xyXG4gICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xyXG4gICAgICAgIHRvcDogNTAlO1xyXG4gICAgICAgIGxlZnQ6IDUwJTtcclxuICAgICAgICB0cmFuc2l0aW9uOiAwLjZzO1xyXG5cclxuICAgICAgICBpe1xyXG4gICAgICAgICAgICBmb250LXNpemU6IDQxcHg7XHJcbiAgICAgICAgICAgIGNvbG9yOiAjYTdhN2E3O1xyXG4gICAgICAgIH1cclxuICAgIH1cclxuICAgICY6aG92ZXJ7XHJcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCAjMDA4Mzg1IDAsICMyN2M2ZDkgMTAwJSk7XHJcbiAgICAgICAgb3BhY2l0eTogMC44O1xyXG4gICAgICAgIHRyYW5zaXRpb246IDAuNnM7XHJcbiAgICAgICAgXHJcbiAgICB9XHJcbn0iXX0= */"
 
 /***/ }),
 
@@ -558,6 +559,7 @@ var DashboardComponent = /** @class */ (function () {
     function DashboardComponent(dashboardservice, activateRoute) {
         this.dashboardservice = dashboardservice;
         this.activateRoute = activateRoute;
+        this.Transporter = "";
         this.vehicleAvailablity = [];
         this.viewPanel = true;
         this.viewPanel1 = true;
@@ -572,9 +574,6 @@ var DashboardComponent = /** @class */ (function () {
         this.totalRecharge = 0;
         this.totalRechargeValue = false;
         this.months = months;
-        this.Year = "2019";
-        this.Month = 1;
-        this.Transporter = "";
     }
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -590,6 +589,7 @@ var DashboardComponent = /** @class */ (function () {
         google.charts.load('current', { packages: ['corechart', 'bar'], language: 'hi_ln' });
         google.charts.setOnLoadCallback(function () {
             _this.activateRoute.queryParams.subscribe(function (res) {
+                _this.selectedYear = (res.year) ? res.year : (new Date()).getFullYear() - 1;
                 _this.viewPanel = true;
                 _this.viewPanel1 = true;
                 _this.getAllChart();
@@ -601,11 +601,12 @@ var DashboardComponent = /** @class */ (function () {
     // all at a time
     DashboardComponent.prototype.getAllChart = function () {
         this.getTrips();
+        this.locationCode = '001';
         this.getVehicleAvailability('001');
-        this.getViolations();
         this.getTransporters();
     };
     DashboardComponent.prototype.getTrips = function () {
+        var _this = this;
         this.dashboardservice.getYearlyTrips().subscribe(function (response) {
             var tripMonthlyList = response;
             var tripsData = [[]];
@@ -616,55 +617,95 @@ var DashboardComponent = /** @class */ (function () {
             });
             tripMonthlyList.forEach(function (element, index) {
                 tripsData[index + 1] = [];
-                tripsData[index + 1].push(element.year);
+                tripsData[index + 1].push('' + element.year);
                 element.tripsList.forEach(function (el) {
                     tripsData[index + 1].push(el.count);
                 });
             });
             var data = google.visualization.arrayToDataTable(tripsData);
             var options = {
+                bar: { groupWidth: "10%" },
                 hAxis: {
                     title: 'Year',
                     format: ' ',
-                    viewWindow: {
-                        max: new Date().getFullYear() - 2,
-                        min: new Date().getFullYear() + 2
-                    }
                 },
                 vAxis: {
                     title: 'Count'
-                }
+                },
+                isStacked: true
                 // title: 'Tags Issued Monthly Trend',
                 // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
             };
-            var chart = new google.visualization.LineChart(document.getElementById('tripChart'));
+            var chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
+            google.visualization.events.addListener(chart, 'click', function (e) {
+                var parts = e.targetID.split('#');
+                if (parts[0] == "hAxis") {
+                    _this.getTripsByYear(tripsData[parseInt(parts[3]) + 1][0]);
+                }
+            });
             chart.draw(data, options);
         });
     };
     DashboardComponent.prototype.getTripsByYear = function (year) {
-        this.dashboardservice.getTripsByYear(year).subscribe(function (response) {
-            var tripMonthlyList = response.tripMonthlyList;
+        var _this = this;
+        this.dashboardservice.getMonthlyTrips(year).subscribe(function (response) {
+            var tripMonthlyList = response;
             var tripsData = [[]];
             tripsData[0] = [];
             tripsData[0].push('month');
-            tripMonthlyList[0].trips.forEach(function (element) {
+            tripMonthlyList[0].tripsList.forEach(function (element) {
                 tripsData[0].push(element.tripType);
             });
             tripMonthlyList.forEach(function (element, index) {
                 tripsData[index + 1] = [];
                 tripsData[index + 1].push(months[element.month - 1]);
-                element.trips.forEach(function (el) {
+                element.tripsList.forEach(function (el) {
                     tripsData[index + 1].push(el.count);
                 });
             });
             var data = google.visualization.arrayToDataTable(tripsData);
             var options = {
-                hAxis: { title: 'Month' },
-                vAxis: { title: 'Count' }
+                hAxis: { title: 'Months of ' + year },
+                vAxis: { title: 'Count' },
+                isStacked: true
                 // title: 'Tags Issued Monthly Trend',
                 // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
             };
-            var chart = new google.visualization.LineChart(document.getElementById('tripChart'));
+            var chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
+            google.visualization.events.addListener(chart, 'click', function (e) {
+                var parts = e.targetID.split('#');
+                if (parts[0] == "hAxis") {
+                    _this.getTripsByMonth(year, months.indexOf(tripsData[parseInt(parts[3]) + 1][0]) + 1);
+                }
+            });
+            chart.draw(data, options);
+        });
+    };
+    DashboardComponent.prototype.getTripsByMonth = function (year, month) {
+        this.dashboardservice.getDayWiseTrips(year, month).subscribe(function (response) {
+            var tripMonthlyList = response;
+            var tripsData = [[]];
+            tripsData[0] = [];
+            tripsData[0].push('Day');
+            tripMonthlyList[0].tripsList.forEach(function (element) {
+                tripsData[0].push(element.tripType);
+            });
+            tripMonthlyList.forEach(function (element, index) {
+                tripsData[index + 1] = [];
+                tripsData[index + 1].push('' + element.day);
+                element.tripsList.forEach(function (el) {
+                    tripsData[index + 1].push(el.count);
+                });
+            });
+            var data = google.visualization.arrayToDataTable(tripsData);
+            var options = {
+                hAxis: { title: 'Days of ' + months[month - 1] + '-' + year },
+                vAxis: { title: 'Count' },
+                isStacked: true
+                // title: 'Tags Issued Monthly Trend',
+                // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+            };
+            var chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
             chart.draw(data, options);
         });
     };
@@ -733,70 +774,205 @@ var DashboardComponent = /** @class */ (function () {
         this.dashboardservice.getTransporters().subscribe(function (response) {
             _this.transporters = response;
             _this.Transporter = 'ECUS519';
-            _this.getFleetUtilization(_this.Month, _this.Year, _this.Transporter);
-        });
-    };
-    DashboardComponent.prototype.getViolations = function () {
-        var _this = this;
-        this.dashboardservice.getViolations().subscribe(function (response) {
-            _this.violations = response;
-            _this.getViolationsByCustomer('ECUS875');
+            _this.selectedCustomer = 'ECUS875';
+            _this.getFleetUtilizationByCustId(_this.Transporter);
+            _this.getViolationsByCustomer(_this.selectedCustomer);
         });
     };
     DashboardComponent.prototype.getViolationsByCustomer = function (custId) {
         var _this = this;
         this.dashboardservice.getViolationsByCustomerId(custId).subscribe(function (response) {
-            _this.drawViolationChart(response.violations);
+            _this.drawViolationChart(custId, response.violationsMetricsList);
         });
     };
-    DashboardComponent.prototype.drawViolationChart = function (violations) {
-        // const customer = this.violations.find(v => v.custId === customerId);
-        // debugger
-        // const violations = customer.violations;
+    DashboardComponent.prototype.drawViolationChart = function (custId, violationsMetricsList) {
+        var _this = this;
         var violationChartData = [[]];
-        violationChartData[0] = ['Violation', 'Count'];
-        violations.forEach(function (v) {
-            violationChartData.push([v.name, v.count]);
+        violationChartData[0] = ['Year'];
+        violationsMetricsList[0].violations.forEach(function (element) {
+            violationChartData[0].push(element.name);
+        });
+        violationsMetricsList.forEach(function (element, index) {
+            violationChartData[index + 1] = [];
+            violationChartData[index + 1][0] = '' + element.year;
+            element.violations.forEach(function (e) {
+                violationChartData[index + 1].push(e.count);
+            });
         });
         var data = google.visualization.arrayToDataTable(violationChartData);
         var options = {
-            hAxis: { title: 'Violations' },
-            vAxis: { title: 'Count' }
+            hAxis: { title: 'Year' },
+            vAxis: { title: 'Count' },
+            isStacked: true
             // title: 'Tags Issued Monthly Trend',
             // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('violationChart'));
+        google.visualization.events.addListener(chart, 'click', function (e) {
+            var parts = e.targetID.split('#');
+            if (parts[0] == "hAxis")
+                _this.getViolatonsByYear(violationChartData[parseInt(parts[3]) + 1][0], custId);
+        });
         chart.draw(data, options);
     };
-    DashboardComponent.prototype.getFleetUtilization = function (month, year, custId) {
+    DashboardComponent.prototype.getViolatonsByYear = function (year, custId) {
         var _this = this;
-        console.log(month, year, custId);
-        this.dashboardservice.getFleetUtilization(month, year, custId).subscribe(function (response) {
-            _this.fleetUtilizationData = response;
-            _this.drawFleetUtilization();
+        this.dashboardservice.getViolationsByCustomerIdAndYear(year, custId).subscribe(function (response) {
+            _this.drawViolationChartByMonth(custId, year, response.violationsMetricsList);
+        });
+    };
+    DashboardComponent.prototype.drawViolationChartByMonth = function (custId, year, violationsMetricsList) {
+        var _this = this;
+        var violationChartData = [[]];
+        violationChartData[0] = ['Month'];
+        violationsMetricsList[0].violations.forEach(function (element) {
+            violationChartData[0].push(element.name);
+        });
+        violationsMetricsList.forEach(function (element, index) {
+            violationChartData[index + 1] = [];
+            violationChartData[index + 1][0] = '' + months[element.month - 1];
+            element.violations.forEach(function (e) {
+                violationChartData[index + 1].push(e.count);
+            });
+        });
+        var data = google.visualization.arrayToDataTable(violationChartData);
+        var options = {
+            hAxis: { title: 'Months of ' + year },
+            vAxis: { title: 'Count' },
+            isStacked: true,
+            // title: 'Tags Issued Monthly Trend',
+            colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('violationChart'));
+        google.visualization.events.addListener(chart, 'click', function (e) {
+            var parts = e.targetID.split('#');
+            if (parts[0] == "hAxis")
+                _this.getViolatonsByYearAndMonth(custId, year, months.indexOf(violationChartData[parseInt(parts[3]) + 1][0]) + 1);
+        });
+        chart.draw(data, options);
+    };
+    DashboardComponent.prototype.getViolatonsByYearAndMonth = function (custId, year, month) {
+        var _this = this;
+        this.dashboardservice.getViolationsByCustomerIdAndYearAndMonth(year, month, custId).subscribe(function (response) {
+            _this.drawViolationChartByDay(year, month, response.violationsMetricsList);
+        });
+    };
+    DashboardComponent.prototype.drawViolationChartByDay = function (year, month, violationsMetricsList) {
+        var violationChartData = [[]];
+        violationChartData[0] = ['Day'];
+        violationsMetricsList[0].violations.forEach(function (element) {
+            violationChartData[0].push(element.name);
+        });
+        violationsMetricsList.forEach(function (element, index) {
+            violationChartData[index + 1] = [];
+            violationChartData[index + 1][0] = '' + element.day;
+            element.violations.forEach(function (e) {
+                violationChartData[index + 1].push(e.count);
+            });
+        });
+        var data = google.visualization.arrayToDataTable(violationChartData);
+        var options = {
+            hAxis: { title: 'Days of ' + months[month - 1] + '-' + year },
+            vAxis: { title: 'Count' },
+            isStacked: true,
+            // title: 'Tags Issued Monthly Trend',
+            colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('violationChart'));
+        chart.draw(data, options);
+    };
+    DashboardComponent.prototype.getFleetUtilizationByCustId = function (custId) {
+        var _this = this;
+        this.dashboardservice.getFleetUtilizationByCustId(custId).subscribe(function (response) {
+            _this.drawFleetUtilization(custId, response.list);
         }, function (error) {
         });
     };
-    DashboardComponent.prototype.drawFleetUtilization = function () {
-        var fleetUtilizations = this.fleetUtilizationData.list;
+    DashboardComponent.prototype.drawFleetUtilization = function (custId, fleetUtilizations) {
+        var _this = this;
         var fleetUtilizationChartData = [[]];
-        fleetUtilizationChartData[0] = ['Date', 'Percent', { type: 'string', role: 'tooltip' }];
+        fleetUtilizationChartData[0] = ['Year', 'Percent', { type: 'string', role: 'tooltip' }];
         fleetUtilizations.forEach(function (v) {
-            fleetUtilizationChartData.push([v.date, v.percent, "Total: " + v.total + ",\nCount: " + v.count + ",\nPercent: " + v.percent]);
+            fleetUtilizationChartData.push(['' + v.year, v.percent, "Total: " + v.total + ",\nCount: " + v.count + ",\nPercent: " + v.percent]);
         });
         var data = google.visualization.arrayToDataTable(fleetUtilizationChartData);
         var options = {
             hAxis: {
-                title: 'Dates',
-                direction: -1,
-                slantedText: true,
-                slantedTextAngle: 30
+                title: 'Year'
+                // slantedText: true,
+                // slantedTextAngle: 30
             },
-            vAxis: { title: 'Percent' }
+            vAxis: { title: 'Percent' },
             // title: 'Tags Issued Monthly Trend',
-            // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+            colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
         };
-        var chart = new google.visualization.LineChart(document.getElementById('fleetUtilizationChart'));
+        var chart = new google.visualization.ColumnChart(document.getElementById('fleetUtilizationChart'));
+        google.visualization.events.addListener(chart, 'click', function (e) {
+            var parts = e.targetID.split('#');
+            if (parts[0] == "hAxis")
+                _this.getFleetUtilizationByCustIdAndYear(fleetUtilizationChartData[parseInt(parts[3]) + 1][0], custId);
+        });
+        chart.draw(data, options);
+    };
+    DashboardComponent.prototype.getFleetUtilizationByCustIdAndYear = function (year, custId) {
+        var _this = this;
+        this.dashboardservice.getFleetUtilizationByCustIdAndYear(year, custId).subscribe(function (response) {
+            _this.drawFleetUtilizationByYear(year, custId, response.list);
+        }, function (error) {
+        });
+    };
+    DashboardComponent.prototype.drawFleetUtilizationByYear = function (year, custId, fleetUtilizations) {
+        var _this = this;
+        var fleetUtilizationChartData = [[]];
+        fleetUtilizationChartData[0] = ['Month', 'Percent', { type: 'string', role: 'tooltip' }];
+        fleetUtilizations.forEach(function (v) {
+            fleetUtilizationChartData.push([months[v.month - 1], v.percent, "Total: " + v.total + ",\nCount: " + v.count + ",\nPercent: " + v.percent]);
+        });
+        var data = google.visualization.arrayToDataTable(fleetUtilizationChartData);
+        var options = {
+            hAxis: {
+                title: 'Months of ' + year
+                // slantedText: true,
+                // slantedTextAngle: 30
+            },
+            vAxis: { title: 'Percent' },
+            // title: 'Tags Issued Monthly Trend',
+            colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('fleetUtilizationChart'));
+        google.visualization.events.addListener(chart, 'click', function (e) {
+            var parts = e.targetID.split('#');
+            if (parts[0] == "hAxis") {
+                _this.getFleetUtilizationByCustIdAndYearAndMonth(months.indexOf(fleetUtilizationChartData[parseInt(parts[3]) + 1][0]) + 1, year, custId);
+            }
+        });
+        chart.draw(data, options);
+    };
+    DashboardComponent.prototype.getFleetUtilizationByCustIdAndYearAndMonth = function (month, year, custId) {
+        var _this = this;
+        this.dashboardservice.getFleetUtilizationByCustIdYearAndMonth(year, month, custId).subscribe(function (response) {
+            _this.drawFleetUtilizationByYearAndMonth(month, year, custId, response.list);
+        }, function (error) {
+        });
+    };
+    DashboardComponent.prototype.drawFleetUtilizationByYearAndMonth = function (month, year, custId, fleetUtilizations) {
+        var fleetUtilizationChartData = [[]];
+        fleetUtilizationChartData[0] = ['Day', 'Percent', { type: 'string', role: 'tooltip' }];
+        fleetUtilizations.forEach(function (v) {
+            fleetUtilizationChartData.push(['' + v.day, v.percent, "Total: " + v.total + ",\nCount: " + v.count + ",\nPercent: " + v.percent]);
+        });
+        var data = google.visualization.arrayToDataTable(fleetUtilizationChartData);
+        var options = {
+            hAxis: {
+                title: 'Days of ' + months[month - 1] + '-' + year
+                // slantedText: true,
+                // slantedTextAngle: 30
+            },
+            vAxis: { title: 'Percent' },
+            // title: 'Tags Issued Monthly Trend',
+            colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('fleetUtilizationChart'));
         chart.draw(data, options);
     };
     DashboardComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -916,6 +1092,7 @@ var MainComponent = /** @class */ (function () {
     }
     MainComponent.prototype.ngOnInit = function () {
         var _this = this;
+        this.yearList = [2018, 2019, 2020];
         // this.getMinYear();
         this.activateRoute.queryParams.subscribe(function (res) {
             _this.selectedYear = (res.year) ? res.year : (new Date()).getFullYear() - 1;
@@ -925,6 +1102,7 @@ var MainComponent = /** @class */ (function () {
         var _this = this;
         this.dashboardService.getMinYear()
             .subscribe(function (res) {
+            debugger;
             var currentYear = new Date().getFullYear();
             var minY = res[0].year;
             _this.yearList = [];
@@ -1071,7 +1249,13 @@ var DashboardService = /** @class */ (function () {
         return this.api.get('api/metrics/locations');
     };
     DashboardService.prototype.getYearlyTrips = function () {
-        return this.api.get('api/metrics/tripsYearly');
+        return this.api.get('api/metrics/trips');
+    };
+    DashboardService.prototype.getMonthlyTrips = function (year) {
+        return this.api.get('api/metrics/trips?year=' + year);
+    };
+    DashboardService.prototype.getDayWiseTrips = function (year, month) {
+        return this.api.get('api/metrics/trips?year=' + year + '&month=' + month);
     };
     DashboardService.prototype.getTripsByYear = function (year) {
         return this.api.get('api/metrics/tripsMonthly?year=' + year + '&month=0');
@@ -1088,9 +1272,20 @@ var DashboardService = /** @class */ (function () {
     DashboardService.prototype.getViolationsByCustomerId = function (custId) {
         return this.api.get('api/metrics/violations/' + custId);
     };
-    DashboardService.prototype.getFleetUtilization = function (month, year, custId) {
+    DashboardService.prototype.getViolationsByCustomerIdAndYear = function (year, custId) {
+        return this.api.get('api/metrics/violations/' + custId + '?year=' + year);
+    };
+    DashboardService.prototype.getViolationsByCustomerIdAndYearAndMonth = function (year, month, custId) {
+        return this.api.get('api/metrics/violations/' + custId + '?year=' + year + '&month=' + month);
+    };
+    DashboardService.prototype.getFleetUtilizationByCustId = function (custId) {
+        return this.api.get("api/metrics/fleetUtilization?custId=" + custId);
+    };
+    DashboardService.prototype.getFleetUtilizationByCustIdAndYear = function (year, custId) {
+        return this.api.get("api/metrics/fleetUtilization?year=" + year + "&custId=" + custId);
+    };
+    DashboardService.prototype.getFleetUtilizationByCustIdYearAndMonth = function (year, month, custId) {
         return this.api.get("api/metrics/fleetUtilization?month=" + month + "&year=" + year + "&custId=" + custId);
-        // return of({ "custId": "ECUS519", "list": [{ "date": "01-Sep", "total": 321, "count": 84, "percent": 26.17 }, { "date": "02-Sep", "total": 321, "count": 74, "percent": 23.05 }, { "date": "03-Sep", "total": 321, "count": 68, "percent": 21.18 }, { "date": "04-Sep", "total": 321, "count": 69, "percent": 21.5 }, { "date": "05-Sep", "total": 321, "count": 78, "percent": 24.3 }, { "date": "06-Sep", "total": 321, "count": 77, "percent": 23.99 }, { "date": "07-Sep", "total": 321, "count": 70, "percent": 21.81 }, { "date": "08-Sep", "total": 321, "count": 65, "percent": 20.25 }, { "date": "09-Sep", "total": 321, "count": 51, "percent": 15.89 }, { "date": "10-Sep", "total": 321, "count": 49, "percent": 15.26 }, { "date": "11-Sep", "total": 321, "count": 42, "percent": 13.08 }, { "date": "12-Sep", "total": 321, "count": 31, "percent": 9.66 }, { "date": "13-Sep", "total": 321, "count": 30, "percent": 9.35 }, { "date": "14-Sep", "total": 321, "count": 23, "percent": 7.17 }, { "date": "15-Sep", "total": 321, "count": 16, "percent": 4.98 }, { "date": "16-Sep", "total": 321, "count": 7, "percent": 2.18 }, { "date": "17-Sep", "total": 321, "count": 4, "percent": 1.25 }, { "date": "18-Sep", "total": 321, "count": 2, "percent": 0.62 }, { "date": "19-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "20-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "21-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "22-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "23-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "24-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "25-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "26-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "27-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "28-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "29-Sep", "total": 321, "count": 0, "percent": 0 }, { "date": "30-Sep", "total": 321, "count": 0, "percent": 0 }] });
     };
     DashboardService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
