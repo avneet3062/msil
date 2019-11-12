@@ -4,7 +4,7 @@
 
 
     <section>
-        <div class="row">
+        <div class="row" (window:resize)="onResizeWindow()">
             <!-- Trips -->
             <div class="col-lg-12">
                 <div class="card">
@@ -29,13 +29,14 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="header tittle">
-                        <h4 class="">Vehicle Availablity
-                            <select class="pull-right" name="location" id="" [(ngModel)]="locationCode" (ngModelChange)="getVehicleAvailability($event)">
+                        <h4>Vehicle Availablity</h4>
+                        <div class="select-box">
+                            <select name="location" id="" [(ngModel)]="locationCode" (ngModelChange)="getVehicleAvailability($event)">
                                 <option [value]="loc.code" *ngFor="let loc of locations;">
                                     {{loc.locName}}
                                 </option>
                             </select>
-                        </h4>
+                        </div>
                     </div>
                     <div class="content" *ngIf="vehicleAvailablity.length">
                         <div class="ct-chart">
@@ -66,11 +67,13 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="header tittle">
-                        <h4 class="">Violations Chart
-                            <select class="pull-right" name="customer" id="" [(ngModel)]="selectedCustomer" (ngModelChange)="getViolationsByCustomer($event)">
+                        <h4>Violations Chart
+                        </h4>
+                        <div class="select-box">
+                            <select name="customer" id="" [(ngModel)]="selectedCustomer" (ngModelChange)="getViolationsByCustomer($event)">
                                 <option [value]="transporter.custId" *ngFor="let transporter of transporters">{{transporter.custName}}</option>
                             </select>
-                        </h4>
+                        </div>
                     </div>
                     <div class="content">
                         <div *ngIf="violationsChart.drill" class="slide-main" (click)="drillBackCharts('violationChart', violationsChart.drill)">
@@ -87,11 +90,13 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="header tittle">
-                        <h4 class="">Fleet Utilization Chart
-                            <select class="pull-right" name="customer" id="" [(ngModel)]="Transporter" (ngModelChange)="getFleetUtilizationByCustId(Transporter)">
+                        <h4>Fleet Utilization Chart
+                        </h4>
+                        <div class="select-box">
+                            <select name="customer" id="" [(ngModel)]="Transporter" (ngModelChange)="getFleetUtilizationByCustId(Transporter)">
                                 <option [value]="transporter.custId" *ngFor="let transporter of transporters">{{transporter.custName}}</option>
                             </select>
-                        </h4>
+                        </div>
                     </div>
                     <div class="content">
                         <div *ngIf="fleetUtilizationsChart.drill" class="slide-main" (click)="drillBackCharts('fleetUtilizationChart', fleetUtilizationsChart.drill)">

@@ -90,7 +90,6 @@ export class DashboardComponent implements OnInit {
   }
 
   drawTripsChartYearwise(tripsResponse) {
-    debugger
     this.tripsChart.drill = 0;
     const tripsData = [[]];
     tripsData[0] = [];
@@ -416,7 +415,7 @@ export class DashboardComponent implements OnInit {
     const fleetUtilizationChartData = [[]];
     fleetUtilizationChartData[0] = ['Year', 'Percent', { type: 'string', role: 'tooltip' }];
     fleetUtilizations.forEach(v => {
-      fleetUtilizationChartData.push(['' + v.year, v.percent, `Total: ${v.total},\nCount: ${v.count},\nPercent: ${v.percent}`]);
+      fleetUtilizationChartData.push(['' + v.year, v.percent, `Total: ${v.total},\nUtilized: ${v.utilized},\nPercent: ${v.percent}`]);
     });
     const data = google.visualization.arrayToDataTable(fleetUtilizationChartData);
     const options = {
@@ -452,7 +451,7 @@ export class DashboardComponent implements OnInit {
     const fleetUtilizationChartData = [[]];
     fleetUtilizationChartData[0] = ['Month', 'Percent', { type: 'string', role: 'tooltip' }];
     fleetUtilizations.forEach(v => {
-      fleetUtilizationChartData.push([months[v.month - 1], v.percent, `Total: ${v.total},\nCount: ${v.count},\nPercent: ${v.percent}`]);
+      fleetUtilizationChartData.push([months[v.month - 1], v.percent, `Total: ${v.total},\nUtilized: ${v.utilized},\nPercent: ${v.percent}`]);
     });
     const data = google.visualization.arrayToDataTable(fleetUtilizationChartData);
     const options = {
@@ -489,7 +488,7 @@ export class DashboardComponent implements OnInit {
     const fleetUtilizationChartData = [[]];
     fleetUtilizationChartData[0] = ['Day', 'Percent', { type: 'string', role: 'tooltip' }];
     fleetUtilizations.forEach(v => {
-      fleetUtilizationChartData.push(['' + v.day, v.percent, `Total: ${v.total},\nCount: ${v.count},\nPercent: ${v.percent}`]);
+      fleetUtilizationChartData.push(['' + v.day, v.percent, `Total: ${v.total},\nUtilized: ${v.utilized},\nPercent: ${v.percent}`]);
     });
     const data = google.visualization.arrayToDataTable(fleetUtilizationChartData);
     const options = {
