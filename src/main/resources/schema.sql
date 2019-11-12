@@ -1200,3 +1200,17 @@ OPEN C FOR SQL_STMT;
 DBMS_OUTPUT.put_line(SQL_STMT);
 END MSIL_TOTALTRIPS6;
 
+^;
+create or replace
+PROCEDURE MSIL_MINIMUM_DATE
+(
+ c OUT SYS_REFCURSOR
+)
+AS
+
+BEGIN
+open c for
+select extract (year from min(trip_inv_date)) "year" from etrk_mul_newtrip;
+END MSIL_MINIMUM_DATE;
+^;
+

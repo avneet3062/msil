@@ -183,7 +183,7 @@ public class TripRepositoryImpl implements TripRepository {
         List<Trips> yearlyTrips = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_CLOSEDTRIPS4");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2019, 1, 1, 0, 0, 0)));
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2017, 1, 1, 0, 0, 0)));
         procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
 
         procedureQuery.execute();
@@ -201,7 +201,7 @@ public class TripRepositoryImpl implements TripRepository {
         List<Trips> yearlyTrips = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_DELAYTRIPS4");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2019, 1, 1, 0, 0, 0)));
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2017, 1, 1, 0, 0, 0)));
         procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
 
         procedureQuery.execute();
@@ -219,7 +219,7 @@ public class TripRepositoryImpl implements TripRepository {
         List<Trips> yearlyTrips = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_TOTALTRIPS4");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2019, 1, 1, 0, 0, 0)));
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2017, 1, 1, 0, 0, 0)));
         procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
 
         procedureQuery.execute();
