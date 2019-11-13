@@ -521,7 +521,7 @@ var SidebarModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <section>\r\n        <div class=\"row\">\r\n            <!-- Trips -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Trips</h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div id=\"tripChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Monthly transactions -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Vehicle Availablity\r\n                            <select class=\"pull-right\" name=\"location\" id=\"\" [(ngModel)]=\"locationCode\" (ngModelChange)=\"getVehicleAvailability($event)\">\r\n                                <option [value]=\"loc.code\" *ngFor=\"let loc of locations;\">\r\n                                    {{loc.locName}}\r\n                                </option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\" *ngIf=\"vehicleAvailablity.length\">\r\n                        <div class=\"ct-chart\">\r\n                            <div class=\"c2\" *ngIf=\"vehicleAvailablity.length\">\r\n                                <div class=\"text\">\r\n                                    <div>{{vehicleAvailablity[2].range}} </div>\r\n                                    <div>{{vehicleAvailablity[2].count}}</div>\r\n                                </div>\r\n                                <div class=\"c1\">\r\n                                    <div class=\"text\">\r\n                                        <div>{{vehicleAvailablity[1].range}} </div>\r\n                                        <div>{{vehicleAvailablity[1].count}}</div>\r\n                                    </div>\r\n                                    <div class=\"c0\">\r\n                                        <div class=\"text\">\r\n                                            <div>{{vehicleAvailablity[0].range}} </div>\r\n                                            <div>{{vehicleAvailablity[0].count}}</div>\r\n                                        </div>\r\n                                    </div>\r\n                                </div>\r\n                            </div>\r\n                            <img src=\"assets/img/loading.gif\" *ngIf=\"!vehicleAvailablity.length\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- Violations Chart -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Violations Chart\r\n                            <select class=\"pull-right\" name=\"customer\" id=\"\" [(ngModel)]=\"selectedCustomer\" (ngModelChange)=\"getViolationsByCustomer($event)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div class=\"slide-main\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"violationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Fleet Utilization Chart\r\n                            <select class=\"pull-right\" name=\"customer\" id=\"\" [(ngModel)]=\"Transporter\" (ngModelChange)=\"getFleetUtilizationByCustId(Transporter)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div class=\"slide-main\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"fleetUtilizationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </section>\r\n</div>"
+module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <section>\r\n        <div class=\"row\">\r\n            <!-- Trips -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Trips</h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n\r\n                        <div *ngIf=\"tripsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('tripChart', tripsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"tripChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Monthly transactions -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Vehicle Availablity\r\n                            <select class=\"pull-right\" name=\"location\" id=\"\" [(ngModel)]=\"locationCode\" (ngModelChange)=\"getVehicleAvailability($event)\">\r\n                                <option [value]=\"loc.code\" *ngFor=\"let loc of locations;\">\r\n                                    {{loc.locName}}\r\n                                </option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\" *ngIf=\"vehicleAvailablity.length\">\r\n                        <div class=\"ct-chart\">\r\n                            <div class=\"c2\" *ngIf=\"vehicleAvailablity.length\">\r\n                                <div class=\"text\">\r\n                                    <div>{{vehicleAvailablity[2].range}} </div>\r\n                                    <div>{{vehicleAvailablity[2].count}}</div>\r\n                                </div>\r\n                                <div class=\"c1\">\r\n                                    <div class=\"text\">\r\n                                        <div>{{vehicleAvailablity[1].range}} </div>\r\n                                        <div>{{vehicleAvailablity[1].count}}</div>\r\n                                    </div>\r\n                                    <div class=\"c0\">\r\n                                        <div class=\"text\">\r\n                                            <div>{{vehicleAvailablity[0].range}} </div>\r\n                                            <div>{{vehicleAvailablity[0].count}}</div>\r\n                                        </div>\r\n                                    </div>\r\n                                </div>\r\n                            </div>\r\n                            <img src=\"assets/img/loading.gif\" *ngIf=\"!vehicleAvailablity.length\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- Violations Chart -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Violations Chart\r\n                            <select class=\"pull-right\" name=\"customer\" id=\"\" [(ngModel)]=\"selectedCustomer\" (ngModelChange)=\"getViolationsByCustomer($event)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div *ngIf=\"violationsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('violationChart', violationsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"violationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Fleet Utilization Chart\r\n                            <select class=\"pull-right\" name=\"customer\" id=\"\" [(ngModel)]=\"Transporter\" (ngModelChange)=\"getFleetUtilizationByCustId(Transporter)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div *ngIf=\"fleetUtilizationsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('fleetUtilizationChart', fleetUtilizationsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"fleetUtilizationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </section>\r\n</div>"
 
 /***/ }),
 
@@ -574,6 +574,9 @@ var DashboardComponent = /** @class */ (function () {
         this.totalRecharge = 0;
         this.totalRechargeValue = false;
         this.months = months;
+        this.tripsChart = {};
+        this.violationsChart = {};
+        this.fleetUtilizationsChart = {};
     }
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -608,48 +611,56 @@ var DashboardComponent = /** @class */ (function () {
     DashboardComponent.prototype.getTrips = function () {
         var _this = this;
         this.dashboardservice.getYearlyTrips().subscribe(function (response) {
-            var tripMonthlyList = response;
-            var tripsData = [[]];
-            tripsData[0] = [];
-            tripsData[0].push('year');
-            tripMonthlyList[0].tripsList.forEach(function (element) {
-                tripsData[0].push(element.tripType);
-            });
-            tripMonthlyList.forEach(function (element, index) {
-                tripsData[index + 1] = [];
-                tripsData[index + 1].push('' + element.year);
-                element.tripsList.forEach(function (el) {
-                    tripsData[index + 1].push(el.count);
-                });
-            });
-            var data = google.visualization.arrayToDataTable(tripsData);
-            var options = {
-                bar: { groupWidth: "10%" },
-                hAxis: {
-                    title: 'Year',
-                    format: ' ',
-                },
-                vAxis: {
-                    title: 'Count'
-                },
-                isStacked: true
-                // title: 'Tags Issued Monthly Trend',
-                // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
-            };
-            var chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
-            google.visualization.events.addListener(chart, 'click', function (e) {
-                var parts = e.targetID.split('#');
-                if (parts[0] == "hAxis") {
-                    _this.getTripsByYear(tripsData[parseInt(parts[3]) + 1][0]);
-                }
-            });
-            chart.draw(data, options);
+            _this.tripsChart.data = response;
+            _this.drawTripsChartYearwise(response);
         });
+    };
+    DashboardComponent.prototype.drawTripsChartYearwise = function (tripsResponse) {
+        var _this = this;
+        debugger;
+        this.tripsChart.drill = 0;
+        var tripsData = [[]];
+        tripsData[0] = [];
+        tripsData[0].push('year');
+        tripsResponse[0].tripsList.forEach(function (element) {
+            tripsData[0].push(element.tripType);
+        });
+        tripsResponse.forEach(function (element, index) {
+            tripsData[index + 1] = [];
+            tripsData[index + 1].push('' + element.year);
+            element.tripsList.forEach(function (el) {
+                tripsData[index + 1].push(el.count);
+            });
+        });
+        var data = google.visualization.arrayToDataTable(tripsData);
+        var options = {
+            bar: { groupWidth: "10%" },
+            hAxis: {
+                title: 'Year',
+                format: ' ',
+            },
+            vAxis: {
+                title: 'Count'
+            },
+            isStacked: true
+            // title: 'Tags Issued Monthly Trend',
+            // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
+        google.visualization.events.addListener(chart, 'click', function (e) {
+            var parts = e.targetID.split('#');
+            if (parts[0] == "hAxis") {
+                _this.getTripsByYear(tripsData[parseInt(parts[3]) + 1][0]);
+            }
+        });
+        chart.draw(data, options);
     };
     DashboardComponent.prototype.getTripsByYear = function (year) {
         var _this = this;
+        this.tripsChart.year = year;
         this.dashboardservice.getMonthlyTrips(year).subscribe(function (response) {
             var tripMonthlyList = response;
+            _this.tripsChart.drill = 1;
             var tripsData = [[]];
             tripsData[0] = [];
             tripsData[0].push('month');
@@ -682,8 +693,12 @@ var DashboardComponent = /** @class */ (function () {
         });
     };
     DashboardComponent.prototype.getTripsByMonth = function (year, month) {
+        var _this = this;
+        this.tripsChart.year = year;
+        this.tripsChart.month = month;
         this.dashboardservice.getDayWiseTrips(year, month).subscribe(function (response) {
             var tripMonthlyList = response;
+            _this.tripsChart.drill = 2;
             var tripsData = [[]];
             tripsData[0] = [];
             tripsData[0].push('Day');
@@ -782,11 +797,13 @@ var DashboardComponent = /** @class */ (function () {
     DashboardComponent.prototype.getViolationsByCustomer = function (custId) {
         var _this = this;
         this.dashboardservice.getViolationsByCustomerId(custId).subscribe(function (response) {
+            _this.violationsChart.data = response.violationsMetricsList;
             _this.drawViolationChart(custId, response.violationsMetricsList);
         });
     };
     DashboardComponent.prototype.drawViolationChart = function (custId, violationsMetricsList) {
         var _this = this;
+        this.violationsChart.drill = 0;
         var violationChartData = [[]];
         violationChartData[0] = ['Year'];
         violationsMetricsList[0].violations.forEach(function (element) {
@@ -823,6 +840,8 @@ var DashboardComponent = /** @class */ (function () {
     };
     DashboardComponent.prototype.drawViolationChartByMonth = function (custId, year, violationsMetricsList) {
         var _this = this;
+        this.violationsChart.drill = 1;
+        this.violationsChart.year = year;
         var violationChartData = [[]];
         violationChartData[0] = ['Month'];
         violationsMetricsList[0].violations.forEach(function (element) {
@@ -858,6 +877,7 @@ var DashboardComponent = /** @class */ (function () {
         });
     };
     DashboardComponent.prototype.drawViolationChartByDay = function (year, month, violationsMetricsList) {
+        this.violationsChart.drill = 2;
         var violationChartData = [[]];
         violationChartData[0] = ['Day'];
         violationsMetricsList[0].violations.forEach(function (element) {
@@ -884,12 +904,14 @@ var DashboardComponent = /** @class */ (function () {
     DashboardComponent.prototype.getFleetUtilizationByCustId = function (custId) {
         var _this = this;
         this.dashboardservice.getFleetUtilizationByCustId(custId).subscribe(function (response) {
+            _this.fleetUtilizationsChart.data = response.list;
             _this.drawFleetUtilization(custId, response.list);
         }, function (error) {
         });
     };
     DashboardComponent.prototype.drawFleetUtilization = function (custId, fleetUtilizations) {
         var _this = this;
+        this.fleetUtilizationsChart.drill = 0;
         var fleetUtilizationChartData = [[]];
         fleetUtilizationChartData[0] = ['Year', 'Percent', { type: 'string', role: 'tooltip' }];
         fleetUtilizations.forEach(function (v) {
@@ -923,6 +945,8 @@ var DashboardComponent = /** @class */ (function () {
     };
     DashboardComponent.prototype.drawFleetUtilizationByYear = function (year, custId, fleetUtilizations) {
         var _this = this;
+        this.fleetUtilizationsChart.drill = 1;
+        this.fleetUtilizationsChart.year = year;
         var fleetUtilizationChartData = [[]];
         fleetUtilizationChartData[0] = ['Month', 'Percent', { type: 'string', role: 'tooltip' }];
         fleetUtilizations.forEach(function (v) {
@@ -956,6 +980,7 @@ var DashboardComponent = /** @class */ (function () {
         });
     };
     DashboardComponent.prototype.drawFleetUtilizationByYearAndMonth = function (month, year, custId, fleetUtilizations) {
+        this.fleetUtilizationsChart.drill = 2;
         var fleetUtilizationChartData = [[]];
         fleetUtilizationChartData[0] = ['Day', 'Percent', { type: 'string', role: 'tooltip' }];
         fleetUtilizations.forEach(function (v) {
@@ -974,6 +999,45 @@ var DashboardComponent = /** @class */ (function () {
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('fleetUtilizationChart'));
         chart.draw(data, options);
+    };
+    DashboardComponent.prototype.onResizeWindow = function () {
+        this.drawTripsChartYearwise(this.tripsChart.data);
+        this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data);
+        this.drawViolationChart(this.selectedCustomer, this.violationsChart.data);
+    };
+    DashboardComponent.prototype.drillBackCharts = function (name, drillCount) {
+        switch (name) {
+            case 'tripChart':
+                switch (drillCount) {
+                    case 1:
+                        this.getTrips();
+                        break;
+                    case 2:
+                        this.getTripsByYear(this.tripsChart.year);
+                        break;
+                }
+                break;
+            case 'violationChart':
+                switch (drillCount) {
+                    case 1:
+                        this.getViolationsByCustomer(this.selectedCustomer);
+                        break;
+                    case 2:
+                        this.getViolatonsByYear(this.violationsChart.year, this.selectedCustomer);
+                        break;
+                }
+                break;
+            case 'fleetUtilizationChart':
+                switch (drillCount) {
+                    case 1:
+                        this.getFleetUtilizationByCustId(this.Transporter);
+                        break;
+                    case 2:
+                        this.getFleetUtilizationByCustIdAndYear(this.fleetUtilizationsChart.year, this.Transporter);
+                        break;
+                }
+                break;
+        }
     };
     DashboardComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({

@@ -23,7 +23,7 @@ public class MetricsController {
 
         List<TripMetrics> tripMetricsList= dataService.getTripsMetrics(year,month);
 
-        if(tripMetricsList == null )
+        if(tripMetricsList == null || tripMetricsList.isEmpty() )
             throw new NotFoundException("Data not found!");
         else
             return new ResponseEntity<List<TripMetrics>>(tripMetricsList, HttpStatus.OK);

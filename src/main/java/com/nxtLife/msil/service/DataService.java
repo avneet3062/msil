@@ -87,19 +87,19 @@ public class DataService {
             tripInMonth.addAll(getAllTrips(tripInMonth));
         }
 
-
-
-//        finalList.sort(Comparator.comparing(TripMetrics::getMonth));
-//        finalList = finalList.size() < 12 ? getMonthsList(finalList) : finalList;
+        finalList.sort(Comparator.comparing(TripMetrics::getMonth));
+        finalList = finalList.size() < 12 ? getMonthsList(finalList,year) : finalList;
         return finalList;
     }
 
-    public List<TripMetrics> getMonthsList(List<TripMetrics> metricsList){
+    public List<TripMetrics> getMonthsList(List<TripMetrics> metricsList, Integer year){
         TripMetrics trip= null ;
         List<Trips> tripsList= null;
         List<TripMetrics> finalList = new ArrayList<>();
+        Integer month= LocalDate.now().getYear() == year.intValue() ? LocalDate.now().getMonthValue() : 12;
 
-        for(int j=1, i=0; j<=12; ){
+        if(metricsList != null && !metricsList.isEmpty())
+        for(int j=1, i=0; j<=month; ){
             if(metricsList.get(i).getMonth().equals(j) && i < metricsList.size()){
                 i++;
                 j++;
