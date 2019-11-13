@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DataService {
@@ -61,11 +62,14 @@ public class DataService {
 
         List<TripMetrics> finalList = new ArrayList<>();
         List<TripMetrics> list = null;
-        TripMetrics trip;
+        TripMetrics trip = null;
 
         for(Trips t1 :trips){
             if(prevMonth == t1.getMonth()){
-                tripInMonth.add(new Trips(t1.getTripType(),t1.getCount()));
+                if(t1.getTripType().equals(TripTypes.Total.name()))
+                    trip.setCount(trip.getCount() + t1.getCount());
+                else tripInMonth.add(new Trips(t1.getTripType(),t1.getCount()));
+
             }
             else{
                 if(tripInMonth != null && tripInMonth.size() < 4){
@@ -74,8 +78,11 @@ public class DataService {
 
                 trip= new TripMetrics();
                 trip.setMonth(t1.getMonth());
+                trip.setCount(0L);
                 tripInMonth = new ArrayList<>();
-                tripInMonth.add(new Trips(t1.getTripType(),t1.getCount()));
+                if(t1.getTripType().equals(TripTypes.Total.name()))
+                    trip.setCount(trip.getCount() + t1.getCount());
+                else tripInMonth.add(new Trips(t1.getTripType(),t1.getCount()));
                 trip.setTripsList(tripInMonth);
 
                 prevMonth = t1.getMonth();
@@ -83,7 +90,7 @@ public class DataService {
             }
         }
 
-        if(tripInMonth != null && tripInMonth.size() < 4){
+        if(tripInMonth != null && tripInMonth.size() < 3){
             tripInMonth.addAll(getAllTrips(tripInMonth));
         }
 
@@ -100,12 +107,13 @@ public class DataService {
 
         if(metricsList != null && !metricsList.isEmpty())
         for(int j=1, i=0; j<=month; ){
-            if(metricsList.get(i).getMonth().equals(j) && i < metricsList.size()){
+            if(metricsList.get(i).getMonth().intValue() == j && i < metricsList.size()){
                 i++;
                 j++;
             }else{
                 trip = new TripMetrics();
                 trip.setMonth(j);
+                trip.setCount(0L);
                 tripsList = new ArrayList<>();
                 tripsList = getAllTrips(null);
                 trip.setTripsList(tripsList);
@@ -125,7 +133,9 @@ public class DataService {
             trips = new ArrayList<>();
             trips.add(new Trips(TripTypes.Open.name(),0L));
         }
-        for (TripTypes t : TripTypes.values()) {
+
+        List<TripTypes> tripTypes = Arrays.asList(TripTypes.values()).stream().filter(t->!t.equals(TripTypes.Total)).collect(Collectors.toList());
+        for (TripTypes t : tripTypes) {
             notExits = trips.stream().noneMatch(trip -> trip.getTripType().equals(t.name()));
             if (notExits)
                 trips.add(new Trips(t.name(), 0l));

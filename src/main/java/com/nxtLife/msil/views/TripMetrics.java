@@ -10,6 +10,7 @@ public class TripMetrics {
     private Integer year;
     private Integer month;
     private Integer day;
+    private Long count;
 
     @JsonFormat(pattern = "dd-MMM-YYYY",timezone = "IST")
     private Date date;
@@ -90,5 +91,13 @@ public class TripMetrics {
 
     public void setDay(Integer day) {
         this.day = day;
+    }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
     }
 }
