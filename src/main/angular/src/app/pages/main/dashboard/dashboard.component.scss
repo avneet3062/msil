@@ -35,6 +35,16 @@ padding-left: 50%;
         margin: 0;
         font-weight: 400;
         text-transform: uppercase;
+        display: inline-block;
+        width: auto;
+    }
+
+    .select-box{
+        float: right;
+        width: 310px;
+        select{
+            width: 100%;
+        }
     }
 }
 

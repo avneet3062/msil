@@ -612,11 +612,11 @@ public class TripRepositoryImpl implements TripRepository {
         List<Trips> dayWise = new ArrayList<>();
         LocalDateTime firstDay= LocalDateTime.of(year,month,1,0,0,0);
         LocalDateTime lastDay= firstDay.with(TemporalAdjusters.lastDayOfMonth());
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_CLOSEDTRIPS6");
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_CLOSEDTRIPS5");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(firstDay));
         procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(lastDay));
-        procedureQuery.registerStoredProcedureParameter(4,String.class,ParameterMode.IN).setParameter(4, Duration.day.name().toUpperCase());
+
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
 
@@ -633,11 +633,11 @@ public class TripRepositoryImpl implements TripRepository {
         List<Trips> dayWise = new ArrayList<>();
         LocalDateTime firstDay= LocalDateTime.of(year,month,1,0,0,0);
         LocalDateTime lastDay= firstDay.with(TemporalAdjusters.lastDayOfMonth());
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_DELAYTRIPS6");
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_DELAYTRIPS5");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(firstDay));
         procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(lastDay));
-        procedureQuery.registerStoredProcedureParameter(4,String.class,ParameterMode.IN).setParameter(4, Duration.day.name().toUpperCase());
+
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
 

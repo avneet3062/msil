@@ -449,6 +449,9 @@ public class DataService {
         List<Trips> tripsList = new ArrayList<>();
         int limit;
         List<TripMetrics> tripMetrics = new ArrayList<>();
+        List<Trips> openTripsList=new ArrayList<>();
+        List<Trips> closedTripsList=new ArrayList<>();
+
         LocalDate first = LocalDate.of(year,month,1);
         LocalDate end = first.with(TemporalAdjusters.lastDayOfMonth());
         limit=end.getDayOfMonth();
@@ -456,14 +459,16 @@ public class DataService {
             throw new NotFoundException("Year and Month are Mandatory");
         List<Trips> allTrips=new ArrayList<>();
 
-            tripsList=this.getOpenTripsDaily(year,month);
-            allTrips.addAll(addDays(tripsList,limit,TripTypes.Open));
+            openTripsList=this.getOpenTripsDaily(year,month);
+            allTrips.addAll(openTripsList);
             tripsList=tripRepository.getClosedTrips(year, month);
-            allTrips.addAll(addDays(tripsList,limit,TripTypes.Closed));
+            closedTripsList.addAll(addDays(tripsList,limit,TripTypes.Closed));
+            allTrips.addAll(closedTripsList);
+            tripsList=this.getTotalTripsDaily(openTripsList,closedTripsList,limit);
+            allTrips.addAll(tripsList);
             tripsList=tripRepository.getDelayedTrips(year,month);
             allTrips.addAll(addDays(tripsList,limit,TripTypes.Delayed));
-            tripsList=tripRepository.getTotalTrips(year,month);
-            allTrips.addAll(addDays(tripsList,limit,TripTypes.Total));
+
 
             allTrips.sort(Comparator.comparing(Trips::getDay).thenComparing(Trips::getTripType));
 
@@ -532,6 +537,23 @@ public class DataService {
         return openTrips;
 
     }
+
+    public List<Trips> getTotalTripsDaily(List<Trips> openTripsList,List<Trips> closedTripsList,int limit)
+    {
+        List<Trips> totalTripsList=new ArrayList<>();
+        for(int i=0;i<limit;i++)
+        {
+            if(openTripsList.get(i).getDay()==closedTripsList.get(i).getDay())
+            {
+               totalTripsList.add(new Trips(TripTypes.Total.name(),i+1,openTripsList.get(i).getCount()+closedTripsList.get(i).getCount())) ;
+            }
+        }
+        return  totalTripsList;
+
+
+
+    }
+
 
 
 }
