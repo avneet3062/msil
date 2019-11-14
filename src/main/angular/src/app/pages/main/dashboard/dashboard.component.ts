@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { DashboardService } from 'src/app/providers/dashboard.service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -11,7 +11,7 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept'
   styleUrls: ['./dashboard.component.scss']
 })
 
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
   locationCode: any;
   selectedCustomer: string;
   selectedYear: any;
@@ -57,6 +57,10 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  ngAfterViewInit() {
+
+  }
+
   loadGoogleChart() {
     google.charts.load('current', { packages: ['corechart', 'bar'], language: 'hi_ln' });
 
@@ -96,12 +100,14 @@ export class DashboardComponent implements OnInit {
     tripsData[0].push('year')
     tripsResponse[0].tripsList.forEach(element => {
       tripsData[0].push(element.tripType);
+      tripsData[0].push({ type: 'string', role: 'tooltip' });
     });
     tripsResponse.forEach((element, index) => {
       tripsData[index + 1] = [];
       tripsData[index + 1].push('' + element.year);
       element.tripsList.forEach(el => {
         tripsData[index + 1].push(el.count);
+        tripsData[index + 1].push(`${element.year}\n${el.tripType}:${el.count}\nTotal: ${element.count}`);
       })
     });
 
@@ -132,6 +138,7 @@ export class DashboardComponent implements OnInit {
 
     });
     chart.draw(data, options);
+    $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
   }
 
   getTripsByYear(year: number) {
@@ -144,12 +151,14 @@ export class DashboardComponent implements OnInit {
       tripsData[0].push('month')
       tripMonthlyList[0].tripsList.forEach(element => {
         tripsData[0].push(element.tripType);
+        tripsData[0].push({ type: 'string', role: 'tooltip' });
       });
       tripMonthlyList.forEach((element, index) => {
         tripsData[index + 1] = [];
         tripsData[index + 1].push(months[element.month - 1]);
         element.tripsList.forEach(el => {
           tripsData[index + 1].push(el.count);
+          tripsData[index + 1].push(`${months[element.month - 1]}\n${el.tripType}:${el.count}\nTotal: ${element.count}`);
         })
       });
 
@@ -170,6 +179,7 @@ export class DashboardComponent implements OnInit {
 
       });
       chart.draw(data, options);
+      $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
     })
   }
 
@@ -184,12 +194,14 @@ export class DashboardComponent implements OnInit {
       tripsData[0].push('Day')
       tripMonthlyList[0].tripsList.forEach(element => {
         tripsData[0].push(element.tripType);
+        tripsData[0].push({ type: 'string', role: 'tooltip' });
       });
       tripMonthlyList.forEach((element, index) => {
         tripsData[index + 1] = [];
         tripsData[index + 1].push('' + element.day);
         element.tripsList.forEach(el => {
           tripsData[index + 1].push(el.count);
+          tripsData[index + 1].push(`${element.day}\n${el.tripType}:${el.count}\nTotal: ${element.count}`);
         })
       });
 
@@ -203,6 +215,7 @@ export class DashboardComponent implements OnInit {
       };
       const chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
       chart.draw(data, options);
+      $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
     })
   }
 
@@ -329,6 +342,7 @@ export class DashboardComponent implements OnInit {
         this.getViolatonsByYear(violationChartData[parseInt(parts[3]) + 1][0], custId);
     });
     chart.draw(data, options);
+    $('#violationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
   }
 
   getViolatonsByYear(year, custId) {
@@ -367,6 +381,7 @@ export class DashboardComponent implements OnInit {
         this.getViolatonsByYearAndMonth(custId, year, months.indexOf(violationChartData[parseInt(parts[3]) + 1][0]) + 1);
     });
     chart.draw(data, options);
+    $('#violationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
   }
 
   getViolatonsByYearAndMonth(custId, year, month) {
@@ -399,6 +414,7 @@ export class DashboardComponent implements OnInit {
     };
     const chart = new google.visualization.ColumnChart(document.getElementById('violationChart'));
     chart.draw(data, options);
+    $('#violationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
   }
 
   getFleetUtilizationByCustId(custId) {
@@ -435,6 +451,7 @@ export class DashboardComponent implements OnInit {
         this.getFleetUtilizationByCustIdAndYear(fleetUtilizationChartData[parseInt(parts[3]) + 1][0], custId);
     });
     chart.draw(data, options);
+    $('#fleetUtilizationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
   }
 
   getFleetUtilizationByCustIdAndYear(year, custId) {
@@ -473,6 +490,7 @@ export class DashboardComponent implements OnInit {
 
     });
     chart.draw(data, options);
+    $('#fleetUtilizationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
   }
 
   getFleetUtilizationByCustIdAndYearAndMonth(month, year, custId) {
@@ -503,6 +521,7 @@ export class DashboardComponent implements OnInit {
     };
     const chart = new google.visualization.ColumnChart(document.getElementById('fleetUtilizationChart'));
     chart.draw(data, options);
+    $('#fleetUtilizationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
   }
 
   onResizeWindow() {
