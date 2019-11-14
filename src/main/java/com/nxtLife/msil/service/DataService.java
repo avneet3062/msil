@@ -16,12 +16,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class DataService {
 
     @Autowired
     private TripRepository tripRepository;
+
+    private static Logger logger = Logger.getLogger(DataService.class.getName());
 
     public List<TripMetrics> getTripsMetrics(Integer year, Integer month) {
         //TODO- check for year and month
@@ -61,21 +65,27 @@ public class DataService {
 
         List<TripMetrics> finalList = new ArrayList<>();
         List<TripMetrics> list = null;
-        TripMetrics trip;
+        TripMetrics trip = null;
 
         for(Trips t1 :trips){
             if(prevMonth == t1.getMonth()){
-                tripInMonth.add(new Trips(t1.getTripType(),t1.getCount()));
+                if(t1.getTripType().equals(TripTypes.Total.name()))
+                    trip.setCount(trip.getCount() + t1.getCount());
+                else tripInMonth.add(new Trips(t1.getTripType(),t1.getCount()));
+
             }
             else{
-                if(tripInMonth != null && tripInMonth.size() < 4){
+                if(tripInMonth != null && tripInMonth.size() < 3){
                     tripInMonth=getAllTrips(tripInMonth);
                 }
 
                 trip= new TripMetrics();
                 trip.setMonth(t1.getMonth());
+                trip.setCount(0L);
                 tripInMonth = new ArrayList<>();
-                tripInMonth.add(new Trips(t1.getTripType(),t1.getCount()));
+                if(t1.getTripType().equals(TripTypes.Total.name()))
+                    trip.setCount(trip.getCount() + t1.getCount());
+                else tripInMonth.add(new Trips(t1.getTripType(),t1.getCount()));
                 trip.setTripsList(tripInMonth);
 
                 prevMonth = t1.getMonth();
@@ -83,29 +93,30 @@ public class DataService {
             }
         }
 
-        if(tripInMonth != null && tripInMonth.size() < 4){
+        if(tripInMonth != null && tripInMonth.size() < 3){
             tripInMonth.addAll(getAllTrips(tripInMonth));
         }
 
-
-
-//        finalList.sort(Comparator.comparing(TripMetrics::getMonth));
-//        finalList = finalList.size() < 12 ? getMonthsList(finalList) : finalList;
+        finalList.sort(Comparator.comparing(TripMetrics::getMonth));
+        finalList = finalList.size() < 12 ? getMonthsList(finalList,year) : finalList;
         return finalList;
     }
 
-    public List<TripMetrics> getMonthsList(List<TripMetrics> metricsList){
+    public List<TripMetrics> getMonthsList(List<TripMetrics> metricsList, Integer year){
         TripMetrics trip= null ;
         List<Trips> tripsList= null;
         List<TripMetrics> finalList = new ArrayList<>();
+        Integer month= LocalDate.now().getYear() == year.intValue() ? LocalDate.now().getMonthValue() : 12;
 
-        for(int j=1, i=0; j<=12; ){
-            if(metricsList.get(i).getMonth().equals(j) && i < metricsList.size()){
+        if(metricsList != null && !metricsList.isEmpty())
+        for(int j=1, i=0; j<=month; ){
+            if(metricsList.get(i).getMonth().intValue() == j && i < metricsList.size()){
                 i++;
                 j++;
             }else{
                 trip = new TripMetrics();
                 trip.setMonth(j);
+                trip.setCount(0L);
                 tripsList = new ArrayList<>();
                 tripsList = getAllTrips(null);
                 trip.setTripsList(tripsList);
@@ -125,11 +136,14 @@ public class DataService {
             trips = new ArrayList<>();
             trips.add(new Trips(TripTypes.Open.name(),0L));
         }
-        for (TripTypes t : TripTypes.values()) {
+
+        List<TripTypes> tripTypes = Arrays.asList(TripTypes.values()).stream().filter(t->!t.equals(TripTypes.Total)).collect(Collectors.toList());
+        for (TripTypes t : tripTypes) {
             notExits = trips.stream().noneMatch(trip -> trip.getTripType().equals(t.name()));
             if (notExits)
                 trips.add(new Trips(t.name(), 0l));
         }
+        trips.sort(Comparator.comparing(Trips::getTripType));
         return trips;
     }
 
@@ -173,16 +187,23 @@ public class DataService {
 
         for (Trips t : trips) {
             if (t.getYear() == prevYear) {
-                tripsList.add(new Trips(t.getTripType(), t.getCount()));
+                if(t.getTripType().equals(TripTypes.Total.name())){
+                    metrics.setCount(metrics.getCount() + t.getCount());
+                }
+               else tripsList.add(new Trips(t.getTripType(), t.getCount()));
+               logger.info("Added:"+ t.getTripType() +" "+ t.getCount());
             } else {
-                if (tripsList != null && tripsList.size() < 4)
+                if (tripsList != null && tripsList.size() < 3)
                     getAllTrips(tripsList);
 
                 metrics = new TripMetrics();
                 tripsList = new ArrayList<>();
 
                 metrics.setYear(t.getYear());
-                tripsList.add(new Trips(t.getTripType(), t.getCount()));
+                metrics.setCount(0L);
+                if(t.getTripType().equals(TripTypes.Total.name()))
+                    metrics.setCount(metrics.getCount() + t.getCount());
+               else tripsList.add(new Trips(t.getTripType(), t.getCount()));
                 metrics.setTripsList(tripsList);
                 finalTripList.add(metrics);
 
@@ -449,6 +470,9 @@ public class DataService {
         List<Trips> tripsList = new ArrayList<>();
         int limit;
         List<TripMetrics> tripMetrics = new ArrayList<>();
+        List<Trips> openTripsList=new ArrayList<>();
+        List<Trips> closedTripsList=new ArrayList<>();
+
         LocalDate first = LocalDate.of(year,month,1);
         LocalDate end = first.with(TemporalAdjusters.lastDayOfMonth());
         limit=end.getDayOfMonth();
@@ -456,14 +480,16 @@ public class DataService {
             throw new NotFoundException("Year and Month are Mandatory");
         List<Trips> allTrips=new ArrayList<>();
 
-            tripsList=this.getOpenTripsDaily(year,month);
-            allTrips.addAll(addDays(tripsList,limit,TripTypes.Open));
+            openTripsList=this.getOpenTripsDaily(year,month);
+            allTrips.addAll(openTripsList);
             tripsList=tripRepository.getClosedTrips(year, month);
-            allTrips.addAll(addDays(tripsList,limit,TripTypes.Closed));
+            closedTripsList.addAll(addDays(tripsList,limit,TripTypes.Closed));
+            allTrips.addAll(closedTripsList);
+            tripsList=this.getTotalTripsDaily(openTripsList,closedTripsList,limit);
+            allTrips.addAll(tripsList);
             tripsList=tripRepository.getDelayedTrips(year,month);
             allTrips.addAll(addDays(tripsList,limit,TripTypes.Delayed));
-            tripsList=tripRepository.getTotalTrips(year,month);
-            allTrips.addAll(addDays(tripsList,limit,TripTypes.Total));
+
 
             allTrips.sort(Comparator.comparing(Trips::getDay).thenComparing(Trips::getTripType));
 
@@ -473,12 +499,16 @@ public class DataService {
         List<Trips> trips= null;
         for(Trips t :allTrips){
             if(prev.equals(t.getDay())){
-                trips.add(new Trips(t.getTripType(),t.getCount()));
+                if(t.getTripType().equals(TripTypes.Total.name()))
+                    metrics.setCount(t.getCount());
+                    else trips.add(new Trips(t.getTripType(),t.getCount()));
             }else{
                 metrics = new TripMetrics(Date.from(LocalDate.of(year,month,t.getDay()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
                 metrics.setDay(t.getDay());
                 trips = new ArrayList<>();
-                trips.add(new Trips(t.getTripType(),t.getCount()));
+                if(t.getTripType().equals(TripTypes.Total.name()))
+                    metrics.setCount(metrics.getCount() + t.getCount());
+               else trips.add(new Trips(t.getTripType(),t.getCount()));
                 metrics.setTripsList(trips);
 
                 finalMetricsList.add(metrics);
@@ -532,6 +562,23 @@ public class DataService {
         return openTrips;
 
     }
+
+    public List<Trips> getTotalTripsDaily(List<Trips> openTripsList,List<Trips> closedTripsList,int limit)
+    {
+        List<Trips> totalTripsList=new ArrayList<>();
+        for(int i=0;i<limit;i++)
+        {
+            if(openTripsList.get(i).getDay()==closedTripsList.get(i).getDay())
+            {
+               totalTripsList.add(new Trips(TripTypes.Total.name(),i+1,openTripsList.get(i).getCount()+closedTripsList.get(i).getCount())) ;
+            }
+        }
+        return  totalTripsList;
+
+
+
+    }
+
 
 
 }
