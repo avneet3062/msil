@@ -199,7 +199,7 @@ CREATE OR REPLACE PROCEDURE msil_closedtrips3
 ) AS
 BEGIN
     OPEN c FOR SELECT
-                   x."COUNT",
+                   sum(x."COUNT") "COUNT",
                    "MONTH"
                FROM
                    (
@@ -248,6 +248,7 @@ BEGIN
                            EXTRACT(MONTH FROM coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
                            ) )
                    ) x
+                   GROUP BY "MONTH"
                ORDER BY
                    "MONTH";
 
@@ -362,7 +363,7 @@ CREATE OR REPLACE PROCEDURE msil_closedtrips4
 ) AS
 BEGIN
     OPEN c FOR SELECT
-                   x."COUNT",
+                   SUM(x."COUNT") "COUNT",
                    "YEAR"
                FROM
                    (
@@ -411,6 +412,7 @@ BEGIN
                            EXTRACT(YEAR FROM coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
                            ) )
                    ) x
+                   GROUP BY "YEAR"
                ORDER BY
                    "YEAR";
 
