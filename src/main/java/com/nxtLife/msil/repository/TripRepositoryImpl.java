@@ -39,8 +39,9 @@ public class TripRepositoryImpl implements TripRepository {
     @Override
     public List<Trips> getOpenTrips(Integer year) throws SQLException {
         java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
-        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59));
 
+        LocalDateTime endDate = LocalDateTime.now().getYear() == year.intValue() ? LocalDateTime.now():LocalDateTime.of(year,12,31,23,59,59);
+        java.sql.Timestamp end = java.sql.Timestamp.valueOf(endDate);
         List<Trips> trips = new ArrayList<>();
         StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_OPENTRIPS3");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
@@ -63,7 +64,9 @@ public class TripRepositoryImpl implements TripRepository {
     @Override
     public List<Trips> getClosedTrips(Integer year) throws SQLException {
         java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
-        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59));
+        LocalDateTime endDate = LocalDateTime.now().getYear() == year.intValue() ? LocalDateTime.now():LocalDateTime.of(year,12,31,23,59,59);
+        java.sql.Timestamp end = java.sql.Timestamp.valueOf(endDate);
+
         List<Trips> trips = new ArrayList<>();
 
         StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_CLOSEDTRIPS3");
@@ -84,7 +87,8 @@ public class TripRepositoryImpl implements TripRepository {
     @Override
     public List<Trips> getDelayedTrips(Integer year) throws SQLException {
         java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
-        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59));
+        LocalDateTime endDate = LocalDateTime.now().getYear() == year.intValue() ? LocalDateTime.now():LocalDateTime.of(year,12,31,23,59,59);
+        java.sql.Timestamp end = java.sql.Timestamp.valueOf(endDate);
 
         StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_DELAYTRIPS3");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
@@ -104,7 +108,8 @@ public class TripRepositoryImpl implements TripRepository {
     @Override
     public List<Trips> getTotalTrips(Integer year) throws SQLException {
         java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
-        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59));
+        LocalDateTime endDate = LocalDateTime.now().getYear() == year.intValue() ? LocalDateTime.now():LocalDateTime.of(year,12,31,23,59,59);
+        java.sql.Timestamp end = java.sql.Timestamp.valueOf(endDate);
 
         StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_TOTALTRIPS3");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);

@@ -155,8 +155,8 @@ create or replace PROCEDURE MSIL_OPENTRIPS3
     P_TO IN DATE, 
     PRESENT_PAST VARCHAR2) 
 AS 
-from_date VARCHAR2(20) := to_char(P_FROM,'dd-MM-YY') || '00:00:00'; 
-end_date VARCHAR2(20) := to_char(P_TO,'dd-MM-YY') || '23:59:59'; 
+from_date VARCHAR2(20) := to_char(P_FROM,'DD-MM-YY');
+end_date VARCHAR2(20) := to_char(P_TO,'DD-MM-YY') || '23:59:59';
 BEGIN 
   IF PRESENT_PAST = 'PRESENT' THEN 
     OPEN C FOR SELECT COUNT(*) CNT FROM ETRK_MUL_NEWTRIP WHERE TRIP_INV_DATE >= TO_DATE('01-01-17','DD-MM-YY') AND 
