@@ -300,7 +300,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.transporters = response;
       this.Transporter = 'ECUS519'
       this.selectedCustomer = 'ECUS875';
-      this.getFleetUtilizationByCustId(this.Transporter);
+//      this.getFleetUtilizationByCustId(this.Transporter);
       this.getViolationsByCustomer(this.selectedCustomer);
     })
   }
@@ -526,7 +526,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   onResizeWindow() {
     this.drawTripsChartYearwise(this.tripsChart.data);
-    this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data);
+    //this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data);
     this.drawViolationChart(this.selectedCustomer, this.violationsChart.data);
   }
 

@@ -12,25 +12,25 @@ import java.util.List;
 
 public interface TripRepository {
 
-    List<Trips> getOpenTrips(Integer month) throws SQLException;
+    List<Trips> getOpenTrips(Integer month,int minYear) throws SQLException;
 
-    List<Trips> getClosedTrips(Integer month) throws SQLException;
+    List<Trips> getClosedTrips(Integer month,int minYear) throws SQLException;
 
-    List<Trips> getDelayedTrips(Integer month) throws SQLException;
+    List<Trips> getDelayedTrips(Integer month,int minYear) throws SQLException;
 
-    List<Trips> getTotalTrips(Integer month) throws SQLException;
+    List<Trips> getTotalTrips(Integer month,int minYear) throws SQLException;
 
     List<VehicleAvaliabiltyMetrics> getVehiclesAvailable(String code);
 
     List<Locations> getLocations();
 
-    List<Trips> getOpenTrips() throws SQLException;
+    List<Trips> getOpenTrips(int minYear) throws SQLException;
 
-    List<Trips> getClosedTrips() throws SQLException;
+    List<Trips> getClosedTrips(int minYear) throws SQLException;
 
-    List<Trips> getDelayedTrips() throws SQLException;
+    List<Trips> getDelayedTrips(int minYear) throws SQLException;
 
-    List<Trips> getTotaltrips() throws SQLException;
+    List<Trips> getTotaltrips(int minYear) throws SQLException;
 
     List<Transporters> getTransporters();
 
@@ -71,9 +71,9 @@ public interface TripRepository {
 
     List<Trips> getTotalTrips(Integer year, Integer month);
 
-    Trips getOpenTrips(Date date,Integer day);
+    List<Trips> getOpenTrips(Integer year,Integer month,int minYear);
 
-    List<Trips> getClosedTrips(Integer year, Integer month);
+    List<Trips> getClosedTrips(Integer year, Integer month,int minYear);
 
-    List<Trips> getDelayedTrips(Integer year, Integer month);
+    List<Trips> getDelayedTrips(Integer year, Integer month,int minYear);
 }

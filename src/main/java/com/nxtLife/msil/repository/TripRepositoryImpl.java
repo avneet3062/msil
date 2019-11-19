@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,76 +38,128 @@ public class TripRepositoryImpl implements TripRepository {
     private DataSource dataSource;
 
     @Override
-    public List<Trips> getOpenTrips(Integer year) throws SQLException {
-        java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
+    public List<Trips> getOpenTrips(Integer year,int minYear) throws SQLException {
+        java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 0, 0, 0));
+        final int limit=LocalDate.now().getYear() == year ? LocalDate.now().getMonth().getValue() : 12;
 
-        LocalDateTime endDate = LocalDateTime.now().getYear() == year.intValue() ? LocalDateTime.now():LocalDateTime.of(year,12,31,23,59,59);
-        java.sql.Timestamp end = java.sql.Timestamp.valueOf(endDate);
+        java.sql.Timestamp end = java.sql.Timestamp.valueOf(LocalDateTime.now());
         List<Trips> trips = new ArrayList<>();
-        StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_OPENTRIPS3");
+        StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_OPEN_TRIPS");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         query.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, start);
         query.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, end);
-        query.registerStoredProcedureParameter(4, String.class, ParameterMode.IN).setParameter(4, "PAST");
+        query.registerStoredProcedureParameter(4, Timestamp.class, ParameterMode.IN).setParameter(4, Timestamp.valueOf(LocalDateTime.of(minYear,1,1,0,0,0)));
+        query.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, "MONTH");
+
 
         query.execute();
 
         List<Object[]> result = query.getResultList();
         result.forEach(r -> {
+            if(Integer.parseInt(r[1].toString()) > limit){
+
+            }else{
             Trips t = new Trips(TripTypes.Open.name(), ((BigDecimal) r[0]).longValue(), Integer.valueOf(r[1].toString()));
             trips.add(t);
+            }
         });
-
+        int month = LocalDate.now().getYear() == year ? LocalDate.now().getMonth().getValue() : 12;
+        for(int i=1; i<=month; i++){
+            boolean notExists = true;
+            for (Trips t : trips) {
+                if (t.getMonth().intValue() == i) {
+                    notExists = false;
+                    break;
+                }
+            }
+            if(notExists)
+                trips.add(new Trips(TripTypes.Open.name(),0L,i));
+        }
         return trips;
     }
 
     //
     @Override
-    public List<Trips> getClosedTrips(Integer year) throws SQLException {
+    public List<Trips> getClosedTrips(Integer year,int minYear) throws SQLException {
         java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
         LocalDateTime endDate = LocalDateTime.now().getYear() == year.intValue() ? LocalDateTime.now():LocalDateTime.of(year,12,31,23,59,59);
         java.sql.Timestamp end = java.sql.Timestamp.valueOf(endDate);
 
         List<Trips> trips = new ArrayList<>();
-
-        StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_CLOSEDTRIPS3");
+        final int limit=LocalDate.now().getYear() == year ? LocalDate.now().getMonth().getValue() : 12;
+        StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_CLOSED_TRIPS");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         query.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, start);
         query.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, end);
+        query.registerStoredProcedureParameter(4, Timestamp.class, ParameterMode.IN).setParameter(4, Timestamp.valueOf(LocalDateTime.of(minYear,1,1,0,0,0)));
+        query.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, "MONTH");
+
         query.execute();
 
         List<Object[]> result = query.getResultList();
         result.forEach(r -> {
+            if(Integer.parseInt(r[1].toString()) > limit){
+
+            }else{
             Trips t = new Trips(TripTypes.Closed.name(), ((BigDecimal) r[0]).longValue(), Integer.valueOf(r[1].toString()));
             trips.add(t);
+            }
         });
-
+        int month = LocalDate.now().getYear() == year ? LocalDate.now().getMonth().getValue() : 12 ;
+        for(int i=1; i<=month; i++){
+            boolean notExists = true;
+            for (Trips t : trips) {
+                if (t.getMonth().intValue() == i) {
+                    notExists = false;
+                    break;
+                }
+            }
+            if(notExists)
+                trips.add(new Trips(TripTypes.Closed.name(),0L,i));
+        }
         return trips;
     }
 
     @Override
-    public List<Trips> getDelayedTrips(Integer year) throws SQLException {
+    public List<Trips> getDelayedTrips(Integer year,int minYear) throws SQLException {
         java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
         LocalDateTime endDate = LocalDateTime.now().getYear() == year.intValue() ? LocalDateTime.now():LocalDateTime.of(year,12,31,23,59,59);
         java.sql.Timestamp end = java.sql.Timestamp.valueOf(endDate);
-
-        StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_DELAYTRIPS3");
+        final int limit=LocalDate.now().getYear() == year ? LocalDate.now().getMonth().getValue() : 12;
+        StoredProcedureQuery query = em.createStoredProcedureQuery("MSIL_DELAYTRIPS5");
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         query.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, start);
         query.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, end);
+        query.registerStoredProcedureParameter(4, Timestamp.class, ParameterMode.IN).setParameter(4, Timestamp.valueOf(LocalDateTime.of(minYear,1,1,0,0,0)));
+        query.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, "MONTH");
+
         query.execute();
 
         List<Trips> trips = new ArrayList<>();
         List<Object[]> result = query.getResultList();
         result.forEach(r -> {
+            if(Integer.parseInt(r[1].toString()) > limit){}else{
             Trips t = new Trips(TripTypes.Delayed.name(), ((BigDecimal) r[0]).longValue(), Integer.valueOf(r[1].toString()));
-            trips.add(t);
+            trips.add(t);}
         });
+        int month = LocalDate.now().getYear() == year ? LocalDate.now().getMonth().getValue() : 12;
+        for(int i =1; i<=month; i++){
+            boolean notExists = true;
+            for (Trips t : trips) {
+                if (t.getMonth().intValue() == i) {
+                    notExists = false;
+                    break;
+                }
+            }
+            if(notExists)
+                trips.add(new Trips(TripTypes.Delayed.name(),0L,i));
+        }
+
         return trips;
     }
 
     @Override
-    public List<Trips> getTotalTrips(Integer year) throws SQLException {
+    public List<Trips> getTotalTrips(Integer year,int minYear) throws SQLException {
         java.sql.Timestamp start = java.sql.Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0, 0));
         LocalDateTime endDate = LocalDateTime.now().getYear() == year.intValue() ? LocalDateTime.now():LocalDateTime.of(year,12,31,23,59,59);
         java.sql.Timestamp end = java.sql.Timestamp.valueOf(endDate);
@@ -115,14 +168,20 @@ public class TripRepositoryImpl implements TripRepository {
         query.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         query.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, start);
         query.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, end);
-        query.execute();
-
+//        query.execute();
+//
         List<Trips> trips = new ArrayList<>();
-        List<Object[]> result = query.getResultList();
-        result.forEach(r -> {
-            Trips t = new Trips(TripTypes.Total.name(), ((BigDecimal) r[0]).longValue(), Integer.valueOf(r[1].toString()));
-            trips.add(t);
-        });
+//        List<Object[]> result = query.getResultList();
+//        result.forEach(r -> {
+//            Trips t = new Trips(TripTypes.Total.name(), ((BigDecimal) r[0]).longValue(), Integer.valueOf(r[1].toString()));
+//            trips.add(t);
+//        });
+        int month = LocalDate.now().getYear() == year ? LocalDate.now().getMonth().getValue() : 12;
+
+        for(int i =1; i<=month; i++){
+            trips.add(new Trips(TripTypes.Total.name(),0L,i));
+        }
+
         return trips;
 
     }
@@ -161,35 +220,50 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public List<Trips> getOpenTrips() throws SQLException {
+    public List<Trips> getOpenTrips(int minYear) throws SQLException {
         List<Trips> yearlyTrips = new ArrayList<>();
-        java.sql.Timestamp startDate = java.sql.Timestamp.valueOf(LocalDateTime.of(2017, 1, 1, 0, 0, 0));
+        java.sql.Timestamp startDate = java.sql.Timestamp.valueOf(LocalDateTime.of(minYear, 12, 31, 23, 59, 59));
 
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_OPENTRIPS4");
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_OPEN_TRIPS");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, startDate);
         procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
-        procedureQuery.registerStoredProcedureParameter(4, String.class, ParameterMode.IN).setParameter(4, "PAST");
+        procedureQuery.registerStoredProcedureParameter(4, Timestamp.class, ParameterMode.IN).setParameter(4, Timestamp.valueOf(LocalDateTime.of(minYear,1,1,0,0,0)));
+        procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, "YEAR");
 
+        yearlyTrips = new ArrayList<>();
+        for(int year = minYear; year <= LocalDate.now().getYear(); year++){
+            startDate =java.sql.Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59));
+            procedureQuery.setParameter(2, startDate);
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
         Trips t;
-        yearlyTrips = new ArrayList<>();
+
 
         for (Object[] r : result) {
-            t = new Trips(((BigDecimal) r[1]).intValue(), TripTypes.Open.name(), ((BigDecimal) r[0]).longValue());
+
+            t = new Trips(((BigDecimal) r[1]).intValue(), TripTypes.Open.name(),   ((BigDecimal) r[0]).longValue() != 0L ? ((BigDecimal) r[0]).longValue() : 0L );
             yearlyTrips.add(t);
+        }
+
+        if(result.size() == 0 || result.isEmpty()){
+            yearlyTrips.add(new Trips(year,TripTypes.Open.name(),0L));
+        }
+
         }
         return yearlyTrips;
     }
 
     @Override
-    public List<Trips> getClosedTrips() throws SQLException {
+    public List<Trips> getClosedTrips(int minYear) throws SQLException {
         List<Trips> yearlyTrips = new ArrayList<>();
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_CLOSEDTRIPS4");
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_CLOSED_TRIPS");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2017, 1, 1, 0, 0, 0)));
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(minYear, 1, 1, 0, 0, 0)));
         procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
+        procedureQuery.registerStoredProcedureParameter(4, Timestamp.class, ParameterMode.IN).setParameter(4, Timestamp.valueOf(LocalDateTime.of(minYear,1,1,0,0,0)));
+        procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, "YEAR");
+
 
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
@@ -198,16 +272,33 @@ public class TripRepositoryImpl implements TripRepository {
             Trips t = new Trips((((BigDecimal) r[1]).intValue()), TripTypes.Closed.name(), (((BigDecimal) r[0]).longValue()));
             yearlyTrips.add(t);
         });
+
+        for(int i = minYear ; i<= LocalDate.now().getYear() ; i++){
+            boolean notAny = true;
+            for (Trips t : yearlyTrips) {
+                if (t.getYear() == i) {
+                    notAny = false;
+                    break;
+                }
+            }
+            if(notAny)
+                yearlyTrips.add(new Trips(i,TripTypes.Closed.name(),0L));
+        }
         return yearlyTrips;
+
+
     }
 
     @Override
-    public List<Trips> getDelayedTrips() throws SQLException {
+    public List<Trips> getDelayedTrips(int minYear) throws SQLException {
         List<Trips> yearlyTrips = new ArrayList<>();
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_DELAYTRIPS4");
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_DELAYTRIPS5");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2017, 1, 1, 0, 0, 0)));
+        procedureQuery.registerStoredProcedureParameter(2,Timestamp.class,ParameterMode.IN).setParameter(2,Timestamp.valueOf(LocalDateTime.of(minYear,1,1,0,0,0)));
         procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
+        procedureQuery.registerStoredProcedureParameter(4, Timestamp.class, ParameterMode.IN).setParameter(4, Timestamp.valueOf(LocalDateTime.of(minYear,1,1,0,0,0)));
+        procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, "YEAR");
+
 
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
@@ -220,11 +311,11 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public List<Trips> getTotaltrips() throws SQLException {
+    public List<Trips> getTotaltrips(int minYear) throws SQLException {
         List<Trips> yearlyTrips = new ArrayList<>();
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_TOTALTRIPS4");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(2017, 1, 1, 0, 0, 0)));
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(LocalDateTime.of(minYear, 1, 1, 0, 0, 0)));
         procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
 
         procedureQuery.execute();
@@ -598,58 +689,136 @@ public class TripRepositoryImpl implements TripRepository {
     }
 
     @Override
-    public Trips getOpenTrips(Date d,Integer day) {
-        Trips dayWise = new Trips();
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_OPENTRIPS6");
-        procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, new java.sql.Timestamp(d.getTime()));
-        procedureQuery.registerStoredProcedureParameter(3, String.class, ParameterMode.IN).setParameter(3, "PAST");
-
-        procedureQuery.execute();
-        Long result = Long.parseLong(procedureQuery.getSingleResult().toString());
-        Trips t = new Trips(TripTypes.Open.name(),day,result);
-        return t;
-    }
-
-    @Override
-    public List<Trips> getClosedTrips(Integer year, Integer month) {
-
-        List<Trips> dayWise = new ArrayList<>();
+    public List<Trips> getOpenTrips(Integer year,Integer month,int minYear) {
         LocalDateTime firstDay= LocalDateTime.of(year,month,1,0,0,0);
-        LocalDateTime lastDay= firstDay.with(TemporalAdjusters.lastDayOfMonth());
-        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_CLOSEDTRIPS5");
+        LocalDateTime lastDay= firstDay.getMonth().getValue() == LocalDate.now().getMonth().getValue() ? LocalDateTime.now() :  firstDay.with(TemporalAdjusters.lastDayOfMonth());
+        List<Trips> dayWise = new ArrayList<>();
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_OPEN_TRIPS");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
-        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(firstDay));
-        procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(lastDay));
-
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(lastDay));
+        procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(LocalDateTime.now()));
+        procedureQuery.registerStoredProcedureParameter(4, Timestamp.class, ParameterMode.IN).setParameter(4, Timestamp.valueOf(LocalDateTime.of(minYear,1,1,0,0,0)));
+        procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, "DAY");
+        final int limit = lastDay.getDayOfMonth() ;
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
 
         result.stream().forEach(r -> {
-            Trips t = new Trips( TripTypes.Closed.name(), Integer.parseInt(r[1].toString()), ((BigDecimal) r[0]).longValue() );
-            dayWise.add(t);
+            if( Integer.parseInt(r[1].toString()) > limit){
+
+            }else {
+                Trips t = new Trips(TripTypes.Open.name(), Integer.parseInt(r[1].toString()), ((BigDecimal) r[0]).longValue());
+                dayWise.add(t);
+            }
         });
+
+//        int limit = LocalDate.of(year,month,2).get((TemporalField) TemporalAdjusters.lastDayOfMonth());
+        int lst;
+        if(LocalDateTime.now().getMonth().getValue()==month.intValue())
+            lst=LocalDateTime.now().getDayOfMonth();
+        else lst = lastDay.getDayOfMonth();
+        for(int i=1; i<=lst; i++){
+            boolean notExists = true;
+            for (Trips t : dayWise) {
+                if (t.getDay().intValue() == i) {
+                    notExists = false;
+                    break;
+                }
+            }
+            if(notExists)
+                dayWise.add(new Trips(TripTypes.Open.name(),i,0L));
+        }
         return dayWise;
     }
 
     @Override
-    public List<Trips> getDelayedTrips(Integer year, Integer month) {
+    public List<Trips> getClosedTrips(Integer year, Integer month,int minYear) {
 
         List<Trips> dayWise = new ArrayList<>();
         LocalDateTime firstDay= LocalDateTime.of(year,month,1,0,0,0);
-        LocalDateTime lastDay= firstDay.with(TemporalAdjusters.lastDayOfMonth());
+
+        LocalDateTime lastDay= LocalDateTime.now().getMonth().getValue()==month.intValue()?LocalDateTime.now():firstDay.with(TemporalAdjusters.lastDayOfMonth());
+        StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_CLOSED_TRIPS");
+        procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
+        procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(firstDay));
+        procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(lastDay));
+        procedureQuery.registerStoredProcedureParameter(4, Timestamp.class, ParameterMode.IN).setParameter(4, Timestamp.valueOf(LocalDateTime.of(minYear,1,1,0,0,0)));
+        procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, "DAY");
+
+
+        procedureQuery.execute();
+        List<Object[]> result = procedureQuery.getResultList();
+        final int limit = lastDay.getDayOfMonth();
+        result.stream().forEach(r -> {
+            if( Integer.parseInt(r[1].toString()) > limit){
+
+            }else {
+                Trips t = new Trips(TripTypes.Closed.name(), Integer.parseInt(r[1].toString()), ((BigDecimal) r[0]).longValue());
+                dayWise.add(t);
+            }
+        });
+        int lst =0;
+        if(LocalDateTime.now().getMonth().getValue()==month.intValue())
+            lst =LocalDateTime.now().getDayOfMonth();
+        else lst= lastDay.getDayOfMonth();
+        for(int i=1; i<=lst; i++){
+            boolean notExists = true;
+            for (Trips t : dayWise) {
+                if (t.getDay().intValue() == i) {
+                    notExists = false;
+                    break;
+                }
+            }
+            if(notExists)
+                dayWise.add(new Trips(TripTypes.Closed.name(),i,0L));
+        }
+
+
+        return dayWise;
+    }
+
+    @Override
+    public List<Trips> getDelayedTrips(Integer year, Integer month,int minYear) {
+
+        List<Trips> dayWise = new ArrayList<>();
+        LocalDateTime firstDay= LocalDateTime.of(year,month,1,0,0,0);
+        LocalDateTime lastDay= LocalDateTime.now().getMonth().getValue()==month.intValue()?LocalDateTime.now():firstDay.with(TemporalAdjusters.lastDayOfMonth());
+
         StoredProcedureQuery procedureQuery = em.createStoredProcedureQuery("MSIL_DELAYTRIPS5");
         procedureQuery.registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR);
         procedureQuery.registerStoredProcedureParameter(2, Timestamp.class, ParameterMode.IN).setParameter(2, Timestamp.valueOf(firstDay));
         procedureQuery.registerStoredProcedureParameter(3, Timestamp.class, ParameterMode.IN).setParameter(3, Timestamp.valueOf(lastDay));
+        procedureQuery.registerStoredProcedureParameter(4, Timestamp.class, ParameterMode.IN).setParameter(4, Timestamp.valueOf(LocalDateTime.of(minYear,1,1,0,0,0)));
+        procedureQuery.registerStoredProcedureParameter(5, String.class, ParameterMode.IN).setParameter(5, "DAY");
 
         procedureQuery.execute();
         List<Object[]> result = procedureQuery.getResultList();
-
+        int limit = lastDay.getDayOfMonth();
         result.stream().forEach(r -> {
+            if( Integer.parseInt(r[1].toString()) > limit){
+
+            }else{
             Trips t = new Trips(TripTypes.Delayed.name() , Integer.parseInt(r[1].toString()),((BigDecimal) r[0]).longValue() );
             dayWise.add(t);
+            }
         });
+        int lst =0;
+        if(LocalDateTime.now().getMonth().getValue()==month.intValue())
+            lst =LocalDateTime.now().getDayOfMonth();
+        else lst = lastDay.getDayOfMonth();
+        for(int i=1; i<=lst; i++){
+            boolean notExists = true;
+            for (Trips t : dayWise) {
+                if (t.getDay().intValue() == i) {
+                    notExists = false;
+                    break;
+                }
+            }
+            if(notExists)
+                dayWise.add(new Trips(TripTypes.Delayed.name(),i,0L));
+        }
+
+
         return dayWise;
     }
 

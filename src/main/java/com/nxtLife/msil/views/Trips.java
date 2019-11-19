@@ -91,5 +91,12 @@ public class Trips {
         this.month = month;
     }
 
-
+    @Override
+    public String toString() {
+        return "Trips{" +
+                "tripType='" + tripType + '\'' +
+                ", count=" + count +
+                ", month=" + month +
+                '}';
+    }
 }
