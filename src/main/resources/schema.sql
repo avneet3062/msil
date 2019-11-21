@@ -308,11 +308,11 @@ create or replace PROCEDURE MSIL_CONTIDRIVE3_VIOLATIONS
 (
     C OUT SYS_REFCURSOR,
     P_FROM_DATE IN DATE,
-    P_TO_DATE   IN DATE,
+    P_DATE   IN DATE,
     P_WISE IN VARCHAR2,
     CUSTOMER_ID IN VARCHAR2)
 AS
-
+p_to_date DATE:=P_DATE+1;
 
 sql_stmt VARCHAR2(3000);
 BEGIN
@@ -322,7 +322,7 @@ SQL_STMT:= '    SELECT EXTRACT('||P_WISE||' FROM cont_drive_msg) "'||P_WISE||'",
                 COUNT(*) CNT
                 FROM msil_continious_driving_data
                 WHERE cont_drive_msg >= '''||p_from_date ||'''
-                AND cont_drive_msg    <= '''||p_to_date||'''
+                AND cont_drive_msg    < '''||p_to_date||'''
                 AND cust_id='''||CUSTOMER_ID||'''
 
                 GROUP BY EXTRACT('||P_WISE||' FROM cont_drive_msg)
@@ -341,11 +341,11 @@ create or replace PROCEDURE MSIL_FREERUN3_VIOLATIONS
 (
     C OUT SYS_REFCURSOR,
     P_FROM_DATE IN DATE,
-    P_TO_DATE   IN DATE,
+    P_DATE   IN DATE,
     P_WISE IN VARCHAR2,
     CUSTOMER_ID IN VARCHAR2)
 AS
-
+p_to_date DATE:=P_DATE+1;
 
 sql_stmt VARCHAR2(3000);
 BEGIN
@@ -356,7 +356,7 @@ SQL_STMT:= '    with
                         )
                         select EXTRACT('||P_WISE||' FROM ert) "'||P_WISE||'",
                         count(*) count from T1 a
-                        where ert>= '''||p_from_date ||''' AND ert <= '''||p_to_date||'''
+                        where ert>= '''||p_from_date ||''' AND ert < '''||p_to_date||'''
                         AND a.evm_customer_id='''||CUSTOMER_ID||'''
                         group by EXTRACT('||P_WISE||' FROM ert)
                         order by "'||P_WISE||'"';
@@ -372,19 +372,20 @@ create or replace PROCEDURE MSIL_HARSHBRAKING3_VIOLATIONS
 (
     C OUT SYS_REFCURSOR,
     P_FROM_DATE IN DATE,
-    P_TO_DATE   IN DATE,
+    P_DATE   IN DATE,
     P_WISE IN VARCHAR2,
     CUSTOMER_ID IN VARCHAR2
     )
 
 AS
+p_to_date DATE:=P_DATE+1;
 sql_stmt VARCHAR2(3000);
 BEGIN
 SQL_STMT:= '    SELECT EXTRACT('||P_WISE||' FROM mam_message_created_time) "'||P_WISE||'",
                 COUNT(*) CNT
                 FROM msil_alert_messages
                 WHERE mam_message_created_time >= '''||p_from_date ||'''
-                AND mam_message_created_time    <= '''||p_to_date||'''
+                AND mam_message_created_time    < '''||p_to_date||'''
                 AND mam_alert_type = 2
                 AND mam_customer_id='''||CUSTOMER_ID||'''
 
@@ -405,10 +406,11 @@ create or replace PROCEDURE MSIL_NIGHTDRIVE3_VIOLATIONS
 (
     C OUT SYS_REFCURSOR,
     P_FROM_DATE IN DATE,
-    P_TO_DATE   IN DATE,
+    P_DATE   IN DATE,
     P_WISE IN VARCHAR2,
     CUSTOMER_ID IN VARCHAR2)
 AS
+p_to_date DATE:=P_DATE+1;
 
 sql_stmt VARCHAR2(3000);
 BEGIN
@@ -416,7 +418,7 @@ SQL_STMT:= '    SELECT EXTRACT('||P_WISE||' FROM start_time) "'||P_WISE||'",
                 COUNT(*) CNT
                 FROM day_night_quick_rpt
                 WHERE start_time >= '''||p_from_date ||'''
-                AND start_time  <= '''||p_to_date||'''
+                AND start_time  < '''||p_to_date||'''
                 AND cust_id='''||CUSTOMER_ID||'''
 
                 GROUP BY EXTRACT('||P_WISE||' FROM start_time)
@@ -435,12 +437,12 @@ create or replace PROCEDURE MSIL_OVERSPEED3_VIOLATIONS
 (
     C OUT SYS_REFCURSOR,
     P_FROM_DATE IN DATE,
-    P_TO_DATE   IN DATE,
+    P_DATE   IN DATE,
     P_WISE IN VARCHAR2,
     CUSTOMER_ID IN VARCHAR2)
 
 AS
-
+p_to_date DATE:=P_DATE+1;
 
 sql_stmt VARCHAR2(3000);
 BEGIN
@@ -448,7 +450,7 @@ SQL_STMT:= '    SELECT EXTRACT('||P_WISE||' FROM overspeed_start_time) "'||P_WIS
                 COUNT(*) CNT
                 FROM temp_msil_overspeed_data
                 WHERE overspeed_start_time >= '''||p_from_date ||'''
-                AND overspeed_start_time    <= '''||p_to_date||'''
+                AND overspeed_start_time    < '''||p_to_date||'''
                 AND cust_id='''||CUSTOMER_ID||'''
                 GROUP BY EXTRACT('||P_WISE||' FROM overspeed_start_time)
 
@@ -465,20 +467,20 @@ DBMS_OUTPUT.put_line(SQL_STMT);
     (
         C OUT SYS_REFCURSOR,
         P_FROM_DATE IN DATE,
-        P_TO_DATE   IN DATE,
+        P_DATE   IN DATE,
         P_WISE IN VARCHAR2,
         CUSTOMER_ID IN VARCHAR2
         )
 
     AS
-
+     p_to_date DATE:=P_DATE+1;
     sql_stmt VARCHAR2(3000);
     BEGIN
     SQL_STMT:= '    SELECT EXTRACT('||P_WISE||' FROM mam_message_created_time) "'||P_WISE||'",
                     COUNT(*) CNT
                     FROM msil_alert_messages
                     WHERE mam_message_created_time >= '''||p_from_date ||'''
-                    AND mam_message_created_time    <= '''||p_to_date||'''
+                    AND mam_message_created_time    < '''||p_to_date||'''
                     AND mam_alert_type = 8
                     AND mam_customer_id='''||CUSTOMER_ID||'''
                     GROUP BY EXTRACT('||P_WISE||' FROM mam_message_created_time)
@@ -496,19 +498,19 @@ DBMS_OUTPUT.put_line(SQL_STMT);
     (
         C OUT SYS_REFCURSOR,
         P_FROM_DATE IN DATE,
-        P_TO_DATE   IN DATE,
+        P_DATE   IN DATE,
         P_WISE IN VARCHAR2,
         CUSTOMER_ID IN VARCHAR2)
 
     AS
-
+  p_to_date DATE:=P_DATE+1;
     sql_stmt VARCHAR2(3000);
     BEGIN
     SQL_STMT:= '    SELECT EXTRACT('||P_WISE||' FROM tmp_ert) "'||P_WISE||'",
                     COUNT(*) CNT
                     FROM msil_stoppage_rpt
                     WHERE tmp_ert >= '''||p_from_date ||'''
-                    AND tmp_ert    <= '''||p_to_date||'''
+                    AND tmp_ert    < '''||p_to_date||'''
                     AND tmp_customer_id='''||CUSTOMER_ID||'''
                     GROUP BY EXTRACT('||P_WISE||' FROM tmp_ert)
 
