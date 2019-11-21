@@ -120,388 +120,11 @@ RETURN(ROUND((THETA*ER),3));
 
 END DISTANCE_CALCULATOR;
 
-^; 
-
-create or replace PROCEDURE MSIL_TOTALTRIPS3 
-( 
-    C OUT SYS_REFCURSOR, 
-    P_FROM_DATE IN DATE, 
-    P_TO_DATE   IN DATE) 
-AS  
-BEGIN 
-  OPEN C FOR SELECT SUM(X.CNT),"MONTH" FROM
-  (SELECT EXTRACT(MONTH FROM TRIP_INV_DATE) "MONTH",COUNT(*) CNT 
-  FROM ETRK_MUL_NEWTRIP 
-  WHERE (TRIP_INV_DATE >= P_FROM_DATE 
-  AND TRIP_INV_DATE    <= P_TO_DATE) 
-  AND TRIP_INV_DATE    >= TO_DATE('01-01-17','DD-MM-YY') 
-  GROUP BY EXTRACT(MONTH FROM TRIP_INV_DATE)  
-  UNION 
-  SELECT EXTRACT(MONTH FROM TRIP_INV_DATE) "MONTH",COUNT(*) CNT 
-  FROM ETRK_MUL_NEWTRIP_HIST 
-  WHERE (TRIP_INV_DATE >= P_FROM_DATE 
-  AND TRIP_INV_DATE    <= P_TO_DATE) 
-  AND TRIP_INV_DATE    >= TO_DATE('01-01-17','DD-MM-YY') -- HARD CODED (Since data before the date is not accurate) 
-  GROUP BY EXTRACT(MONTH FROM TRIP_INV_DATE) 
-  ) X GROUP BY "MONTH" ORDER BY "MONTH";
-   
-END MSIL_TOTALTRIPS3; 
- 
-^;
-create or replace PROCEDURE MSIL_OPENTRIPS3  
-( 
-    C OUT SYS_REFCURSOR, 
-    P_FROM IN DATE, 
-    P_TO IN DATE, 
-    PRESENT_PAST VARCHAR2) 
-AS 
-from_date VARCHAR2(20) := to_char(P_FROM,'DD-MM-YY');
-end_date VARCHAR2(20) := to_char(P_TO,'DD-MM-YY') || '23:59:59';
-BEGIN 
-  IF PRESENT_PAST = 'PRESENT' THEN 
-    OPEN C FOR SELECT COUNT(*) CNT FROM ETRK_MUL_NEWTRIP WHERE TRIP_INV_DATE >= TO_DATE('01-01-17','DD-MM-YY') AND 
-TRIP_STATUS = 1 AND TRIP_ONWD_COMP_DATE IS NULL; --ahead cases 
-  ELSE 
-    OPEN C FOR SELECT SUM(X.CNT),"MONTH" FROM
-    (SELECT COUNT(*) CNT, EXTRACT(MONTH FROM TRIP_INV_DATE) "MONTH" 
-    FROM ETRK_MUL_NEWTRIP 
-    WHERE TRIP_INV_DATE BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY 
-HH24:MI:SS') 
-    AND (TRIP_AUTO_CLOSURE_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_AUTO_CLOSURE_DATE IS NULL) 
-    AND (TRIP_COMPLETED_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_COMPLETED_DATE IS NULL) 
-    AND (TRIP_ONWD_COMP_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_ONWD_COMP_DATE IS NULL) 
-    AND (PROXY_CLOSURE_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR PROXY_CLOSURE_DATE IS NULL) 
-    AND TRIP_INV_DATE >= TO_DATE('01-01-17','DD-MM-YY') -- HARD CODED (Since data before the date is not accurate) 
-    GROUP BY EXTRACT(MONTH FROM TRIP_INV_DATE) 
-    UNION 
-     
-    SELECT COUNT(*) CNT,EXTRACT(MONTH FROM TRIP_INV_DATE) "MONTH" 
-    FROM ETRK_MUL_NEWTRIP_HIST 
-    WHERE TRIP_INV_DATE BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY      
-HH24:MI:SS') 
-    AND (TRIP_AUTO_CLOSURE_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_AUTO_CLOSURE_DATE IS NULL) 
-    AND (TRIP_COMPLETED_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_COMPLETED_DATE IS NULL) 
-    AND (TRIP_ONWD_COMP_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_ONWD_COMP_DATE IS NULL) 
-    AND (PROXY_CLOSURE_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR PROXY_CLOSURE_DATE IS NULL) 
-    AND TRIP_INV_DATE >= TO_DATE('01-01-17','DD-MM-YY') -- HARD CODED (Since data before the date is not accurate) 
-    GROUP BY EXTRACT(MONTH FROM TRIP_INV_DATE) 
-    ) X GROUP BY "MONTH" ORDER BY "MONTH";
-  END IF; 
- 
-END MSIL_OPENTRIPS3; 
-
-^; 
-CREATE OR REPLACE PROCEDURE msil_closedtrips3
-(
-    c             OUT SYS_REFCURSOR,
-    p_from_date   IN DATE,
-    p_to_date     IN DATE
-) AS
-BEGIN
-    OPEN c FOR SELECT
-                   sum(x."COUNT") "COUNT",
-                   "MONTH"
-               FROM
-                   (
-                       SELECT
-                           COUNT(trip_regn_no) "COUNT",
-                           "MONTH"
-                       FROM
-                           (
-                               SELECT DISTINCT
-                                   trip_regn_no,
-                                   EXTRACT(MONTH FROM "DATE") "MONTH"
-                               FROM
-                                   (
-                                       SELECT DISTINCT
-                                           trip_regn_no,
-                                           coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
-                                           ) "DATE"
-                                       FROM
-                                           etrk_mul_newtrip
-                                       WHERE
-                                           trip_inv_date < p_to_date + 1
-                                           AND coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
-                                           ) <= p_to_date
-                                           AND coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
-                                           ) >= p_from_date
-                                       ORDER BY
-                                           trip_regn_no
-                                   )
-                               ORDER BY
-                                   "MONTH"
-                           )
-                       GROUP BY
-                           "MONTH"
-                       UNION
-                       SELECT
-                           COUNT(*) "COUNT",
-                           EXTRACT(MONTH FROM coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
-                           ) ) "MONTH"
-                       FROM
-                           etrk_mul_newtrip_hist
-                       WHERE
-                           trip_inv_date < p_to_date + 1
-                           AND coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date) <= p_to_date
-                           AND coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date) >= p_from_date
-                       GROUP BY
-                           EXTRACT(MONTH FROM coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
-                           ) )
-                   ) x
-                   GROUP BY "MONTH"
-               ORDER BY
-                   "MONTH";
-
-END msil_closedtrips3;
-^; 
-CREATE OR REPLACE PROCEDURE msil_delaytrips3
-(
-    c             OUT SYS_REFCURSOR,
-    p_from_date   IN DATE,
-    p_to_date     IN DATE
-) AS
-BEGIN
-    OPEN c FOR SELECT
-                   SUM(x."COUNT"),
-                   "MONTH"
-               FROM
-                   (
-                       SELECT
-                                   COUNT(*) "COUNT",
-                                    extract(month from TO_DATE("Date",'DD-MM-YY')) "MONTH"
-                               FROM
-                                   (
-                                        SELECT DISTINCT
-                                           trip_regn_no,
-                                           TO_CHAR (trip_inv_date, 'DD-MM-YY') "Date"
-                                       FROM
-                                           etrk_mul_newtrip
-                                       WHERE
-                                           trip_inv_date >= p_from_date
-                                           AND trip_inv_date < p_to_date+1
-                                           AND trip_eta_status LIKE 'DELAY%'
-                                           ORDER BY TRIP_REGN_NO
-                                   )
-                                   GROUP BY  extract(month from TO_DATE("Date",'DD-MM-YY'))
 
 
-                        UNION
-                        SELECT
-                                   COUNT(*) "COUNT",
-                                    extract(month from TO_DATE("Date",'DD-MM-YY')) "MONTH"
-                               FROM
-                                   (
-                                        SELECT DISTINCT
-                                           trip_regn_no,
-                                           TO_CHAR (trip_inv_date, 'DD-MM-YY') "Date"
-                                       FROM
-                                           etrk_mul_newtrip_hist
-                                       WHERE
-                                           trip_inv_date >= p_from_date
-                                           AND trip_inv_date < p_to_date+1
-                                           AND trip_eta_status LIKE 'DELAY%'
-                                           ORDER BY TRIP_REGN_NO
-                                   )
-                                   GROUP BY  extract(month from TO_DATE("Date",'DD-MM-YY'))
-
-                   ) x
-               GROUP BY
-                   "MONTH"
-               ORDER BY
-                   "MONTH";
-END msil_delaytrips3;
-^; 
-create or replace PROCEDURE MSIL_TOTALTRIPS4 
-(  
-    C OUT SYS_REFCURSOR,  
-    P_FROM_DATE IN DATE,  
-    P_TO_DATE   IN DATE
-  )
-AS   
-BEGIN  
-  OPEN C FOR SELECT SUM(X.CNT),"YEAR" FROM
-  (SELECT EXTRACT(YEAR FROM TRIP_INV_DATE) "YEAR",COUNT(*) CNT  
-  FROM ETRK_MUL_NEWTRIP  
-  WHERE TRIP_INV_DATE >= P_FROM_DATE
-  AND TRIP_INV_DATE    <= P_TO_DATE
-  GROUP BY EXTRACT(YEAR FROM TRIP_INV_DATE)   
-  UNION  
-  SELECT EXTRACT(YEAR FROM TRIP_INV_DATE) "YEAR",COUNT(*) CNT  
-  FROM ETRK_MUL_NEWTRIP_HIST  
-  WHERE TRIP_INV_DATE >= P_FROM_DATE
-  AND TRIP_INV_DATE    <= P_TO_DATE
-  GROUP BY EXTRACT(YEAR FROM TRIP_INV_DATE)  
-  ) X GROUP BY "YEAR" ORDER BY "YEAR";
-    
-END MSIL_TOTALTRIPS4;
-
-^; 
 
 
-create or replace PROCEDURE MSIL_OPENTRIPS4 
-(
-    C OUT SYS_REFCURSOR,
-    P_FROM IN DATE,
-    P_TO IN DATE,
-    PRESENT_PAST VARCHAR2
- )
-AS
-from_date VARCHAR2(20) := to_char(P_FROM,'dd-MM-YY');
-end_date VARCHAR2(20) := to_char(P_TO,'dd-MM-YY') || '23:59:59';
-BEGIN
-  IF PRESENT_PAST = 'PRESENT' THEN
-    OPEN C FOR SELECT COUNT(*) CNT FROM ETRK_MUL_NEWTRIP WHERE TRIP_INV_DATE >= TO_DATE('01-01-17','DD-MM-YY') AND TRIP_STATUS = 1 AND TRIP_ONWD_COMP_DATE IS NULL; --ahead cases
-  ELSE
-    OPEN C FOR SELECT SUM(X.CNT),"YEAR" FROM
-    (SELECT COUNT(*) CNT, EXTRACT(YEAR FROM TRIP_INV_DATE) "YEAR"
-    FROM ETRK_MUL_NEWTRIP
-    WHERE TRIP_INV_DATE BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY HH24:MI:SS')
-    AND (TRIP_AUTO_CLOSURE_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_AUTO_CLOSURE_DATE IS NULL)
-    AND (TRIP_COMPLETED_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_COMPLETED_DATE IS NULL)
-    AND (TRIP_ONWD_COMP_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_ONWD_COMP_DATE IS NULL)
-    AND (PROXY_CLOSURE_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR PROXY_CLOSURE_DATE IS NULL)
-    GROUP BY EXTRACT(YEAR FROM TRIP_INV_DATE)
-    UNION
-    
-    SELECT COUNT(*) CNT,EXTRACT(YEAR FROM TRIP_INV_DATE) "YEAR"
-    FROM ETRK_MUL_NEWTRIP_HIST
-    WHERE TRIP_INV_DATE BETWEEN TO_DATE( from_date,'DD-MM-YY HH24:MI:SS') AND TO_DATE( end_date,'DD-MM-YY HH24:MI:SS')
-    AND (TRIP_AUTO_CLOSURE_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_AUTO_CLOSURE_DATE IS NULL)
-    AND (TRIP_COMPLETED_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_COMPLETED_DATE IS NULL)
-    AND (TRIP_ONWD_COMP_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR TRIP_ONWD_COMP_DATE IS NULL)
-    AND (PROXY_CLOSURE_DATE > TO_DATE(end_date,'DD-MM-YY HH24:MI:SS') OR PROXY_CLOSURE_DATE IS NULL)
-    GROUP BY EXTRACT(YEAR FROM TRIP_INV_DATE)
-    ) X GROUP BY "YEAR" ORDER BY "YEAR";
-  END IF;
 
-  
-  
-END MSIL_OPENTRIPS4;
-
-
-^; 
-CREATE OR REPLACE PROCEDURE msil_closedtrips4
-(
-    c             OUT SYS_REFCURSOR,
-    p_from_date   IN DATE,
-    p_to_date     IN DATE
-) AS
-BEGIN
-    OPEN c FOR SELECT
-                   SUM(x."COUNT") "COUNT",
-                   "YEAR"
-               FROM
-                   (
-                       SELECT
-                           COUNT(trip_regn_no) "COUNT",
-                           "YEAR"
-                       FROM
-                           (
-                               SELECT DISTINCT
-                                   trip_regn_no,
-                                   EXTRACT(YEAR FROM "DATE") "YEAR"
-                               FROM
-                                   (
-                                       SELECT DISTINCT
-                                           trip_regn_no,
-                                           coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
-                                           ) "DATE"
-                                       FROM
-                                           etrk_mul_newtrip
-                                       WHERE
-                                           trip_inv_date < p_to_date + 1
-                                           AND coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
-                                           ) <= p_to_date
-                                           AND coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
-                                           ) >= p_from_date
-
-                                       ORDER BY
-                                           trip_regn_no
-                                   )
-                               ORDER BY
-                                   "YEAR"
-                           )
-                       GROUP BY
-                           "YEAR"
-                       UNION
-                       SELECT
-                           COUNT(*) "COUNT",
-                           EXTRACT(YEAR FROM coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
-                           ) ) "YEAR"
-                       FROM
-                           etrk_mul_newtrip_hist
-                       WHERE
-                           trip_inv_date < p_to_date + 1
-                           AND coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date) <= p_to_date
-                           AND coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date) >= p_from_date
-
-                       GROUP BY
-                           EXTRACT(YEAR FROM coalesce(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date
-                           ) )
-                   ) x
-                   GROUP BY "YEAR"
-               ORDER BY
-                   "YEAR";
-
-
-END msil_closedtrips4;
-  ^; 
-  CREATE OR REPLACE PROCEDURE msil_delaytrips4
-  (
-      c             OUT SYS_REFCURSOR,
-      p_from_date   IN DATE,
-      p_to_date     IN DATE
-  ) AS
-  BEGIN
-      OPEN c FOR SELECT
-                     SUM(x."COUNT"),
-                     "YEAR"
-                 FROM
-                     (
-                         SELECT
-                                     COUNT(*) "COUNT",
-                                      extract(YEAR from TO_DATE("Date",'DD-MM-YY')) "YEAR"
-                                 FROM
-                                     (
-                                          SELECT DISTINCT
-                                             trip_regn_no,
-                                             TO_CHAR (trip_inv_date, 'DD-MM-YY') "Date"
-                                         FROM
-                                             etrk_mul_newtrip
-                                         WHERE
-                                             trip_inv_date >= p_from_date
-                                             AND trip_inv_date < p_to_date+1
-                                             AND trip_eta_status LIKE 'DELAY%'
-                                             ORDER BY TRIP_REGN_NO
-                                     )
-                                     GROUP BY  extract(YEAR from TO_DATE("Date",'DD-MM-YY'))
-
-
-                          UNION
-                          SELECT
-                                     COUNT(*) "COUNT",
-                                      extract(YEAR from TO_DATE("Date",'DD-MM-YY')) "MONTH"
-                                 FROM
-                                     (
-                                          SELECT DISTINCT
-                                             trip_regn_no,
-                                             TO_CHAR (trip_inv_date, 'DD-MM-YY') "Date"
-                                         FROM
-                                             etrk_mul_newtrip_hist
-                                         WHERE
-                                             trip_inv_date >= p_from_date
-                                             AND trip_inv_date < p_to_date+1
-                                             AND trip_eta_status LIKE 'DELAY%'
-                                             ORDER BY TRIP_REGN_NO
-                                     )
-                                     GROUP BY  extract(YEAR from TO_DATE("Date",'DD-MM-YY'))
-
-                     ) x
-                 GROUP BY
-                     "YEAR"
-                 ORDER BY
-                     "YEAR";
-  END msil_delaytrips4;
 ^;
 create or replace PROCEDURE MSIL_LOCATIONS(C OUT SYS_REFCURSOR)
 AS
@@ -1107,61 +730,7 @@ DBMS_OUTPUT.put_line(SQL_STMT);
  END msil_fleet_utilization5;
 
  ^;
-create or replace PROCEDURE MSIL_CLOSEDTRIPS5
-
-(
-    C OUT SYS_REFCURSOR,
-    P_FROM_DATE IN DATE,
-    P_TO_DATE IN DATE
-    )
-AS
-
-BEGIN
- OPEN C FOR
-  Select sum(X."COUNT"), "DAY" from (
-        select count(trip_regn_no) "COUNT","DAY" from (
-            select distinct trip_regn_no,extract(day from "DATE") "DAY"
-            FROM ( SELECT DISTINCT
-                                   trip_regn_no, COALESCE(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date) "DATE"
-                                   FROM
-                                       etrk_mul_newtrip
-                                   WHERE
-                                   trip_inv_date<P_TO_DATE+1
-                                   AND COALESCE(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date)<=P_TO_DATE
-                                   AND COALESCE(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date)>=P_FROM_DATE
-                                   ORDER BY TRIP_REGN_NO)
-                                   order by "DAY"
-                                   )
-                                   GROUP BY "DAY"
-
-        UNION
-
-
-
-                             SELECT
-                                   count(*) "COUNT", extract( day from COALESCE(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date)) "DAY"
-                                   FROM
-                                       etrk_mul_newtrip_hist
-                                   WHERE
-                                   trip_inv_date<P_TO_DATE+1
-                                   AND COALESCE(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date)<=P_TO_DATE
-                                   AND COALESCE(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date)>=P_FROM_DATE
-                                   GROUP BY extract( day from COALESCE(trip_onwd_comp_date,trip_completed_date,trip_auto_closure_date,proxy_closure_date))
-
-
-    )X
-    GROUP BY "DAY"
-  order by "DAY";
-
-
-
-
-
-
-END MSIL_CLOSEDTRIPS5;
-
- ^;
-create or replace PROCEDURE msil_delaytrips5 (
+create or replace PROCEDURE msil_delay_trips (
     c             OUT SYS_REFCURSOR,
     p_from_date   IN DATE,
     p_to_date     IN DATE,
@@ -1192,11 +761,9 @@ BEGIN
                                FROM
                                    etrk_mul_newtrip
                                WHERE
-                                  ( (trip_inv_date >= '''||p_from_date||'''
+                                  (trip_inv_date >= '''||p_from_date||'''
                                    AND trip_inv_date < '''||p_date||''')
-                                   OR
-                                   trip_inv_date<'''||p_from_date||'''
-                                   AND trip_std_tt_date>='''||p_from_date||''')
+
                                    AND trip_eta_status LIKE '''||status||'''
                                    AND trip_inv_date>='''||p_min_date||'''
                                ORDER BY
@@ -1217,11 +784,10 @@ BEGIN
                                FROM
                                    etrk_mul_newtrip_hist
                                WHERE
-                                  ( (trip_inv_date >= '''||p_from_date||'''
+                                  (trip_inv_date >= '''||p_from_date||'''
                                    AND trip_inv_date < '''||p_date||''')
-                                   OR
-                                   trip_inv_date<'''||p_from_date||'''
-                                   AND trip_std_tt_date>='''||p_from_date||''')
+
+
                                    AND trip_eta_status LIKE '''||status||'''
                                    AND trip_inv_date>='''||p_min_date||'''
                                ORDER BY
@@ -1242,81 +808,12 @@ BEGIN
 
 --    dbms_output.put_line(sql_stmt);
 
-END msil_delaytrips5;
+END msil_delay_trips;
 ^;
 
-create or replace
-PROCEDURE MSIL_OPENTRIPS6
-(
-    c              OUT SYS_REFCURSOR,
-    p_end_date           IN DATE,
-    present_past   VARCHAR2
-) AS
-end_date DATE:=p_end_date+1;
-p_date VARCHAR2(20):=  TO_CHAR(end_date,'dd-MM-YY');
-
-BEGIN
-    IF present_past = 'PRESENT' THEN
-        OPEN c FOR SELECT
-                       COUNT(*) cnt
-                   FROM
-                       etrk_mul_newtrip
-                   WHERE
-                       trip_inv_date >= TO_DATE('01-01-17','DD-MM-YY')
-                       AND trip_status = 1
-                       AND trip_onwd_comp_date IS NULL;
-
-    ELSE
-    OPEN c FOR
-    SELECT
-           SUM(X.COUNT) "COUNT"
-      FROM
-           (Select count(trip_regn_no) "COUNT"  from   (SELECT
-                   distinct trip_regn_no
-               FROM
-                   etrk_mul_newtrip
-               WHERE
-                   trip_inv_date < TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')
-
-                   AND ( trip_auto_closure_date > TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')
-                         OR trip_auto_closure_date IS NULL )
-                   AND ( trip_completed_date > TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')
-                         OR trip_completed_date IS NULL )
-                   AND (( trip_onwd_comp_date > TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')
-                         OR trip_onwd_comp_date IS NULL ) OR (trip_onwd_comp_date<=TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')) AND
-                         TRIP_STATUS=3)
-                   AND ( proxy_closure_date > TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')
-                         OR proxy_closure_date IS NULL )
-                   AND trip_inv_date >= TO_DATE('01-01-17','DD-MM-YY')
-                   )
-
-               UNION
-               Select count(trip_regn_no) "COUNT"  from   (SELECT
-                   distinct trip_regn_no
-               FROM
-                   etrk_mul_newtrip_hist
-               WHERE
-                   trip_inv_date < TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')
-
-                   AND ( trip_auto_closure_date > TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')
-                         OR trip_auto_closure_date IS NULL )
-                   AND ( trip_completed_date > TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')
-                         OR trip_completed_date IS NULL )
-                   AND (( trip_onwd_comp_date > TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')
-                         OR trip_onwd_comp_date IS NULL ) OR (trip_onwd_comp_date<=TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')) AND
-                         TRIP_STATUS=3)
-                   AND ( proxy_closure_date > TO_DATE(p_date,'DD-MM-YY HH24:MI:SS')
-                         OR proxy_closure_date IS NULL )
-                   AND trip_inv_date >= TO_DATE('01-01-17','DD-MM-YY')
-                   )
-                   )X;
-    END IF;
-
-END MSIL_OPENTRIPS6;
 
 
 
-^;
 create or replace
 PROCEDURE MSIL_MINIMUM_DATE
 (
@@ -1328,5 +825,161 @@ BEGIN
 open c for
 select extract (year from min(trip_inv_date)) "year" from etrk_mul_newtrip;
 END MSIL_MINIMUM_DATE;
+^;
+create or replace PROCEDURE msil_closed_trips
+(
+    c             OUT           SYS_REFCURSOR,
+    p_from_date   IN            DATE,
+    p_to_date     IN            DATE,
+    p_min_date    IN            DATE,
+    p_wise        IN            VARCHAR2
+) AS
+ p_date Date:=p_to_date+1;
+ res  VARCHAR2(2000):='DD-MM-YY';
+ sql_stmt   VARCHAR2(30000);
+
+
+BEGIN
+     sql_stmt:=' SELECT
+                   SUM(x."COUNT") "COUNT",
+                   "'||p_wise||'"
+               FROM
+                   (
+                           SELECT
+                                    COUNT(trip_regn_no) "COUNT",
+                                   EXTRACT('||p_wise||' FROM "DATE") "'||p_wise||'"
+                               FROM
+                                   (
+                                       SELECT
+                                           trip_regn_no,
+                                           TO_CHAR(trip_inv_date,'''||res||'''),
+                                           max(coalesce(trip_onwd_comp_date, trip_completed_date, trip_auto_closure_date, proxy_closure_date
+                                           )) "DATE"
+
+                                       FROM
+                                           etrk_mul_newtrip
+                                       WHERE
+                                           trip_inv_date < '''||p_date||'''
+                                           AND coalesce(trip_onwd_comp_date, trip_completed_date, trip_auto_closure_date, proxy_closure_date
+                                           ) <'''||p_date||'''
+                                           AND coalesce(trip_onwd_comp_date, trip_completed_date, trip_auto_closure_date, proxy_closure_date
+                                           ) >= '''||p_from_date||'''
+                                           AND trip_inv_date>='''||p_min_date||'''
+                                           GROUP BY trip_regn_no,
+                                           TO_CHAR(trip_inv_date,'''||res||''')
+                                           )
+                                       GROUP BY  EXTRACT('||p_wise||' FROM "DATE")
+
+                        UNION
+
+                     SELECT
+                                    COUNT(trip_regn_no) "COUNT",
+                                   EXTRACT('||p_wise||' FROM "DATE") "'||p_wise||'"
+                               FROM
+                                   (
+                                       SELECT
+                                           trip_regn_no,
+                                           TO_CHAR(trip_inv_date,'''||res||'''),
+                                           max(coalesce(trip_onwd_comp_date, proxy_closure_date, trip_auto_closure_date,trip_completed_date
+                                           )) "DATE"
+
+                                       FROM
+                                           etrk_mul_newtrip_hist
+                                       WHERE
+                                           trip_inv_date < '''||p_date||'''
+                                           AND
+                                           coalesce(trip_onwd_comp_date, proxy_closure_date, trip_auto_closure_date,trip_completed_date
+                                           ) <'''||p_date||'''
+                                           AND coalesce(trip_onwd_comp_date, proxy_closure_date, trip_auto_closure_date,trip_completed_date
+                                           ) >= '''||p_from_date||'''
+
+                                           AND trip_inv_date>='''||p_min_date||'''
+                                           GROUP BY trip_regn_no,
+                                           TO_CHAR(trip_inv_date,'''||res||''')
+
+
+                                           UNION
+
+                                            SELECT
+                                           trip_regn_no,
+                                           TO_CHAR(trip_inv_date,'''||res||'''),
+                                           max(trip_next_tripdate) "DATE"
+
+                                       FROM
+                                           etrk_mul_newtrip_hist
+                                       WHERE
+                                           trip_inv_date < '''||p_date||'''
+                                           AND
+                                           TRIP_NEXT_TRIPDATE<'''||p_date||'''
+                                           AND
+                                           TRIP_NEXT_TRIPDATE>='''||p_from_date||'''
+                                           AND TRIP_STATUS=7
+                                           AND PROXY_CLOSURE_DATE IS NULL
+                                           AND trip_inv_date>='''||p_min_date||'''
+                                           GROUP BY trip_regn_no,
+                                           TO_CHAR(trip_inv_date,'''||res||''')
+                                           )
+
+
+                                       GROUP BY  EXTRACT('||p_wise||' FROM "DATE")
+
+
+                   ) x
+               GROUP BY
+                   "'||p_wise||'"
+               ORDER BY
+                   "'||p_wise||'"';
+
+                   dbms_output.put_line(sql_stmt);
+    OPEN c FOR sql_stmt;
+
+    dbms_output.put_line(sql_stmt);
+
+END msil_closed_trips;
+
+^;
+
+create or replace PROCEDURE MSIL_OPEN_TRIPS
+(
+    C            OUT           SYS_REFCURSOR,
+    p_from_date   IN            DATE,
+    p_date        IN            DATE,
+    p_today     IN            DATE,                             --p_to_date=today
+    p_min_date     IN            DATE ,
+    p_wise        IN   VARCHAR2
+)
+
+AS
+ p_to_date Date:=p_date+ 1;
+ res  VARCHAR2(200):='DD-MM-YY';
+ sql_stmt   VARCHAR2(3000);
+
+BEGIN
+
+sql_stmt:='select extract('||p_wise||' from TO_DATE("DATE",'''||res||''')) "'||p_wise||'",SUM(count(*)) OVER (ORDER BY extract('||p_wise||' from TO_DATE("DATE",'''||res||'''))) "COUNT"
+FROM
+(
+select distinct trip_regn_no,TO_CHAR(trip_inv_date,'''||res||''') "DATE"
+From etrk_mul_newtrip
+where trip_inv_date>='''||p_from_date||'''
+AND trip_inv_date<'''||p_to_date||'''
+AND (trip_auto_closure_date>='''||p_today||''' OR trip_auto_closure_date is null)
+AND (trip_completed_date>='''||p_today||''' OR trip_completed_date is null)
+AND (trip_onwd_comp_date>='''||p_today||''' OR trip_onwd_comp_date is null)
+AND (proxy_closure_date>='''||p_today||''' OR proxy_closure_date is null)
+AND trip_inv_date>='''||p_min_date||'''
+)
+GROUP BY extract('||p_wise||' from TO_DATE("DATE",'''||res||'''))
+ORDER BY "'||p_wise||'"';
+
+dbms_output.put_line(sql_stmt);
+    OPEN c FOR sql_stmt;
+
+    dbms_output.put_line(sql_stmt);
+
+
+
+
+END MSIL_OPEN_TRIPS;
 ^;
 

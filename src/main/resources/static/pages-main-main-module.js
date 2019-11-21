@@ -613,8 +613,8 @@ var DashboardComponent = /** @class */ (function () {
     DashboardComponent.prototype.getTrips = function () {
         var _this = this;
         this.dashboardservice.getYearlyTrips().subscribe(function (response) {
-            _this.tripsChart.data = response;
-            _this.drawTripsChartYearwise(response);
+            _this.tripsChart.data = response.tripMetricsList;
+            _this.drawTripsChartYearwise(response.tripMetricsList);
         });
     };
     DashboardComponent.prototype.drawTripsChartYearwise = function (tripsResponse) {
@@ -663,7 +663,7 @@ var DashboardComponent = /** @class */ (function () {
         var _this = this;
         this.tripsChart.year = year;
         this.dashboardservice.getMonthlyTrips(year).subscribe(function (response) {
-            var tripMonthlyList = response;
+            var tripMonthlyList = response.tripMetricsList;
             _this.tripsChart.drill = 1;
             var tripsData = [[]];
             tripsData[0] = [];
@@ -704,7 +704,7 @@ var DashboardComponent = /** @class */ (function () {
         this.tripsChart.year = year;
         this.tripsChart.month = month;
         this.dashboardservice.getDayWiseTrips(year, month).subscribe(function (response) {
-            var tripMonthlyList = response;
+            var tripMonthlyList = response.tripMetricsList;
             _this.tripsChart.drill = 2;
             var tripsData = [[]];
             tripsData[0] = [];

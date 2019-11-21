@@ -87,9 +87,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   getTrips() {
-    this.dashboardservice.getYearlyTrips().subscribe((response: any[]) => {
-      this.tripsChart.data = response;
-      this.drawTripsChartYearwise(response);
+    this.dashboardservice.getYearlyTrips().subscribe((response: any) => {
+      this.tripsChart.data = response.tripMetricsList;
+      this.drawTripsChartYearwise(response.tripMetricsList);
     });
   }
 
@@ -144,7 +144,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   getTripsByYear(year: number) {
     this.tripsChart.year = year;
     this.dashboardservice.getMonthlyTrips(year).subscribe((response: any) => {
-      const tripMonthlyList = response;
+      const tripMonthlyList = response.tripMetricsList;
       this.tripsChart.drill = 1;
       const tripsData = [[]];
       tripsData[0] = [];
@@ -187,7 +187,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.tripsChart.year = year;
     this.tripsChart.month = month;
     this.dashboardservice.getDayWiseTrips(year, month).subscribe((response: any) => {
-      const tripMonthlyList = response;
+      const tripMonthlyList = response.tripMetricsList;
       this.tripsChart.drill = 2;
       const tripsData = [[]];
       tripsData[0] = [];

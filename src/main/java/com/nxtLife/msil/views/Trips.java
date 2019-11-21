@@ -3,6 +3,7 @@ package com.nxtLife.msil.views;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nxtLife.msil.enums.TripTypes;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,65 +14,66 @@ import java.util.Date;
 public class Trips {
 
     @JsonFormat(pattern = "dd-MMM-YY", timezone = "IST")
-    private String tripType;
+    private TripTypes tripType;
     private Long count;
-    private Integer month;
-    private Integer year;
-    private Integer day;
+    private Integer name;
+//    private Integer month;
+//    private Integer year;
+//    private Integer day;
     private Date date;
 
-    public Trips(String tripType, Long count , Integer month) {
+    public Trips(TripTypes tripType, Long count , Integer name) {
         this.tripType = tripType;
         this.count = count;
-        this.month = month;
+        this.name = name;
     }
-    public Trips( String tripType,Integer day , Long count) {
-        this.day=day;
-        this.tripType = tripType;
-        this.count = count;
-
-    }
-
-    public Integer getDay() {
-        return day;
-    }
-
-    public void setDay(Integer day) {
-        this.day = day;
-    }
+//    public Trips( String tripType,Integer day , Long count) {
+//        this.day=day;
+//        this.tripType = tripType;
+//        this.count = count;
+//
+//    }
+//
+//    public Integer getDay() {
+//        return day;
+//    }
+//
+//    public void setDay(Integer day) {
+//        this.day = day;
+//    }
 
     public Trips() {
     }
 
-    public Trips(Integer month) {
-        this.month = month;
+    public Trips(Integer name) {
+        this.name = name;
     }
 
-    public Trips(String tripType, Long count) {
+    public Trips(TripTypes tripType, Long count) {
         this.tripType = tripType;
         this.count = count;
     }
 
-    public Trips(Integer year,String tripType, Long count) {
-        this.tripType = tripType;
-        this.count = count;
-        this.year = year;
-    }
+//    public Trips(Integer year,String tripType, Long count) {
+//        this.tripType = tripType;
+//        this.count = count;
+//        this.year = year;
+//    }
 
-    @JsonIgnore
-    public int getYear() {
-        return year;
-    }
+//    @JsonIgnore
+//    public int getYear() {
+//        return year;
+//    }
+//
+//    public void setYear(int year) {
+//        this.year = year;
+//    }
 
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public String getTripType() {
+    public TripTypes getTripType() {
         return tripType;
     }
 
-    public void setTripType(String tripType) {
+    public void setTripType(TripTypes tripType) {
         this.tripType = tripType;
     }
 
@@ -83,12 +85,12 @@ public class Trips {
         this.count = count;
     }
 
-    public Integer getMonth() {
-        return month;
+    public Integer getName() {
+        return name;
     }
 
-    public void setMonth(Integer month) {
-        this.month = month;
+    public void setName(Integer name) {
+        this.name = name;
     }
 
     @Override
@@ -96,7 +98,7 @@ public class Trips {
         return "Trips{" +
                 "tripType='" + tripType + '\'' +
                 ", count=" + count +
-                ", month=" + month +
+                ", month=" + name +
                 '}';
     }
 }

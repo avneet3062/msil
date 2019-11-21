@@ -18,15 +18,14 @@ public class MetricsController {
     private DataService dataService;
 
     @GetMapping("trips")
-    public ResponseEntity<List<TripMetrics>> getAllTripsMetricMonthly(@RequestParam(value = "year" , required = false) Integer year,
+    public ResponseEntity<TripMetrics> getAllTripsMetricMonthly(@RequestParam(value = "year" , required = false) Integer year,
                                                         @RequestParam(value = "month",required = false) Integer month){
 
-        List<TripMetrics> tripMetricsList= dataService.getTripsMetrics(year,month);
+        TripMetrics tripMetrics= dataService.getTripsMetrics(year,month);
 
-        if(tripMetricsList == null || tripMetricsList.isEmpty() )
-            throw new NotFoundException("Data not found!");
-        else
-            return new ResponseEntity<List<TripMetrics>>(tripMetricsList, HttpStatus.OK);
+        if(tripMetrics == null)
+            throw new NotFoundException("Couldn't find data");
+        return new ResponseEntity<TripMetrics>(tripMetrics,HttpStatus.OK);
     }
 
 
@@ -47,13 +46,6 @@ public class MetricsController {
         return new ResponseEntity<List<Locations>>(locations,HttpStatus.OK);
     }
 
-    @GetMapping("tripsYearly")
-    public List<TripMetrics> getTripsYearly(){
-        List<TripMetrics> metricsList = dataService.getAlltripsYearly();
-        if(metricsList == null || metricsList.isEmpty())
-            throw new NotFoundException("Couldn't find your data");
-        return metricsList;
-    }
 
     @GetMapping("transporters")
     public ResponseEntity<List<Transporters>> getTrannsporters(){
@@ -91,9 +83,5 @@ public class MetricsController {
 
     }
 
-    @GetMapping("tripsDaily")
-    public ResponseEntity<List<TripMetrics>> getTrips(@RequestParam("year") Integer year, @RequestParam("month") Integer month){
-        List<TripMetrics> metrics = dataService.getTrips(year,month);
-        return new ResponseEntity<List<TripMetrics>>(metrics,HttpStatus.OK);
-    }
+
 }
