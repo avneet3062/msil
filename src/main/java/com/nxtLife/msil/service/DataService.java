@@ -72,9 +72,10 @@ public class DataService {
             if(month>1) {
                 lastDay.set(year, month - 2, firstDay.getActualMaximum(Calendar.DATE));
                  openTrips = tripRepository.getOpenTrips(minYear, firstDay.getTime(), lastDay.getTime(), today, "year");
+                if(!openTrips.isEmpty()&&openTrips!=null)
+                    sum=sum+openTrips.get(0).getCount();
             }
-            if(openTrips!=null)
-            sum=sum+openTrips.get(0).getCount();
+
             order = "day";
             firstDay.set(year, month - 1, 1);
             lastDay.set(year, month - 1, firstDay.getActualMaximum(Calendar.DATE));

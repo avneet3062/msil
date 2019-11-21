@@ -113,7 +113,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     const data = google.visualization.arrayToDataTable(tripsData);
     const options = {
-      bar: { groupWidth: "10%" },
+      //bar: { groupWidth: "10%" },
       hAxis: {
         title: 'Year',
         format: ' ',
@@ -124,8 +124,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       },
       vAxis: {
         title: 'Count'
-      },
-      isStacked: true
+      }
+      //isStacked: true
       // title: 'Tags Issued Monthly Trend',
       // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
     };

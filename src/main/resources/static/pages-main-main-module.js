@@ -637,15 +637,15 @@ var DashboardComponent = /** @class */ (function () {
         });
         var data = google.visualization.arrayToDataTable(tripsData);
         var options = {
-            bar: { groupWidth: "10%" },
+            //bar: { groupWidth: "10%" },
             hAxis: {
                 title: 'Year',
                 format: ' ',
             },
             vAxis: {
                 title: 'Count'
-            },
-            isStacked: true
+            }
+            //isStacked: true
             // title: 'Tags Issued Monthly Trend',
             // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
         };
