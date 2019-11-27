@@ -124,8 +124,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       },
       vAxis: {
         title: 'Count'
-      }
-      //isStacked: true
+      },
+      isStacked: true
       // title: 'Tags Issued Monthly Trend',
       // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
     };
@@ -139,7 +139,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         tripsResponse.forEach(o => {
           o.tripsList.forEach((i, index) => {
             if (index != parseInt(parts[1])) {
-              o.count -= i.count;
+
               i.count = 0;
             }
           });
@@ -197,7 +197,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         tripsResponse.forEach(o => {
           o.tripsList.forEach((i, index) => {
             if (index != parseInt(parts[1])) {
-              o.count -= i.count;
+
               i.count = 0;
             }
           });
@@ -253,7 +253,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         tripsResponse.forEach(o => {
           o.tripsList.forEach((i, index) => {
             if (index != parseInt(parts[1])) {
-              o.count -= i.count;
+
               i.count = 0;
             }
           });
@@ -392,7 +392,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         violationsMetricsList.forEach(o => {
           o.violations.forEach((i, index) => {
             if (index != parseInt(parts[1])) {
-              o.count -= i.count;
+
               i.count = 0;
             }
           });
@@ -445,7 +445,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         violationsMetricsList.forEach(o => {
           o.violations.forEach((i, index) => {
             if (index != parseInt(parts[1])) {
-              o.count -= i.count;
+
               i.count = 0;
             }
           });
@@ -495,7 +495,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         violationsMetricsList.forEach(o => {
           o.violations.forEach((i, index) => {
             if (index != parseInt(parts[1])) {
-              o.count -= i.count;
+
               i.count = 0;
             }
           });
