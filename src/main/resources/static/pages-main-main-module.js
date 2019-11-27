@@ -640,7 +640,7 @@ var DashboardComponent = /** @class */ (function () {
             //bar: { groupWidth: "10%" },
             hAxis: {
                 title: 'Year',
-                format: ' ',
+                format: '#a',
             },
             vAxis: {
                 title: 'Count'
