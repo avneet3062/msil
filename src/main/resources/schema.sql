@@ -984,7 +984,7 @@ AS
 
 BEGIN
 
-sql_stmt:='select extract('||p_wise||' from TO_DATE("DATE",'''||res||''')) "'||p_wise||'",SUM(count(*)) OVER (ORDER BY extract('||p_wise||' from TO_DATE("DATE",'''||res||'''))) "COUNT"
+sql_stmt:='select extract('||p_wise||' from TO_DATE("DATE",'''||res||''')) "'||p_wise||'",COUNT(*) "COUNT"
 FROM
 (
 select distinct trip_regn_no,TO_CHAR(trip_inv_date,'''||res||''') "DATE"

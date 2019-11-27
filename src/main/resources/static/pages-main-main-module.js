@@ -521,7 +521,7 @@ var SidebarModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <section>\r\n        <div class=\"row\" (window:resize)=\"onResizeWindow()\">\r\n            <!-- Trips -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Trips</h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n\r\n                        <div *ngIf=\"tripsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('tripChart', tripsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"tripChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Monthly transactions -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Vehicle Availablity</h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"location\" id=\"\" [(ngModel)]=\"locationCode\" (ngModelChange)=\"getVehicleAvailability($event)\">\r\n                                <option [value]=\"loc.code\" *ngFor=\"let loc of locations;\">\r\n                                    {{loc.locName}}\r\n                                </option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\" *ngIf=\"vehicleAvailablity.length\">\r\n                        <div class=\"ct-chart\">\r\n                            <div class=\"c2\" *ngIf=\"vehicleAvailablity.length\">\r\n                                <div class=\"text\">\r\n                                    <div>{{vehicleAvailablity[2].range + ' KM'}} </div>\r\n                                    <div>{{vehicleAvailablity[2].count}}</div>\r\n                                </div>\r\n                                <div class=\"c1\">\r\n                                    <div class=\"text\">\r\n                                        <div>{{vehicleAvailablity[1].range + ' KM'}} </div>\r\n                                        <div>{{vehicleAvailablity[1].count}}</div>\r\n                                    </div>\r\n                                    <div class=\"c0\">\r\n                                        <div class=\"text\">\r\n                                            <div>{{vehicleAvailablity[0].range + ' KM'}} </div>\r\n                                            <div>{{vehicleAvailablity[0].count}}</div>\r\n                                        </div>\r\n                                    </div>\r\n                                </div>\r\n                            </div>\r\n                            <img src=\"assets/img/loading.gif\" *ngIf=\"!vehicleAvailablity.length\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- Violations Chart -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Violations Chart\r\n                        </h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"customer\" id=\"\" [(ngModel)]=\"selectedCustomer\" (ngModelChange)=\"getViolationsByCustomer($event)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div *ngIf=\"violationsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('violationChart', violationsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"violationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n<!--            <div class=\"col-lg-12\">-->\r\n<!--                <div class=\"card\">-->\r\n<!--                    <div class=\"header tittle\">-->\r\n<!--                        <h4>Fleet Utilization Chart-->\r\n<!--                        </h4>-->\r\n<!--                        <div class=\"select-box\">-->\r\n<!--                            <select name=\"customer\" id=\"\" [(ngModel)]=\"Transporter\" (ngModelChange)=\"getFleetUtilizationByCustId(Transporter)\">-->\r\n<!--                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>-->\r\n<!--                            </select>-->\r\n<!--                        </div>-->\r\n<!--                    </div>-->\r\n<!--                    <div class=\"content\">-->\r\n<!--                        <div *ngIf=\"fleetUtilizationsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('fleetUtilizationChart', fleetUtilizationsChart.drill)\">-->\r\n<!--                            <div class=\"slide\">-->\r\n<!--                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>-->\r\n<!--                            </div>-->\r\n<!--                        </div>-->\r\n<!--                        <div id=\"fleetUtilizationChart\" class=\"ct-chart\">-->\r\n<!--                            <img src=\"assets/img/loading.gif\">-->\r\n<!--                        </div>-->\r\n<!--                    </div>-->\r\n<!--                </div>-->\r\n<!--            </div>-->\r\n        </div>\r\n    </section>\r\n</div>\r\n"
+module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <section>\r\n        <div class=\"row\" (window:resize)=\"onResizeWindow()\">\r\n            <!-- Trips -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Trips</h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n\r\n                        <div *ngIf=\"tripsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('tripChart', tripsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"tripChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Monthly transactions -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Vehicle Availablity</h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"location\" id=\"\" [(ngModel)]=\"locationCode\" (ngModelChange)=\"getVehicleAvailability($event)\">\r\n                                <option [value]=\"loc.code\" *ngFor=\"let loc of locations;\">\r\n                                    {{loc.locName}}\r\n                                </option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\" *ngIf=\"vehicleAvailablity.length\">\r\n                        <div class=\"ct-chart\">\r\n                            <div class=\"c2\" *ngIf=\"vehicleAvailablity.length\">\r\n                                <div class=\"text\">\r\n                                    <div>{{vehicleAvailablity[2].range + ' KM'}} </div>\r\n                                    <div>{{vehicleAvailablity[2].count}}</div>\r\n                                </div>\r\n                                <div class=\"c1\">\r\n                                    <div class=\"text\">\r\n                                        <div>{{vehicleAvailablity[1].range + ' KM'}} </div>\r\n                                        <div>{{vehicleAvailablity[1].count}}</div>\r\n                                    </div>\r\n                                    <div class=\"c0\">\r\n                                        <div class=\"text\">\r\n                                            <div>{{vehicleAvailablity[0].range + ' KM'}} </div>\r\n                                            <div>{{vehicleAvailablity[0].count}}</div>\r\n                                        </div>\r\n                                    </div>\r\n                                </div>\r\n                            </div>\r\n                            <img src=\"assets/img/loading.gif\" *ngIf=\"!vehicleAvailablity.length\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- Violations Chart -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Violations Chart\r\n                        </h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"customer\" id=\"\" [(ngModel)]=\"selectedCustomer\" (ngModelChange)=\"getViolationsByCustomer($event)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div *ngIf=\"violationsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('violationChart', violationsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"violationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Fleet Utilization Chart\r\n                        </h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"customer\" id=\"\" [(ngModel)]=\"Transporter\" (ngModelChange)=\"getFleetUtilizationByCustId(Transporter)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div *ngIf=\"fleetUtilizationsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('fleetUtilizationChart', fleetUtilizationsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"fleetUtilizationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </section>\r\n</div>"
 
 /***/ }),
 
@@ -640,12 +640,11 @@ var DashboardComponent = /** @class */ (function () {
             //bar: { groupWidth: "10%" },
             hAxis: {
                 title: 'Year',
-                format: ' ',
             },
             vAxis: {
                 title: 'Count'
-            }
-            //isStacked: true
+            },
+            isStacked: true
             // title: 'Tags Issued Monthly Trend',
             // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
         };
@@ -655,84 +654,129 @@ var DashboardComponent = /** @class */ (function () {
             if (parts[0] == "hAxis") {
                 _this.getTripsByYear(tripsData[parseInt(parts[3]) + 1][0]);
             }
+            else if (parts[0] == 'legendentry') {
+                var tripsResponse_1 = JSON.parse(JSON.stringify(_this.tripsChart.data));
+                tripsResponse_1.forEach(function (o) {
+                    o.tripsList.forEach(function (i, index) {
+                        if (index != parseInt(parts[1])) {
+                            i.count = 0;
+                        }
+                    });
+                });
+                _this.drawTripsChartYearwise(tripsResponse_1);
+            }
         });
         chart.draw(data, options);
         $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+        $('#tripChart > div > div > div > svg > g > g').css('cursor', 'pointer');
     };
     DashboardComponent.prototype.getTripsByYear = function (year) {
         var _this = this;
         this.tripsChart.year = year;
         this.dashboardservice.getMonthlyTrips(year).subscribe(function (response) {
-            var tripMonthlyList = response.tripMetricsList;
-            _this.tripsChart.drill = 1;
-            var tripsData = [[]];
-            tripsData[0] = [];
-            tripsData[0].push('month');
-            tripMonthlyList[0].tripsList.forEach(function (element) {
-                tripsData[0].push(element.tripType);
-                tripsData[0].push({ type: 'string', role: 'tooltip' });
-            });
-            tripMonthlyList.forEach(function (element, index) {
-                tripsData[index + 1] = [];
-                tripsData[index + 1].push(months[element.month - 1]);
-                element.tripsList.forEach(function (el) {
-                    tripsData[index + 1].push(el.count);
-                    tripsData[index + 1].push(months[element.month - 1] + "\n" + el.tripType + ":" + el.count + "\nTotal: " + element.count);
-                });
-            });
-            var data = google.visualization.arrayToDataTable(tripsData);
-            var options = {
-                hAxis: { title: 'Months of ' + year },
-                vAxis: { title: 'Count' },
-                isStacked: true
-                // title: 'Tags Issued Monthly Trend',
-                // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
-            };
-            var chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
-            google.visualization.events.addListener(chart, 'click', function (e) {
-                var parts = e.targetID.split('#');
-                if (parts[0] == "hAxis") {
-                    _this.getTripsByMonth(year, months.indexOf(tripsData[parseInt(parts[3]) + 1][0]) + 1);
-                }
-            });
-            chart.draw(data, options);
-            $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+            _this.tripsChart.data = response.tripMetricsList;
+            _this.drawTripsChartByYear(year, response.tripMetricsList);
         });
+    };
+    DashboardComponent.prototype.drawTripsChartByYear = function (year, tripMonthlyList) {
+        var _this = this;
+        this.tripsChart.drill = 1;
+        var tripsData = [[]];
+        tripsData[0] = [];
+        tripsData[0].push('month');
+        tripMonthlyList[0].tripsList.forEach(function (element) {
+            tripsData[0].push(element.tripType);
+            tripsData[0].push({ type: 'string', role: 'tooltip' });
+        });
+        tripMonthlyList.forEach(function (element, index) {
+            tripsData[index + 1] = [];
+            tripsData[index + 1].push(months[element.month - 1]);
+            element.tripsList.forEach(function (el) {
+                tripsData[index + 1].push(el.count);
+                tripsData[index + 1].push(months[element.month - 1] + "\n" + el.tripType + ":" + el.count + "\nTotal: " + element.count);
+            });
+        });
+        var data = google.visualization.arrayToDataTable(tripsData);
+        var options = {
+            hAxis: { title: 'Months of ' + year },
+            vAxis: { title: 'Count' },
+            isStacked: true
+            // title: 'Tags Issued Monthly Trend',
+            // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
+        google.visualization.events.addListener(chart, 'click', function (e) {
+            var parts = e.targetID.split('#');
+            if (parts[0] == "hAxis") {
+                _this.getTripsByMonth(year, months.indexOf(tripsData[parseInt(parts[3]) + 1][0]) + 1);
+            }
+            else if (parts[0] == 'legendentry') {
+                var tripsResponse = JSON.parse(JSON.stringify(_this.tripsChart.data));
+                tripsResponse.forEach(function (o) {
+                    o.tripsList.forEach(function (i, index) {
+                        if (index != parseInt(parts[1])) {
+                            i.count = 0;
+                        }
+                    });
+                });
+                _this.drawTripsChartByYear(year, tripsResponse);
+            }
+        });
+        chart.draw(data, options);
+        $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
     };
     DashboardComponent.prototype.getTripsByMonth = function (year, month) {
         var _this = this;
         this.tripsChart.year = year;
         this.tripsChart.month = month;
         this.dashboardservice.getDayWiseTrips(year, month).subscribe(function (response) {
-            var tripMonthlyList = response.tripMetricsList;
-            _this.tripsChart.drill = 2;
-            var tripsData = [[]];
-            tripsData[0] = [];
-            tripsData[0].push('Day');
-            tripMonthlyList[0].tripsList.forEach(function (element) {
-                tripsData[0].push(element.tripType);
-                tripsData[0].push({ type: 'string', role: 'tooltip' });
-            });
-            tripMonthlyList.forEach(function (element, index) {
-                tripsData[index + 1] = [];
-                tripsData[index + 1].push('' + element.day);
-                element.tripsList.forEach(function (el) {
-                    tripsData[index + 1].push(el.count);
-                    tripsData[index + 1].push(element.day + "\n" + el.tripType + ":" + el.count + "\nTotal: " + element.count);
-                });
-            });
-            var data = google.visualization.arrayToDataTable(tripsData);
-            var options = {
-                hAxis: { title: 'Days of ' + months[month - 1] + '-' + year },
-                vAxis: { title: 'Count' },
-                isStacked: true
-                // title: 'Tags Issued Monthly Trend',
-                // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
-            };
-            var chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
-            chart.draw(data, options);
-            $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+            _this.tripsChart.data = response.tripMetricsList;
+            _this.drawTripsChartByMonth(month, year, response.tripMetricsList);
         });
+    };
+    DashboardComponent.prototype.drawTripsChartByMonth = function (month, year, tripMonthlyList) {
+        var _this = this;
+        this.tripsChart.drill = 2;
+        var tripsData = [[]];
+        tripsData[0] = [];
+        tripsData[0].push('Day');
+        tripMonthlyList[0].tripsList.forEach(function (element) {
+            tripsData[0].push(element.tripType);
+            tripsData[0].push({ type: 'string', role: 'tooltip' });
+        });
+        tripMonthlyList.forEach(function (element, index) {
+            tripsData[index + 1] = [];
+            tripsData[index + 1].push('' + element.day);
+            element.tripsList.forEach(function (el) {
+                tripsData[index + 1].push(el.count);
+                tripsData[index + 1].push(element.day + "\n" + el.tripType + ":" + el.count + "\nTotal: " + element.count);
+            });
+        });
+        var data = google.visualization.arrayToDataTable(tripsData);
+        var options = {
+            hAxis: { title: 'Days of ' + months[month - 1] + '-' + year },
+            vAxis: { title: 'Count' },
+            isStacked: true
+            // title: 'Tags Issued Monthly Trend',
+            // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
+        google.visualization.events.addListener(chart, 'click', function (e) {
+            var parts = e.targetID.split('#');
+            if (parts[0] == 'legendentry') {
+                var tripsResponse = JSON.parse(JSON.stringify(_this.tripsChart.data));
+                tripsResponse.forEach(function (o) {
+                    o.tripsList.forEach(function (i, index) {
+                        if (index != parseInt(parts[1])) {
+                            i.count = 0;
+                        }
+                    });
+                });
+                _this.drawTripsChartByMonth(month, year, tripsResponse);
+            }
+        });
+        chart.draw(data, options);
+        $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
     };
     DashboardComponent.prototype.getVehicleAvailability = function (locCode) {
         var _this = this;
@@ -800,7 +844,7 @@ var DashboardComponent = /** @class */ (function () {
             _this.transporters = response;
             _this.Transporter = 'ECUS519';
             _this.selectedCustomer = 'ECUS875';
-            //      this.getFleetUtilizationByCustId(this.Transporter);
+            _this.getFleetUtilizationByCustId(_this.Transporter);
             _this.getViolationsByCustomer(_this.selectedCustomer);
         });
     };
@@ -839,13 +883,26 @@ var DashboardComponent = /** @class */ (function () {
             var parts = e.targetID.split('#');
             if (parts[0] == "hAxis")
                 _this.getViolatonsByYear(violationChartData[parseInt(parts[3]) + 1][0], custId);
+            else if (parts[0] == 'legendentry') {
+                var violationsMetricsList_1 = JSON.parse(JSON.stringify(_this.violationsChart.data));
+                violationsMetricsList_1.forEach(function (o) {
+                    o.violations.forEach(function (i, index) {
+                        if (index != parseInt(parts[1])) {
+                            i.count = 0;
+                        }
+                    });
+                });
+                _this.drawViolationChart(custId, violationsMetricsList_1);
+            }
         });
         chart.draw(data, options);
         $('#violationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+        $('#violationChart > div > div > div > svg > g > g').css('cursor', 'pointer');
     };
     DashboardComponent.prototype.getViolatonsByYear = function (year, custId) {
         var _this = this;
         this.dashboardservice.getViolationsByCustomerIdAndYear(year, custId).subscribe(function (response) {
+            _this.violationsChart.data = response.violationsMetricsList;
             _this.drawViolationChartByMonth(custId, year, response.violationsMetricsList);
         });
     };
@@ -878,17 +935,31 @@ var DashboardComponent = /** @class */ (function () {
             var parts = e.targetID.split('#');
             if (parts[0] == "hAxis")
                 _this.getViolatonsByYearAndMonth(custId, year, months.indexOf(violationChartData[parseInt(parts[3]) + 1][0]) + 1);
+            else if (parts[0] == 'legendentry') {
+                var violationsMetricsList_2 = JSON.parse(JSON.stringify(_this.violationsChart.data));
+                violationsMetricsList_2.forEach(function (o) {
+                    o.violations.forEach(function (i, index) {
+                        if (index != parseInt(parts[1])) {
+                            i.count = 0;
+                        }
+                    });
+                });
+                _this.drawViolationChartByMonth(custId, year, violationsMetricsList_2);
+            }
         });
         chart.draw(data, options);
         $('#violationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+        $('#violationChart > div > div > div > svg > g > g').css('cursor', 'pointer');
     };
     DashboardComponent.prototype.getViolatonsByYearAndMonth = function (custId, year, month) {
         var _this = this;
         this.dashboardservice.getViolationsByCustomerIdAndYearAndMonth(year, month, custId).subscribe(function (response) {
+            _this.violationsChart.data = response.violationsMetricsList;
             _this.drawViolationChartByDay(year, month, response.violationsMetricsList);
         });
     };
     DashboardComponent.prototype.drawViolationChartByDay = function (year, month, violationsMetricsList) {
+        var _this = this;
         this.violationsChart.drill = 2;
         var violationChartData = [[]];
         violationChartData[0] = ['Day'];
@@ -911,8 +982,23 @@ var DashboardComponent = /** @class */ (function () {
             colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('violationChart'));
+        google.visualization.events.addListener(chart, 'click', function (e) {
+            var parts = e.targetID.split('#');
+            if (parts[0] == 'legendentry') {
+                var violationsMetricsList_3 = JSON.parse(JSON.stringify(_this.violationsChart.data));
+                violationsMetricsList_3.forEach(function (o) {
+                    o.violations.forEach(function (i, index) {
+                        if (index != parseInt(parts[1])) {
+                            i.count = 0;
+                        }
+                    });
+                });
+                _this.drawViolationChartByDay(year, month, violationsMetricsList_3);
+            }
+        });
         chart.draw(data, options);
         $('#violationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+        $('#violationChart > div > div > div > svg > g > g').css('cursor', 'pointer');
     };
     DashboardComponent.prototype.getFleetUtilizationByCustId = function (custId) {
         var _this = this;
@@ -953,6 +1039,7 @@ var DashboardComponent = /** @class */ (function () {
     DashboardComponent.prototype.getFleetUtilizationByCustIdAndYear = function (year, custId) {
         var _this = this;
         this.dashboardservice.getFleetUtilizationByCustIdAndYear(year, custId).subscribe(function (response) {
+            _this.fleetUtilizationsChart.data = response.list;
             _this.drawFleetUtilizationByYear(year, custId, response.list);
         }, function (error) {
         });
@@ -990,6 +1077,7 @@ var DashboardComponent = /** @class */ (function () {
     DashboardComponent.prototype.getFleetUtilizationByCustIdAndYearAndMonth = function (month, year, custId) {
         var _this = this;
         this.dashboardservice.getFleetUtilizationByCustIdYearAndMonth(year, month, custId).subscribe(function (response) {
+            _this.fleetUtilizationsChart.data = response.list;
             _this.drawFleetUtilizationByYearAndMonth(month, year, custId, response.list);
         }, function (error) {
         });
@@ -1017,9 +1105,40 @@ var DashboardComponent = /** @class */ (function () {
         $('#fleetUtilizationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
     };
     DashboardComponent.prototype.onResizeWindow = function () {
-        this.drawTripsChartYearwise(this.tripsChart.data);
-        //this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data);
-        this.drawViolationChart(this.selectedCustomer, this.violationsChart.data);
+        switch (this.tripsChart.drill) {
+            case 0:
+                this.drawTripsChartYearwise(this.tripsChart.data);
+                break;
+            case 1:
+                this.drawTripsChartByYear(this.tripsChart.year, this.tripsChart.data);
+                break;
+            case 2:
+                this.drawTripsChartByMonth(this.tripsChart.month, this.tripsChart.year, this.tripsChart.data);
+                break;
+        }
+        switch (this.violationsChart.drill) {
+            case 0:
+                this.drawViolationChart(this.selectedCustomer, this.violationsChart.data);
+                break;
+            case 1:
+                this.drawViolationChartByMonth(this.selectedCustomer, this.violationsChart.year, this.violationsChart.data);
+                break;
+            case 2:
+                this.drawViolationChartByDay(this.violationsChart.year, this.violationsChart.month, this.violationsChart.data);
+                break;
+        }
+        switch (this.fleetUtilizationsChart.drill) {
+            case 0:
+                this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data);
+                break;
+            case 1:
+                this.drawFleetUtilizationByYear(this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
+                break;
+            case 2:
+                this.drawFleetUtilizationByYearAndMonth(this.fleetUtilizationsChart.month, this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
+                break;
+        }
+        // this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data);
     };
     DashboardComponent.prototype.drillBackCharts = function (name, drillCount) {
         switch (name) {
