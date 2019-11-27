@@ -321,8 +321,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       throw Error('Input parameter must be of type number');
     }
 
-
-
     let str = amount.toString();
     // check if amount contains any fraction part
     let fraction = '';
