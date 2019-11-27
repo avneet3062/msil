@@ -138,7 +138,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.getTripsByYear(tripsData[parseInt(parts[3]) + 1][0]);
       } else if (parts[0] == 'legendentry') {
         const tripsResponse: any[] = JSON.parse(JSON.stringify(this.tripsChart.data));
-<<<<<<< HEAD
         if (parseInt(parts[1]) != tripsResponse[0].tripsList.length) {
           tripsResponse.forEach(o => {
             o.tripsList.forEach((i, index) => {
@@ -146,14 +145,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 i.count = 0;
               }
             });
-=======
-        tripsResponse.forEach(o => {
-          o.tripsList.forEach((i, index) => {
-            if (index != parseInt(parts[1])) {
-
-              i.count = 0;
-            }
->>>>>>> 98c251ba8129367578c4b3fa1a9829db227aaeca
           });
         }
         this.drawTripsChartYearwise(tripsResponse);
@@ -208,7 +199,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.getTripsByMonth(year, months.indexOf(tripsData[parseInt(parts[3]) + 1][0]) + 1);
       } else if (parts[0] == 'legendentry') {
         const tripsResponse: any[] = JSON.parse(JSON.stringify(this.tripsChart.data));
-<<<<<<< HEAD
         if (parseInt(parts[1]) != tripsResponse[0].tripsList.length) {
           tripsResponse.forEach(o => {
             o.tripsList.forEach((i, index) => {
@@ -216,14 +206,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 i.count = 0;
               }
             });
-=======
-        tripsResponse.forEach(o => {
-          o.tripsList.forEach((i, index) => {
-            if (index != parseInt(parts[1])) {
-
-              i.count = 0;
-            }
->>>>>>> 98c251ba8129367578c4b3fa1a9829db227aaeca
           });
         }
         this.drawTripsChartByYear(year, tripsResponse);
@@ -278,7 +260,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       const parts = e.targetID.split('#');
       if (parts[0] == 'legendentry') {
         const tripsResponse: any[] = JSON.parse(JSON.stringify(this.tripsChart.data));
-<<<<<<< HEAD
         if (parseInt(parts[1]) != tripsResponse[0].tripsList.length) {
           tripsResponse.forEach(o => {
             o.tripsList.forEach((i, index) => {
@@ -286,14 +267,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 i.count = 0;
               }
             });
-=======
-        tripsResponse.forEach(o => {
-          o.tripsList.forEach((i, index) => {
-            if (index != parseInt(parts[1])) {
-
-              i.count = 0;
-            }
->>>>>>> 98c251ba8129367578c4b3fa1a9829db227aaeca
           });
         }
         this.drawTripsChartByMonth(month, year, tripsResponse);
@@ -429,7 +402,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.getViolatonsByYear(violationChartData[parseInt(parts[3]) + 1][0], custId);
       else if (parts[0] == 'legendentry') {
         const violationsMetricsList = JSON.parse(JSON.stringify(this.violationsChart.data));
-<<<<<<< HEAD
         if (parseInt(parts[1]) != violationsMetricsList[0].violations.length) {
           violationsMetricsList.forEach(o => {
             o.violations.forEach((i, index) => {
@@ -437,14 +409,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 i.count = 0;
               }
             });
-=======
-        violationsMetricsList.forEach(o => {
-          o.violations.forEach((i, index) => {
-            if (index != parseInt(parts[1])) {
-
-              i.count = 0;
-            }
->>>>>>> 98c251ba8129367578c4b3fa1a9829db227aaeca
           });
         }
         this.drawViolationChart(custId, violationsMetricsList);
@@ -494,7 +458,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.getViolatonsByYearAndMonth(custId, year, months.indexOf(violationChartData[parseInt(parts[3]) + 1][0]) + 1);
       else if (parts[0] == 'legendentry') {
         const violationsMetricsList = JSON.parse(JSON.stringify(this.violationsChart.data));
-<<<<<<< HEAD
         if (parseInt(parts[1]) != violationsMetricsList[0].violations.length) {
           violationsMetricsList.forEach(o => {
             o.violations.forEach((i, index) => {
@@ -502,14 +465,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 i.count = 0;
               }
             });
-=======
-        violationsMetricsList.forEach(o => {
-          o.violations.forEach((i, index) => {
-            if (index != parseInt(parts[1])) {
-
-              i.count = 0;
-            }
->>>>>>> 98c251ba8129367578c4b3fa1a9829db227aaeca
           });
         }
         this.drawViolationChartByMonth(custId, year, violationsMetricsList);
@@ -556,7 +511,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       const parts = e.targetID.split('#');
       if (parts[0] == 'legendentry') {
         const violationsMetricsList = JSON.parse(JSON.stringify(this.violationsChart.data));
-<<<<<<< HEAD
         if (parseInt(parts[1]) != violationsMetricsList[0].violations.length) {
           violationsMetricsList.forEach(o => {
             o.violations.forEach((i, index) => {
@@ -564,14 +518,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 i.count = 0;
               }
             });
-=======
-        violationsMetricsList.forEach(o => {
-          o.violations.forEach((i, index) => {
-            if (index != parseInt(parts[1])) {
-
-              i.count = 0;
-            }
->>>>>>> 98c251ba8129367578c4b3fa1a9829db227aaeca
           });
         }
         this.drawViolationChartByDay(year, month, violationsMetricsList);
