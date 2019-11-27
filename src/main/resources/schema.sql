@@ -403,34 +403,34 @@ END MSIL_HARSHBRAKING3_VIOLATIONS;
 
 ^;
 create or replace PROCEDURE MSIL_NIGHTDRIVE3_VIOLATIONS
-(
-    C OUT SYS_REFCURSOR,
-    P_FROM_DATE IN DATE,
-    P_DATE   IN DATE,
-    P_WISE IN VARCHAR2,
-    CUSTOMER_ID IN VARCHAR2)
-AS
-p_to_date DATE:=P_DATE+1;
+                                (
+                                    C OUT SYS_REFCURSOR,
+                                    P_FROM_DATE IN DATE,
+                                    P_DATE   IN DATE,
+                                    P_WISE IN VARCHAR2,
+                                    CUSTOMER_ID IN VARCHAR2)
+                                AS
+                                p_to_date DATE:=P_DATE+1;
 
-sql_stmt VARCHAR2(3000);
-BEGIN
-SQL_STMT:= '    SELECT EXTRACT('||P_WISE||' FROM start_time) "'||P_WISE||'",
-                COUNT(*) CNT
-                FROM day_night_quick_rpt
-                WHERE start_time >= '''||p_from_date ||'''
-                AND start_time  < '''||p_to_date||'''
-                AND cust_id='''||CUSTOMER_ID||'''
+                                sql_stmt VARCHAR2(3000);
+                                BEGIN
+                                SQL_STMT:= '    SELECT EXTRACT('||P_WISE||' FROM start_time) "'||P_WISE||'",
+                                                COUNT(*) CNT
+                                                FROM day_night_quick_rpt
+                                                WHERE start_time >= '''||p_from_date ||'''
+                                                AND start_time  < '''||p_to_date||'''
+                                                AND cust_id='''||CUSTOMER_ID||'''
 
-                GROUP BY EXTRACT('||P_WISE||' FROM start_time)
+                                                GROUP BY EXTRACT('||P_WISE||' FROM start_time)
 
-                  ORDER BY "'||P_WISE||'"';
+                                                  ORDER BY "'||P_WISE||'"';
 
-DBMS_OUTPUT.put_line(SQL_STMT);
-OPEN C FOR SQL_STMT;
-DBMS_OUTPUT.put_line(SQL_STMT);
+                                DBMS_OUTPUT.put_line(SQL_STMT);
+                                OPEN C FOR SQL_STMT;
+                                DBMS_OUTPUT.put_line(SQL_STMT);
 
 
-END MSIL_NIGHTDRIVE3_VIOLATIONS;
+                                END MSIL_NIGHTDRIVE3_VIOLATIONS;
 ^;
 
 create or replace PROCEDURE MSIL_OVERSPEED3_VIOLATIONS
@@ -511,6 +511,9 @@ DBMS_OUTPUT.put_line(SQL_STMT);
                     FROM msil_stoppage_rpt
                     WHERE tmp_ert >= '''||p_from_date ||'''
                     AND tmp_ert    < '''||p_to_date||'''
+                    AND tmp_idle_time_hrs >= 6
+                    AND tmp_idle_time_mins >= 0
+                    AND tmp_idle_time_secs > 0
                     AND tmp_customer_id='''||CUSTOMER_ID||'''
                     GROUP BY EXTRACT('||P_WISE||' FROM tmp_ert)
 
@@ -830,112 +833,135 @@ END MSIL_MINIMUM_DATE;
 ^;
 create or replace PROCEDURE msil_closed_trips
 (
-    c             OUT           SYS_REFCURSOR,
-    p_from_date   IN            DATE,
-    p_to_date     IN            DATE,
-    p_min_date    IN            DATE,
-    p_wise        IN            VARCHAR2
+    c             OUT SYS_REFCURSOR,
+    p_from_date   IN DATE,
+    p_to_date     IN DATE,
+    p_min_date    IN DATE,
+    p_wise        IN VARCHAR2
 ) AS
- p_date Date:=p_to_date+1;
- res  VARCHAR2(2000):='DD-MM-YY';
- sql_stmt   VARCHAR2(30000);
 
-
+    p_date     DATE := p_to_date + 1;
+    res        VARCHAR2(2000) := 'DD-MM-YY';
+    sql_stmt   VARCHAR2(30000);
 BEGIN
-     sql_stmt:=' SELECT
+    sql_stmt := ' SELECT
                    SUM(x."COUNT") "COUNT",
-                   "'||p_wise||'"
+                   "'
+                || p_wise
+                || '"
                FROM
                    (
                            SELECT
                                     COUNT(trip_regn_no) "COUNT",
-                                   EXTRACT('||p_wise||' FROM "DATE") "'||p_wise||'"
+                                   EXTRACT('
+                || p_wise
+                || ' FROM "DATE") "'
+                || p_wise
+                || '"
                                FROM
                                    (
                                        SELECT
                                            trip_regn_no,
-                                           TO_CHAR(trip_inv_date,'''||res||'''),
+                                           TO_CHAR(trip_inv_date,'''
+                || res
+                || '''),
                                            max(coalesce(trip_onwd_comp_date, trip_completed_date, trip_auto_closure_date, proxy_closure_date
                                            )) "DATE"
 
                                        FROM
                                            etrk_mul_newtrip
                                        WHERE
-                                           trip_inv_date < '''||p_date||'''
+                                           trip_inv_date < '''
+                || p_date
+                || '''
                                            AND coalesce(trip_onwd_comp_date, trip_completed_date, trip_auto_closure_date, proxy_closure_date
-                                           ) <'''||p_date||'''
+                                           ) <'''
+                || p_date
+                || '''
                                            AND coalesce(trip_onwd_comp_date, trip_completed_date, trip_auto_closure_date, proxy_closure_date
-                                           ) >= '''||p_from_date||'''
-                                           AND trip_inv_date>='''||p_min_date||'''
+                                           ) >= '''
+                || p_from_date
+                || '''
+                                           AND trip_inv_date>='''
+                || p_min_date
+                || '''
                                            GROUP BY trip_regn_no,
-                                           TO_CHAR(trip_inv_date,'''||res||''')
+                                           TO_CHAR(trip_inv_date,'''
+                || res
+                || ''')
                                            )
-                                       GROUP BY  EXTRACT('||p_wise||' FROM "DATE")
+                                       GROUP BY  EXTRACT('
+                || p_wise
+                || ' FROM "DATE")
 
                         UNION
 
                      SELECT
                                     COUNT(trip_regn_no) "COUNT",
-                                   EXTRACT('||p_wise||' FROM "DATE") "'||p_wise||'"
+                                   EXTRACT('
+                || p_wise
+                || ' FROM "DATE") "'
+                || p_wise
+                || '"
                                FROM
                                    (
                                        SELECT
                                            trip_regn_no,
-                                           TO_CHAR(trip_inv_date,'''||res||'''),
-                                           max(coalesce(trip_onwd_comp_date, proxy_closure_date, trip_auto_closure_date,trip_completed_date
+                                           TO_CHAR(trip_inv_date,'''
+                || res
+                || '''),
+                                           max(coalesce(trip_onwd_comp_date, proxy_closure_date, trip_auto_closure_date,trip_completed_date,
+                                           trip_next_tripdate
                                            )) "DATE"
 
                                        FROM
                                            etrk_mul_newtrip_hist
                                        WHERE
-                                           trip_inv_date < '''||p_date||'''
+                                           trip_inv_date < '''
+                || p_date
+                || '''
                                            AND
                                            coalesce(trip_onwd_comp_date, proxy_closure_date, trip_auto_closure_date,trip_completed_date
-                                           ) <'''||p_date||'''
+                                           ,trip_next_tripdate
+                                           ) <'''
+                || p_date
+                || '''
                                            AND coalesce(trip_onwd_comp_date, proxy_closure_date, trip_auto_closure_date,trip_completed_date
-                                           ) >= '''||p_from_date||'''
+                                           ,trip_next_tripdate) >= '''
+                || p_from_date
+                || '''
 
-                                           AND trip_inv_date>='''||p_min_date||'''
+                                           AND trip_inv_date>='''
+                || p_min_date
+                || '''
                                            GROUP BY trip_regn_no,
-                                           TO_CHAR(trip_inv_date,'''||res||''')
+                                           TO_CHAR(trip_inv_date,'''
+                || res
+                || ''')
+
+             )
 
 
-                                           UNION
-
-                                            SELECT
-                                           trip_regn_no,
-                                           TO_CHAR(trip_inv_date,'''||res||'''),
-                                           max(trip_next_tripdate) "DATE"
-
-                                       FROM
-                                           etrk_mul_newtrip_hist
-                                       WHERE
-                                           trip_inv_date < '''||p_date||'''
-                                           AND
-                                           TRIP_NEXT_TRIPDATE<'''||p_date||'''
-                                           AND
-                                           TRIP_NEXT_TRIPDATE>='''||p_from_date||'''
-                                           AND TRIP_STATUS=7
-                                           AND PROXY_CLOSURE_DATE IS NULL
-                                           AND trip_inv_date>='''||p_min_date||'''
-                                           GROUP BY trip_regn_no,
-                                           TO_CHAR(trip_inv_date,'''||res||''')
-                                           )
-
-
-                                       GROUP BY  EXTRACT('||p_wise||' FROM "DATE")
+                                       GROUP BY  EXTRACT('
+                || p_wise
+                || ' FROM "DATE")
 
 
                    ) x
                GROUP BY
-                   "'||p_wise||'"
+                   "'
+                || p_wise
+                || '"
                ORDER BY
-                   "'||p_wise||'"';
+                   "'
+                || p_wise
+                || '"';
 
-                   dbms_output.put_line(sql_stmt);
+    dbms_output.put_line(sql_stmt);
     OPEN c FOR sql_stmt;
 
     dbms_output.put_line(sql_stmt);
+
 
 END msil_closed_trips;
 
