@@ -357,7 +357,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.transporters = response;
       this.Transporter = 'ECUS519'
       this.selectedCustomer = 'ECUS875';
-      // this.getFleetUtilizationByCustId(this.Transporter);
+      this.getFleetUtilizationByCustId(this.Transporter);
       this.getViolationsByCustomer(this.selectedCustomer);
     })
   }
@@ -662,18 +662,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         break;
     }
 
-    // switch (this.fleetUtilizationsChart.drill) {
-    //   case 0:
-    //     this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data)
-    //     break;
-    //   case 1:
-    //     this.drawFleetUtilizationByYear(this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
-    //     break;
-    //   case 2:
-    //     this.drawFleetUtilizationByYearAndMonth(this.fleetUtilizationsChart.month, this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
-    //     break;
+     switch (this.fleetUtilizationsChart.drill) {
+       case 0:
+        this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data)
+        break;
+       case 1:
+         this.drawFleetUtilizationByYear(this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
+         break;
+       case 2:
+         this.drawFleetUtilizationByYearAndMonth(this.fleetUtilizationsChart.month, this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
+         break;
 
-    // }
+     }
   }
 
   drillBackCharts(name, drillCount) {
