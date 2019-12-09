@@ -12,25 +12,15 @@ import java.util.List;
 
 public interface TripRepository {
 
-    List<Trips> getOpenTrips(Integer month) throws SQLException;
+    List<Trips> getOpenTrips(int minYear, Date fromDate,Date toDate,Date today,String order);
 
-    List<Trips> getClosedTrips(Integer month) throws SQLException;
+    List<Trips> getClosedTrips(int minYear,Date fromDate,Date toDate, String order);
 
-    List<Trips> getDelayedTrips(Integer month) throws SQLException;
-
-    List<Trips> getTotalTrips(Integer month) throws SQLException;
+    List<Trips> getDelayedTrips(int minYear,Date fromDate,Date toDate, String order);
 
     List<VehicleAvaliabiltyMetrics> getVehiclesAvailable(String code);
 
     List<Locations> getLocations();
-
-    List<Trips> getOpenTrips() throws SQLException;
-
-    List<Trips> getClosedTrips() throws SQLException;
-
-    List<Trips> getDelayedTrips() throws SQLException;
-
-    List<Trips> getTotaltrips() throws SQLException;
 
     List<Transporters> getTransporters();
 
@@ -69,11 +59,5 @@ public interface TripRepository {
 
     int getMinimumYear();
 
-    List<Trips> getTotalTrips(Integer year, Integer month);
 
-    Trips getOpenTrips(Date date,Integer day);
-
-    List<Trips> getClosedTrips(Integer year, Integer month);
-
-    List<Trips> getDelayedTrips(Integer year, Integer month);
 }

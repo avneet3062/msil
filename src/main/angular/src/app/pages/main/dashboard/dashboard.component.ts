@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { DashboardService } from 'src/app/providers/dashboard.service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -11,7 +11,7 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept'
   styleUrls: ['./dashboard.component.scss']
 })
 
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
   locationCode: any;
   selectedCustomer: string;
   selectedYear: any;
@@ -57,6 +57,10 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  ngAfterViewInit() {
+
+  }
+
   loadGoogleChart() {
     google.charts.load('current', { packages: ['corechart', 'bar'], language: 'hi_ln' });
 
@@ -83,9 +87,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getTrips() {
-    this.dashboardservice.getYearlyTrips().subscribe((response: any[]) => {
-      this.tripsChart.data = response;
-      this.drawTripsChartYearwise(response);
+    this.dashboardservice.getYearlyTrips().subscribe((response: any) => {
+      this.tripsChart.data = response.tripMetricsList;
+      this.drawTripsChartYearwise(response.tripMetricsList);
     });
   }
 
@@ -96,21 +100,25 @@ export class DashboardComponent implements OnInit {
     tripsData[0].push('year')
     tripsResponse[0].tripsList.forEach(element => {
       tripsData[0].push(element.tripType);
+      tripsData[0].push({ type: 'string', role: 'tooltip' });
     });
+    tripsData[0].push('All');
     tripsResponse.forEach((element, index) => {
       tripsData[index + 1] = [];
       tripsData[index + 1].push('' + element.year);
       element.tripsList.forEach(el => {
         tripsData[index + 1].push(el.count);
-      })
+        tripsData[index + 1].push(`${element.year}\n${el.tripType}:${el.count}\nTotal: ${element.count}`);
+      });
+      tripsData[index + 1].push(0);
     });
 
     const data = google.visualization.arrayToDataTable(tripsData);
     const options = {
-      bar: { groupWidth: "10%" },
+      //bar: { groupWidth: "10%" },
       hAxis: {
         title: 'Year',
-        format: ' ',
+        // format: '#a'
         // viewWindow: {
         //   max: new Date().getFullYear() - 2,
         //   min: new Date().getFullYear()
@@ -128,82 +136,146 @@ export class DashboardComponent implements OnInit {
       const parts = e.targetID.split('#');
       if (parts[0] == "hAxis") {
         this.getTripsByYear(tripsData[parseInt(parts[3]) + 1][0]);
+      } else if (parts[0] == 'legendentry') {
+        const tripsResponse: any[] = JSON.parse(JSON.stringify(this.tripsChart.data));
+        if (parseInt(parts[1]) != tripsResponse[0].tripsList.length) {
+          tripsResponse.forEach(o => {
+            o.tripsList.forEach((i, index) => {
+              if (index != parseInt(parts[1])) {
+                i.count = 0;
+              }
+            });
+          });
+        }
+        this.drawTripsChartYearwise(tripsResponse);
       }
 
     });
     chart.draw(data, options);
+    $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+    $('#tripChart > div > div > div > svg > g > g').css('cursor', 'pointer');
   }
 
   getTripsByYear(year: number) {
     this.tripsChart.year = year;
     this.dashboardservice.getMonthlyTrips(year).subscribe((response: any) => {
-      const tripMonthlyList = response;
-      this.tripsChart.drill = 1;
-      const tripsData = [[]];
-      tripsData[0] = [];
-      tripsData[0].push('month')
-      tripMonthlyList[0].tripsList.forEach(element => {
-        tripsData[0].push(element.tripType);
-      });
-      tripMonthlyList.forEach((element, index) => {
-        tripsData[index + 1] = [];
-        tripsData[index + 1].push(months[element.month - 1]);
-        element.tripsList.forEach(el => {
-          tripsData[index + 1].push(el.count);
-        })
-      });
-
-      const data = google.visualization.arrayToDataTable(tripsData);
-      const options = {
-        hAxis: { title: 'Months of ' + year },
-        vAxis: { title: 'Count' },
-        isStacked: true
-        // title: 'Tags Issued Monthly Trend',
-        // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
-      };
-      const chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
-      google.visualization.events.addListener(chart, 'click', (e) => {
-        const parts = e.targetID.split('#');
-        if (parts[0] == "hAxis") {
-          this.getTripsByMonth(year, months.indexOf(tripsData[parseInt(parts[3]) + 1][0]) + 1);
-        }
-
-      });
-      chart.draw(data, options);
+      this.tripsChart.data = response.tripMetricsList;
+      this.drawTripsChartByYear(year, response.tripMetricsList);
     })
+  }
+
+  drawTripsChartByYear(year, tripMonthlyList) {
+    this.tripsChart.drill = 1;
+    const tripsData = [[]];
+    tripsData[0] = [];
+    tripsData[0].push('month')
+    tripMonthlyList[0].tripsList.forEach(element => {
+      tripsData[0].push(element.tripType);
+      tripsData[0].push({ type: 'string', role: 'tooltip' });
+    });
+    tripsData[0].push('All');
+    tripMonthlyList.forEach((element, index) => {
+      tripsData[index + 1] = [];
+      tripsData[index + 1].push(months[element.month - 1]);
+      element.tripsList.forEach(el => {
+        tripsData[index + 1].push(el.count);
+        tripsData[index + 1].push(`${months[element.month - 1]}\n${el.tripType}:${el.count}\nTotal: ${element.count}`);
+      });
+      tripsData[index + 1].push(0);
+    });
+
+    const data = google.visualization.arrayToDataTable(tripsData);
+    const options = {
+      hAxis: { title: 'Months of ' + year },
+      vAxis: { title: 'Count' },
+      isStacked: true
+      // title: 'Tags Issued Monthly Trend',
+      // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+    };
+    const chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
+    google.visualization.events.addListener(chart, 'click', (e) => {
+      const parts = e.targetID.split('#');
+      if (parts[0] == "hAxis") {
+        this.getTripsByMonth(year, months.indexOf(tripsData[parseInt(parts[3]) + 1][0]) + 1);
+      } else if (parts[0] == 'legendentry') {
+        const tripsResponse: any[] = JSON.parse(JSON.stringify(this.tripsChart.data));
+        if (parseInt(parts[1]) != tripsResponse[0].tripsList.length) {
+          tripsResponse.forEach(o => {
+            o.tripsList.forEach((i, index) => {
+              if (index != parseInt(parts[1])) {
+                i.count = 0;
+              }
+            });
+          });
+        }
+        this.drawTripsChartByYear(year, tripsResponse);
+      }
+
+    });
+    chart.draw(data, options);
+    $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+    $('#tripChart > div > div > div > svg > g > g').css('cursor', 'pointer');
   }
 
   getTripsByMonth(year: number, month: number) {
     this.tripsChart.year = year;
     this.tripsChart.month = month;
     this.dashboardservice.getDayWiseTrips(year, month).subscribe((response: any) => {
-      const tripMonthlyList = response;
-      this.tripsChart.drill = 2;
-      const tripsData = [[]];
-      tripsData[0] = [];
-      tripsData[0].push('Day')
-      tripMonthlyList[0].tripsList.forEach(element => {
-        tripsData[0].push(element.tripType);
-      });
-      tripMonthlyList.forEach((element, index) => {
-        tripsData[index + 1] = [];
-        tripsData[index + 1].push('' + element.day);
-        element.tripsList.forEach(el => {
-          tripsData[index + 1].push(el.count);
-        })
-      });
-
-      const data = google.visualization.arrayToDataTable(tripsData);
-      const options = {
-        hAxis: { title: 'Days of ' + months[month - 1] + '-' + year },
-        vAxis: { title: 'Count' },
-        isStacked: true
-        // title: 'Tags Issued Monthly Trend',
-        // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
-      };
-      const chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
-      chart.draw(data, options);
+      this.tripsChart.data = response.tripMetricsList;
+      this.drawTripsChartByMonth(month, year, response.tripMetricsList)
     })
+  }
+
+  drawTripsChartByMonth(month, year, tripMonthlyList) {
+    this.tripsChart.drill = 2;
+    const tripsData = [[]];
+    tripsData[0] = [];
+    tripsData[0].push('Day')
+    tripMonthlyList[0].tripsList.forEach(element => {
+      tripsData[0].push(element.tripType);
+      tripsData[0].push({ type: 'string', role: 'tooltip' });
+    });
+    tripsData[0].push('All');
+
+    tripMonthlyList.forEach((element, index) => {
+      tripsData[index + 1] = [];
+      tripsData[index + 1].push('' + element.day);
+      element.tripsList.forEach(el => {
+        tripsData[index + 1].push(el.count);
+        tripsData[index + 1].push(`${element.day}\n${el.tripType}:${el.count}\nTotal: ${element.count}`);
+      });
+      tripsData[index + 1].push(0);
+    });
+
+    const data = google.visualization.arrayToDataTable(tripsData);
+    const options = {
+      hAxis: { title: 'Days of ' + months[month - 1] + '-' + year },
+      vAxis: { title: 'Count' },
+      isStacked: true
+      // title: 'Tags Issued Monthly Trend',
+      // colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
+    };
+    const chart = new google.visualization.ColumnChart(document.getElementById('tripChart'));
+    google.visualization.events.addListener(chart, 'click', (e) => {
+      const parts = e.targetID.split('#');
+      if (parts[0] == 'legendentry') {
+        const tripsResponse: any[] = JSON.parse(JSON.stringify(this.tripsChart.data));
+        if (parseInt(parts[1]) != tripsResponse[0].tripsList.length) {
+          tripsResponse.forEach(o => {
+            o.tripsList.forEach((i, index) => {
+              if (index != parseInt(parts[1])) {
+                i.count = 0;
+              }
+            });
+          });
+        }
+        this.drawTripsChartByMonth(month, year, tripsResponse);
+      }
+
+    });
+    chart.draw(data, options);
+    $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+    $('#tripChart > div > div > div > svg > g > g').css('cursor', 'pointer');
   }
 
   getVehicleAvailability(locCode) {
@@ -249,8 +321,6 @@ export class DashboardComponent implements OnInit {
       throw Error('Input parameter must be of type number');
     }
 
-
-
     let str = amount.toString();
     // check if amount contains any fraction part
     let fraction = '';
@@ -287,7 +357,7 @@ export class DashboardComponent implements OnInit {
       this.transporters = response;
       this.Transporter = 'ECUS519'
       this.selectedCustomer = 'ECUS875';
-      this.getFleetUtilizationByCustId(this.Transporter);
+      // this.getFleetUtilizationByCustId(this.Transporter);
       this.getViolationsByCustomer(this.selectedCustomer);
     })
   }
@@ -307,12 +377,15 @@ export class DashboardComponent implements OnInit {
     violationsMetricsList[0].violations.forEach(element => {
       violationChartData[0].push(element.name);
     });
+    violationChartData[0].push('All');
+
     violationsMetricsList.forEach((element, index) => {
       violationChartData[index + 1] = [];
       violationChartData[index + 1][0] = '' + element.year;
       element.violations.forEach(e => {
         violationChartData[index + 1].push(e.count);
       });
+      violationChartData[index + 1].push(0);
     });
     const data = google.visualization.arrayToDataTable(violationChartData);
     const options = {
@@ -327,12 +400,28 @@ export class DashboardComponent implements OnInit {
       const parts = e.targetID.split('#');
       if (parts[0] == "hAxis")
         this.getViolatonsByYear(violationChartData[parseInt(parts[3]) + 1][0], custId);
+      else if (parts[0] == 'legendentry') {
+        const violationsMetricsList = JSON.parse(JSON.stringify(this.violationsChart.data));
+        if (parseInt(parts[1]) != violationsMetricsList[0].violations.length) {
+          violationsMetricsList.forEach(o => {
+            o.violations.forEach((i, index) => {
+              if (index != parseInt(parts[1])) {
+                i.count = 0;
+              }
+            });
+          });
+        }
+        this.drawViolationChart(custId, violationsMetricsList);
+      }
     });
     chart.draw(data, options);
+    $('#violationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+    $('#violationChart > div > div > div > svg > g > g').css('cursor', 'pointer');
   }
 
   getViolatonsByYear(year, custId) {
     this.dashboardservice.getViolationsByCustomerIdAndYear(year, custId).subscribe(response => {
+      this.violationsChart.data = response.violationsMetricsList;
       this.drawViolationChartByMonth(custId, year, response.violationsMetricsList);
     })
   }
@@ -345,12 +434,14 @@ export class DashboardComponent implements OnInit {
     violationsMetricsList[0].violations.forEach(element => {
       violationChartData[0].push(element.name);
     });
+    violationChartData[0].push('All');
     violationsMetricsList.forEach((element, index) => {
       violationChartData[index + 1] = [];
       violationChartData[index + 1][0] = '' + months[element.month - 1];
       element.violations.forEach(e => {
         violationChartData[index + 1].push(e.count);
       });
+      violationChartData[index + 1].push(0);
     });
     const data = google.visualization.arrayToDataTable(violationChartData);
     const options = {
@@ -365,12 +456,28 @@ export class DashboardComponent implements OnInit {
       const parts = e.targetID.split('#');
       if (parts[0] == "hAxis")
         this.getViolatonsByYearAndMonth(custId, year, months.indexOf(violationChartData[parseInt(parts[3]) + 1][0]) + 1);
+      else if (parts[0] == 'legendentry') {
+        const violationsMetricsList = JSON.parse(JSON.stringify(this.violationsChart.data));
+        if (parseInt(parts[1]) != violationsMetricsList[0].violations.length) {
+          violationsMetricsList.forEach(o => {
+            o.violations.forEach((i, index) => {
+              if (index != parseInt(parts[1])) {
+                i.count = 0;
+              }
+            });
+          });
+        }
+        this.drawViolationChartByMonth(custId, year, violationsMetricsList);
+      }
     });
     chart.draw(data, options);
+    $('#violationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+    $('#violationChart > div > div > div > svg > g > g').css('cursor', 'pointer');
   }
 
   getViolatonsByYearAndMonth(custId, year, month) {
     this.dashboardservice.getViolationsByCustomerIdAndYearAndMonth(year, month, custId).subscribe(response => {
+      this.violationsChart.data = response.violationsMetricsList;
       this.drawViolationChartByDay(year, month, response.violationsMetricsList);
     })
   }
@@ -382,12 +489,14 @@ export class DashboardComponent implements OnInit {
     violationsMetricsList[0].violations.forEach(element => {
       violationChartData[0].push(element.name);
     });
+    violationChartData[0].push('All');
     violationsMetricsList.forEach((element, index) => {
       violationChartData[index + 1] = [];
       violationChartData[index + 1][0] = '' + element.day;
       element.violations.forEach(e => {
         violationChartData[index + 1].push(e.count);
       });
+      violationChartData[index + 1].push(0);
     });
     const data = google.visualization.arrayToDataTable(violationChartData);
     const options = {
@@ -398,7 +507,25 @@ export class DashboardComponent implements OnInit {
       colors: ['#26c6da', '#ff425c', '#2ad8a4', '#ff864a', '#a94442']
     };
     const chart = new google.visualization.ColumnChart(document.getElementById('violationChart'));
+    google.visualization.events.addListener(chart, 'click', (e) => {
+      const parts = e.targetID.split('#');
+      if (parts[0] == 'legendentry') {
+        const violationsMetricsList = JSON.parse(JSON.stringify(this.violationsChart.data));
+        if (parseInt(parts[1]) != violationsMetricsList[0].violations.length) {
+          violationsMetricsList.forEach(o => {
+            o.violations.forEach((i, index) => {
+              if (index != parseInt(parts[1])) {
+                i.count = 0;
+              }
+            });
+          });
+        }
+        this.drawViolationChartByDay(year, month, violationsMetricsList);
+      }
+    });
     chart.draw(data, options);
+    $('#violationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+    $('#violationChart > div > div > div > svg > g > g').css('cursor', 'pointer');
   }
 
   getFleetUtilizationByCustId(custId) {
@@ -435,10 +562,12 @@ export class DashboardComponent implements OnInit {
         this.getFleetUtilizationByCustIdAndYear(fleetUtilizationChartData[parseInt(parts[3]) + 1][0], custId);
     });
     chart.draw(data, options);
+    $('#fleetUtilizationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
   }
 
   getFleetUtilizationByCustIdAndYear(year, custId) {
     this.dashboardservice.getFleetUtilizationByCustIdAndYear(year, custId).subscribe((response) => {
+      this.fleetUtilizationsChart.data = response.list;
       this.drawFleetUtilizationByYear(year, custId, response.list);
     }, (error) => {
 
@@ -473,10 +602,12 @@ export class DashboardComponent implements OnInit {
 
     });
     chart.draw(data, options);
+    $('#fleetUtilizationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
   }
 
   getFleetUtilizationByCustIdAndYearAndMonth(month, year, custId) {
     this.dashboardservice.getFleetUtilizationByCustIdYearAndMonth(year, month, custId).subscribe((response) => {
+      this.fleetUtilizationsChart.data = response.list;
       this.drawFleetUtilizationByYearAndMonth(month, year, custId, response.list);
     }, (error) => {
 
@@ -503,12 +634,46 @@ export class DashboardComponent implements OnInit {
     };
     const chart = new google.visualization.ColumnChart(document.getElementById('fleetUtilizationChart'));
     chart.draw(data, options);
+    $('#fleetUtilizationChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
   }
 
   onResizeWindow() {
-    this.drawTripsChartYearwise(this.tripsChart.data);
-    this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data);
-    this.drawViolationChart(this.selectedCustomer, this.violationsChart.data);
+    switch (this.tripsChart.drill) {
+      case 0:
+        this.drawTripsChartYearwise(this.tripsChart.data);
+        break;
+      case 1:
+        this.drawTripsChartByYear(this.tripsChart.year, this.tripsChart.data);
+        break;
+      case 2:
+        this.drawTripsChartByMonth(this.tripsChart.month, this.tripsChart.year, this.tripsChart.data)
+        break;
+    }
+
+    switch (this.violationsChart.drill) {
+      case 0:
+        this.drawViolationChart(this.selectedCustomer, this.violationsChart.data);
+        break;
+      case 1:
+        this.drawViolationChartByMonth(this.selectedCustomer, this.violationsChart.year, this.violationsChart.data)
+        break;
+      case 2:
+        this.drawViolationChartByDay(this.violationsChart.year, this.violationsChart.month, this.violationsChart.data);
+        break;
+    }
+
+    // switch (this.fleetUtilizationsChart.drill) {
+    //   case 0:
+    //     this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data)
+    //     break;
+    //   case 1:
+    //     this.drawFleetUtilizationByYear(this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
+    //     break;
+    //   case 2:
+    //     this.drawFleetUtilizationByYearAndMonth(this.fleetUtilizationsChart.month, this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
+    //     break;
+
+    // }
   }
 
   drillBackCharts(name, drillCount) {

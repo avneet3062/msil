@@ -96,14 +96,6 @@ public class ViolationsMetrics {
         return violationsCount;
     }
 
-//    public void setViolationsCount(ViolationsCount violationsCount) {
-//        this.violationsCount = violationsCount;
-//    }
-//
-//    public void setViolationsMetricsList(List<ViolationsMetrics> violationsMetricsList) {
-//        this.violationsMetricsList = violationsMetricsList;
-//    }
-
     public Date getDate() {
         return date;
     }

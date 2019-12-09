@@ -15,8 +15,8 @@ public class TripMetrics {
     @JsonFormat(pattern = "dd-MMM-YYYY",timezone = "IST")
     private Date date;
     private List<Trips> tripsList ;
-    private List<TripMonthly> tripMonthlyList ;
-    private TripMonthly tripMonthly;
+    private List<TripMetrics> tripMetricsList;
+    private Trips trip;
 
 
     public TripMetrics() {
@@ -34,14 +34,19 @@ public class TripMetrics {
         this.date = date;
     }
 
+    public List<TripMetrics> getTripMetricsList() {
+        return tripMetricsList;
+    }
+
+    public void setTripMetricsList(List<TripMetrics> tripMetricsList) {
+        this.tripMetricsList = tripMetricsList;
+    }
+
     public TripMetrics(Integer year) {
         this.year = year;
     }
 
-    public TripMetrics(Integer year, List<TripMonthly> tripMonthlyList) {
-        this.year = year;
-        this.tripMonthlyList = tripMonthlyList;
-    }
+
 
     public Integer getYear() {
         return year;
@@ -71,19 +76,6 @@ public class TripMetrics {
         this.tripsList = tripsList;
     }
 
-    public List<TripMonthly> getTripMonthlyList() {
-        return tripMonthlyList;
-    }
-
-    public void setTripMonthlyList(List<TripMonthly> tripMonthlyList) {
-        this.tripMonthlyList = tripMonthlyList;
-    }
-
-    public TripMonthly getTripMonthly() { return tripMonthly; }
-
-    public void setTripMonthly(TripMonthly tripMonthly) {
-        this.tripMonthly = tripMonthly;
-    }
 
     public Integer getDay() {
         return day;
