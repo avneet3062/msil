@@ -115,7 +115,7 @@ public class DataService {
                 trip.setMonth(j);
                 trip.setCount(0L);
                 tripsList = new ArrayList<>();
-                tripsList = getAllTrips(null);
+                tripsList = getAllT rips(null);
                 trip.setTripsList(tripsList);
                 metricsList.add(trip);
 
