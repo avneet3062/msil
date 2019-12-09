@@ -521,7 +521,7 @@ var SidebarModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <section>\r\n        <div class=\"row\" (window:resize)=\"onResizeWindow()\">\r\n            <!-- Trips -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Trips</h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n\r\n                        <div *ngIf=\"tripsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('tripChart', tripsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"tripChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Monthly transactions -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Vehicle Availablity</h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"location\" id=\"\" [(ngModel)]=\"locationCode\" (ngModelChange)=\"getVehicleAvailability($event)\">\r\n                                <option [value]=\"loc.code\" *ngFor=\"let loc of locations;\">\r\n                                    {{loc.locName}}\r\n                                </option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\" *ngIf=\"vehicleAvailablity.length\">\r\n                        <div class=\"ct-chart\">\r\n                            <div class=\"c2\" *ngIf=\"vehicleAvailablity.length\">\r\n                                <div class=\"text\">\r\n                                    <div>{{vehicleAvailablity[2].range + ' KM'}} </div>\r\n                                    <div>{{vehicleAvailablity[2].count}}</div>\r\n                                </div>\r\n                                <div class=\"c1\">\r\n                                    <div class=\"text\">\r\n                                        <div>{{vehicleAvailablity[1].range + ' KM'}} </div>\r\n                                        <div>{{vehicleAvailablity[1].count}}</div>\r\n                                    </div>\r\n                                    <div class=\"c0\">\r\n                                        <div class=\"text\">\r\n                                            <div>{{vehicleAvailablity[0].range + ' KM'}} </div>\r\n                                            <div>{{vehicleAvailablity[0].count}}</div>\r\n                                        </div>\r\n                                    </div>\r\n                                </div>\r\n                            </div>\r\n                            <img src=\"assets/img/loading.gif\" *ngIf=\"!vehicleAvailablity.length\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- Violations Chart -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Violations Chart\r\n                        </h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"customer\" id=\"\" [(ngModel)]=\"selectedCustomer\" (ngModelChange)=\"getViolationsByCustomer($event)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div *ngIf=\"violationsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('violationChart', violationsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"violationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Fleet Utilization Chart\r\n                        </h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"customer\" id=\"\" [(ngModel)]=\"Transporter\" (ngModelChange)=\"getFleetUtilizationByCustId(Transporter)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div *ngIf=\"fleetUtilizationsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('fleetUtilizationChart', fleetUtilizationsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"fleetUtilizationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </section>\r\n</div>"
+module.exports = "<div class=\"container-fluid\">\r\n\r\n\r\n\r\n\r\n    <section>\r\n        <div class=\"row\" (window:resize)=\"onResizeWindow()\">\r\n            <!-- Trips -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4 class=\"\">Trips</h4>\r\n                    </div>\r\n                    <div class=\"content\">\r\n\r\n                        <div *ngIf=\"tripsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('tripChart', tripsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"tripChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- Monthly transactions -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Vehicle Availablity</h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"location\" id=\"\" [(ngModel)]=\"locationCode\" (ngModelChange)=\"getVehicleAvailability($event)\">\r\n                                <option [value]=\"loc.code\" *ngFor=\"let loc of locations;\">\r\n                                    {{loc.locName}}\r\n                                </option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\" *ngIf=\"vehicleAvailablity.length\">\r\n                        <div class=\"ct-chart\">\r\n                            <div class=\"c2\" *ngIf=\"vehicleAvailablity.length\">\r\n                                <div class=\"text\">\r\n                                    <div>{{vehicleAvailablity[2].range + ' KM'}} </div>\r\n                                    <div>{{vehicleAvailablity[2].count}}</div>\r\n                                </div>\r\n                                <div class=\"c1\">\r\n                                    <div class=\"text\">\r\n                                        <div>{{vehicleAvailablity[1].range + ' KM'}} </div>\r\n                                        <div>{{vehicleAvailablity[1].count}}</div>\r\n                                    </div>\r\n                                    <div class=\"c0\">\r\n                                        <div class=\"text\">\r\n                                            <div>{{vehicleAvailablity[0].range + ' KM'}} </div>\r\n                                            <div>{{vehicleAvailablity[0].count}}</div>\r\n                                        </div>\r\n                                    </div>\r\n                                </div>\r\n                            </div>\r\n                            <img src=\"assets/img/loading.gif\" *ngIf=\"!vehicleAvailablity.length\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- Violations Chart -->\r\n            <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Violations Chart\r\n                        </h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"customer\" id=\"\" [(ngModel)]=\"selectedCustomer\" (ngModelChange)=\"getViolationsByCustomer($event)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div *ngIf=\"violationsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('violationChart', violationsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"violationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <!-- <div class=\"col-lg-12\">\r\n                <div class=\"card\">\r\n                    <div class=\"header tittle\">\r\n                        <h4>Fleet Utilization Chart\r\n                        </h4>\r\n                        <div class=\"select-box\">\r\n                            <select name=\"customer\" id=\"\" [(ngModel)]=\"Transporter\" (ngModelChange)=\"getFleetUtilizationByCustId(Transporter)\">\r\n                                <option [value]=\"transporter.custId\" *ngFor=\"let transporter of transporters\">{{transporter.custName}}</option>\r\n                            </select>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"content\">\r\n                        <div *ngIf=\"fleetUtilizationsChart.drill\" class=\"slide-main\" (click)=\"drillBackCharts('fleetUtilizationChart', fleetUtilizationsChart.drill)\">\r\n                            <div class=\"slide\">\r\n                                <i class=\"fa fa-angle-left\" aria-hidden=\"true\"></i>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"fleetUtilizationChart\" class=\"ct-chart\">\r\n                            <img src=\"assets/img/loading.gif\">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div> -->\r\n        </div>\r\n    </section>\r\n</div>"
 
 /***/ }),
 
@@ -627,6 +627,7 @@ var DashboardComponent = /** @class */ (function () {
             tripsData[0].push(element.tripType);
             tripsData[0].push({ type: 'string', role: 'tooltip' });
         });
+        tripsData[0].push('All');
         tripsResponse.forEach(function (element, index) {
             tripsData[index + 1] = [];
             tripsData[index + 1].push('' + element.year);
@@ -634,6 +635,7 @@ var DashboardComponent = /** @class */ (function () {
                 tripsData[index + 1].push(el.count);
                 tripsData[index + 1].push(element.year + "\n" + el.tripType + ":" + el.count + "\nTotal: " + element.count);
             });
+            tripsData[index + 1].push(0);
         });
         var data = google.visualization.arrayToDataTable(tripsData);
         var options = {
@@ -656,13 +658,15 @@ var DashboardComponent = /** @class */ (function () {
             }
             else if (parts[0] == 'legendentry') {
                 var tripsResponse_1 = JSON.parse(JSON.stringify(_this.tripsChart.data));
-                tripsResponse_1.forEach(function (o) {
-                    o.tripsList.forEach(function (i, index) {
-                        if (index != parseInt(parts[1])) {
-                            i.count = 0;
-                        }
+                if (parseInt(parts[1]) != tripsResponse_1[0].tripsList.length) {
+                    tripsResponse_1.forEach(function (o) {
+                        o.tripsList.forEach(function (i, index) {
+                            if (index != parseInt(parts[1])) {
+                                i.count = 0;
+                            }
+                        });
                     });
-                });
+                }
                 _this.drawTripsChartYearwise(tripsResponse_1);
             }
         });
@@ -688,6 +692,7 @@ var DashboardComponent = /** @class */ (function () {
             tripsData[0].push(element.tripType);
             tripsData[0].push({ type: 'string', role: 'tooltip' });
         });
+        tripsData[0].push('All');
         tripMonthlyList.forEach(function (element, index) {
             tripsData[index + 1] = [];
             tripsData[index + 1].push(months[element.month - 1]);
@@ -695,6 +700,7 @@ var DashboardComponent = /** @class */ (function () {
                 tripsData[index + 1].push(el.count);
                 tripsData[index + 1].push(months[element.month - 1] + "\n" + el.tripType + ":" + el.count + "\nTotal: " + element.count);
             });
+            tripsData[index + 1].push(0);
         });
         var data = google.visualization.arrayToDataTable(tripsData);
         var options = {
@@ -712,18 +718,21 @@ var DashboardComponent = /** @class */ (function () {
             }
             else if (parts[0] == 'legendentry') {
                 var tripsResponse = JSON.parse(JSON.stringify(_this.tripsChart.data));
-                tripsResponse.forEach(function (o) {
-                    o.tripsList.forEach(function (i, index) {
-                        if (index != parseInt(parts[1])) {
-                            i.count = 0;
-                        }
+                if (parseInt(parts[1]) != tripsResponse[0].tripsList.length) {
+                    tripsResponse.forEach(function (o) {
+                        o.tripsList.forEach(function (i, index) {
+                            if (index != parseInt(parts[1])) {
+                                i.count = 0;
+                            }
+                        });
                     });
-                });
+                }
                 _this.drawTripsChartByYear(year, tripsResponse);
             }
         });
         chart.draw(data, options);
         $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+        $('#tripChart > div > div > div > svg > g > g').css('cursor', 'pointer');
     };
     DashboardComponent.prototype.getTripsByMonth = function (year, month) {
         var _this = this;
@@ -744,6 +753,7 @@ var DashboardComponent = /** @class */ (function () {
             tripsData[0].push(element.tripType);
             tripsData[0].push({ type: 'string', role: 'tooltip' });
         });
+        tripsData[0].push('All');
         tripMonthlyList.forEach(function (element, index) {
             tripsData[index + 1] = [];
             tripsData[index + 1].push('' + element.day);
@@ -751,6 +761,7 @@ var DashboardComponent = /** @class */ (function () {
                 tripsData[index + 1].push(el.count);
                 tripsData[index + 1].push(element.day + "\n" + el.tripType + ":" + el.count + "\nTotal: " + element.count);
             });
+            tripsData[index + 1].push(0);
         });
         var data = google.visualization.arrayToDataTable(tripsData);
         var options = {
@@ -765,18 +776,21 @@ var DashboardComponent = /** @class */ (function () {
             var parts = e.targetID.split('#');
             if (parts[0] == 'legendentry') {
                 var tripsResponse = JSON.parse(JSON.stringify(_this.tripsChart.data));
-                tripsResponse.forEach(function (o) {
-                    o.tripsList.forEach(function (i, index) {
-                        if (index != parseInt(parts[1])) {
-                            i.count = 0;
-                        }
+                if (parseInt(parts[1]) != tripsResponse[0].tripsList.length) {
+                    tripsResponse.forEach(function (o) {
+                        o.tripsList.forEach(function (i, index) {
+                            if (index != parseInt(parts[1])) {
+                                i.count = 0;
+                            }
+                        });
                     });
-                });
+                }
                 _this.drawTripsChartByMonth(month, year, tripsResponse);
             }
         });
         chart.draw(data, options);
         $('#tripChart > div > div > div > svg > g > g > g').css('cursor', 'pointer');
+        $('#tripChart > div > div > div > svg > g > g').css('cursor', 'pointer');
     };
     DashboardComponent.prototype.getVehicleAvailability = function (locCode) {
         var _this = this;
@@ -844,7 +858,7 @@ var DashboardComponent = /** @class */ (function () {
             _this.transporters = response;
             _this.Transporter = 'ECUS519';
             _this.selectedCustomer = 'ECUS875';
-            _this.getFleetUtilizationByCustId(_this.Transporter);
+            // this.getFleetUtilizationByCustId(this.Transporter);
             _this.getViolationsByCustomer(_this.selectedCustomer);
         });
     };
@@ -863,12 +877,14 @@ var DashboardComponent = /** @class */ (function () {
         violationsMetricsList[0].violations.forEach(function (element) {
             violationChartData[0].push(element.name);
         });
+        violationChartData[0].push('All');
         violationsMetricsList.forEach(function (element, index) {
             violationChartData[index + 1] = [];
             violationChartData[index + 1][0] = '' + element.year;
             element.violations.forEach(function (e) {
                 violationChartData[index + 1].push(e.count);
             });
+            violationChartData[index + 1].push(0);
         });
         var data = google.visualization.arrayToDataTable(violationChartData);
         var options = {
@@ -885,13 +901,15 @@ var DashboardComponent = /** @class */ (function () {
                 _this.getViolatonsByYear(violationChartData[parseInt(parts[3]) + 1][0], custId);
             else if (parts[0] == 'legendentry') {
                 var violationsMetricsList_1 = JSON.parse(JSON.stringify(_this.violationsChart.data));
-                violationsMetricsList_1.forEach(function (o) {
-                    o.violations.forEach(function (i, index) {
-                        if (index != parseInt(parts[1])) {
-                            i.count = 0;
-                        }
+                if (parseInt(parts[1]) != violationsMetricsList_1[0].violations.length) {
+                    violationsMetricsList_1.forEach(function (o) {
+                        o.violations.forEach(function (i, index) {
+                            if (index != parseInt(parts[1])) {
+                                i.count = 0;
+                            }
+                        });
                     });
-                });
+                }
                 _this.drawViolationChart(custId, violationsMetricsList_1);
             }
         });
@@ -915,12 +933,14 @@ var DashboardComponent = /** @class */ (function () {
         violationsMetricsList[0].violations.forEach(function (element) {
             violationChartData[0].push(element.name);
         });
+        violationChartData[0].push('All');
         violationsMetricsList.forEach(function (element, index) {
             violationChartData[index + 1] = [];
             violationChartData[index + 1][0] = '' + months[element.month - 1];
             element.violations.forEach(function (e) {
                 violationChartData[index + 1].push(e.count);
             });
+            violationChartData[index + 1].push(0);
         });
         var data = google.visualization.arrayToDataTable(violationChartData);
         var options = {
@@ -937,13 +957,15 @@ var DashboardComponent = /** @class */ (function () {
                 _this.getViolatonsByYearAndMonth(custId, year, months.indexOf(violationChartData[parseInt(parts[3]) + 1][0]) + 1);
             else if (parts[0] == 'legendentry') {
                 var violationsMetricsList_2 = JSON.parse(JSON.stringify(_this.violationsChart.data));
-                violationsMetricsList_2.forEach(function (o) {
-                    o.violations.forEach(function (i, index) {
-                        if (index != parseInt(parts[1])) {
-                            i.count = 0;
-                        }
+                if (parseInt(parts[1]) != violationsMetricsList_2[0].violations.length) {
+                    violationsMetricsList_2.forEach(function (o) {
+                        o.violations.forEach(function (i, index) {
+                            if (index != parseInt(parts[1])) {
+                                i.count = 0;
+                            }
+                        });
                     });
-                });
+                }
                 _this.drawViolationChartByMonth(custId, year, violationsMetricsList_2);
             }
         });
@@ -966,12 +988,14 @@ var DashboardComponent = /** @class */ (function () {
         violationsMetricsList[0].violations.forEach(function (element) {
             violationChartData[0].push(element.name);
         });
+        violationChartData[0].push('All');
         violationsMetricsList.forEach(function (element, index) {
             violationChartData[index + 1] = [];
             violationChartData[index + 1][0] = '' + element.day;
             element.violations.forEach(function (e) {
                 violationChartData[index + 1].push(e.count);
             });
+            violationChartData[index + 1].push(0);
         });
         var data = google.visualization.arrayToDataTable(violationChartData);
         var options = {
@@ -986,13 +1010,15 @@ var DashboardComponent = /** @class */ (function () {
             var parts = e.targetID.split('#');
             if (parts[0] == 'legendentry') {
                 var violationsMetricsList_3 = JSON.parse(JSON.stringify(_this.violationsChart.data));
-                violationsMetricsList_3.forEach(function (o) {
-                    o.violations.forEach(function (i, index) {
-                        if (index != parseInt(parts[1])) {
-                            i.count = 0;
-                        }
+                if (parseInt(parts[1]) != violationsMetricsList_3[0].violations.length) {
+                    violationsMetricsList_3.forEach(function (o) {
+                        o.violations.forEach(function (i, index) {
+                            if (index != parseInt(parts[1])) {
+                                i.count = 0;
+                            }
+                        });
                     });
-                });
+                }
                 _this.drawViolationChartByDay(year, month, violationsMetricsList_3);
             }
         });
@@ -1127,18 +1153,17 @@ var DashboardComponent = /** @class */ (function () {
                 this.drawViolationChartByDay(this.violationsChart.year, this.violationsChart.month, this.violationsChart.data);
                 break;
         }
-        switch (this.fleetUtilizationsChart.drill) {
-            case 0:
-                this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data);
-                break;
-            case 1:
-                this.drawFleetUtilizationByYear(this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
-                break;
-            case 2:
-                this.drawFleetUtilizationByYearAndMonth(this.fleetUtilizationsChart.month, this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
-                break;
-        }
-        // this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data);
+        // switch (this.fleetUtilizationsChart.drill) {
+        //   case 0:
+        //     this.drawFleetUtilization(this.Transporter, this.fleetUtilizationsChart.data)
+        //     break;
+        //   case 1:
+        //     this.drawFleetUtilizationByYear(this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
+        //     break;
+        //   case 2:
+        //     this.drawFleetUtilizationByYearAndMonth(this.fleetUtilizationsChart.month, this.fleetUtilizationsChart.year, this.Transporter, this.fleetUtilizationsChart.data);
+        //     break;
+        // }
     };
     DashboardComponent.prototype.drillBackCharts = function (name, drillCount) {
         switch (name) {

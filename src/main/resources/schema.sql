@@ -18,8 +18,10 @@ WITH T1 AS
     (SELECT 1
     FROM ETRK_MUL_NEWTRIP
     WHERE TRIP_REGN_NO = EIM_REGN_NO
+
     AND TRIP_STATUS    > 2
-    ) -- changed here
+    )
+     AND  eim_message_created_time > TRUNC(SYSDATE)-3
      
   )
   ,
