@@ -46,33 +46,30 @@ public class DataService {
         Long sum=0L;
         Duration type=null;
         int limit=0;
-        if(year==null)
-        { order = "year";
 
+        if(year == null) {
+            order = "year";
             firstDay.set(minYear, 0, 1);
             lastDay.setTime(today);
-
-
-        }
-        else if (year !=null&&month == null) {
+        }else if (year !=null && month == null) {
             order = "month";
             sum= this.getOpenTripsCount(year);
             firstDay.set(year, 0, 1);
             lastDay.set(year, 11, 31);
             metrics.setYear(year);
-            if (lastDay.getTime().after(today)) {
+
+            if (lastDay.getTime().after(today))
                 lastDay.setTime(today);
-            }
 
-
-        } else if (year!=null&&month!=null){
+        }else if(year != null && month != null){
             sum=this.getOpenTripsCount(year-1);
             List<Trips> openTrips=null;
             firstDay.set(year, 0, 1);
-            if(month>1) {
+
+            if(month > 1) {
                 lastDay.set(year, month - 2, firstDay.getActualMaximum(Calendar.DATE));
                  openTrips = tripRepository.getOpenTrips(minYear, firstDay.getTime(), lastDay.getTime(), today, "year");
-                if(!openTrips.isEmpty()&&openTrips!=null)
+                if(!openTrips.isEmpty() && openTrips != null)
                     sum=sum+openTrips.get(0).getCount();
             }
 
@@ -85,22 +82,20 @@ public class DataService {
                 lastDay.setTime(today);
             }
         }
-        else {
+        else
             throw new NotFoundException("Year is not specified");
+
+        if(year !=null && month !=null){
+            limit=lastDay.get(Calendar.DATE);
+            type=Duration.day;
+        } else if(year==null){
+            limit=lastDay.get(Calendar.YEAR);
+            type=Duration.year;
+        }else if(year != null && month==null){
+            limit=lastDay.get(Calendar.MONTH) +1;
+            type=Duration.month;
         }
 
-
-
-        if(year!=null&&month!=null){
-            limit=lastDay.get(Calendar.DATE);
-            type=Duration.day;}
-        else if(year==null){
-            limit=lastDay.get(Calendar.YEAR);
-            type=Duration.year;}
-
-        else if(year!=null&&month==null)
-        { limit=lastDay.get(Calendar.MONTH)+1;
-            type=Duration.month;}
         List<TripMetrics> tripMetricsList = null;
         List<TripMetrics> finalList = new ArrayList<>();
         List<Trips> openTripsList=new ArrayList<>();
@@ -109,18 +104,19 @@ public class DataService {
         List<Trips> tripsList = null;
         fromDate = firstDay.getTime();
         toDate = lastDay.getTime();
+
         trips=tripRepository.getOpenTrips(minYear, fromDate, toDate,today, order);
         openTripsList=this.getAllTrips(sum,trips,limit,TripTypes.Open,type);
         allTrips.addAll(openTripsList);
         trips=tripRepository.getClosedTrips(minYear, fromDate, toDate, order);
         closedTripsList=this.getAllTrips(0L,trips,limit,TripTypes.Closed,type);
-       allTrips.addAll(closedTripsList);
-       trips=tripRepository.getDelayedTrips(minYear, fromDate, toDate, order);
+        allTrips.addAll(closedTripsList);
+        trips=tripRepository.getDelayedTrips(minYear, fromDate, toDate, order);
         allTrips.addAll(this.getAllTrips(0L,trips,limit,TripTypes.Delayed,type));
-       trips=this.getTotalTrips( openTripsList,closedTripsList,limit, type);
-       allTrips.addAll(trips);
-
+        trips=this.getTotalTrips( openTripsList,closedTripsList,limit, type);
+        allTrips.addAll(trips);
         allTrips.sort(Comparator.comparing(Trips::getName).thenComparing(Trips::getTripType));
+
         int prev = 0;
         TripMetrics typewise = null;
         for (Trips t : allTrips) {
@@ -131,7 +127,7 @@ public class DataService {
                 else{
                  trip = new Trips(t.getTripType(), t.getCount());
                 tripsList.add(trip);}
-            } else {
+            }else{
                 typewise=new TripMetrics();
                 if(type.equals(Duration.year))
                     typewise.setYear(t.getName());
@@ -156,25 +152,18 @@ public class DataService {
         }
 
 
-     if(year==null && month==null && yearlyCounts.isEmpty())
-     {
-         Long count=0L;
-
-         for(int i=0; i<=limit-minYear;i++)
-         {
+    if(year==null && month==null && yearlyCounts.isEmpty()) {
+        Long count=0L;
+        for(int i=0; i<=limit-minYear;i++) {
              count=metrics.getTripMetricsList().get(i).getTripsList().get(2).getCount();
              yearlyCounts.add(count);
-         }
-
-     }
-        return metrics;
-
-
+        }
 
     }
+        return metrics;
+    }
 
-    public Long getOpenTripsCount(Integer year)
-    {
+    public Long getOpenTripsCount(Integer year) {
         Long sum=0L;
         for(int i=0;i<=year-minYear;i++)
         {
@@ -196,7 +185,7 @@ public class DataService {
         for( int j= 0; i<=limit;  ){
             if(!trips.isEmpty() && j< trips.size()) {
                 trip = trips.get(j);
-                if ((type.equals(Duration.year) ||type.equals(Duration.month)||type.equals(Duration.day))&& trip.getName() == i) {
+                if((type.equals(Duration.year) ||type.equals(Duration.month)||type.equals(Duration.day)) && trip.getName() == i) {
                     if(name.equals(TripTypes.Open)) {
                         count = count + trip.getCount();
                         trip.setCount(count);
